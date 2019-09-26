@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 // Serve static files....
 app.use(express.static(__dirname + '/dist/angular-deploy'));
 
-mongodb.MongoClient.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/test", function (err, client) {
+mongodb.MongoClient.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/blogDb", function (err, client) {
   if (err) {
     console.log(err);
     process.exit(1);
@@ -53,7 +53,7 @@ app.post("/api/contacts", function(req, res) {
   var newContact = req.body;
   newContact.createDate = new Date();
 
-  if (!req.body.name) {
+  if (!req.body.firstname) {
     handleError(res, "Invalid user input", "Must provide a name.", 400);
   } else {
     db.collection(CONTACTS_COLLECTION).insertOne(newContact, function(err, doc) {
