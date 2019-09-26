@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const mongodb = require("mongodb");
 const ObjectID = mongodb.ObjectID;
 const app = express();
+var BLOGCONTENTS_COLLECTION = "blogcontents";
+var COMMENTS_COLLECTION = "comments";
 var BLOGPOSTS_COLLECTION = "blogposts";
 var CONTACTS_COLLECTION = "contacts";
 var db;
@@ -40,13 +42,141 @@ app.get('/*', function(req, res) {
   res.sendFile(path.join(__dirname + '/dist/angular-deploy/index.html'));
 });
 
+
+/********************************************
+  blogcontents collection
+*********************************************/
+app.get("/api/blogcontents", function(req, res) {
+  db.collection(BLOGCONTENTS_COLLECTION).find({}).toArray(function(err, docs) {
+    if (err) {
+      handleError(res, err.message, "Failed to get blog contents.");
+    } else {
+      res.status(200).json(docs);
+    }
+  });
+});
+app.get("/api/blogcontents/:id", function(req, res) {
+  db.collection(BLOGCONTENTS_COLLECTION).findOne({ _id: new ObjectID(req.params.id) }, function(err, doc) {
+    if (err) {
+      handleError(res, err.message, "Failed to get blog content");
+    } else {
+      res.status(200).json(doc);
+    }
+  });
+});
+app.post("/api/blogcontents", function(req, res) {
+  var newBlogcontent= req.body;
+  newBlogcontent.createDate = new Date();
+
+  if (!req.body.title) {
+    handleError(res, "Invalid user input", "Must provide a title.", 400);
+  } else {
+    db.collection(BLOGCONTENTS_COLLECTION).insertOne(newBlogcontent, function(err, doc) {
+      if (err) {
+        handleError(res, err.message, "Failed to create new blog content.");
+      } else {
+        res.status(201).json(doc.ops[0]);
+      }
+    });
+  }
+});
+app.put("/api/blogcontents/:id", function(req, res) {
+  var updateDoc = req.body;
+  delete updateDoc._id;
+  db.collection(BLOGCONTENTS_COLLECTION).updateOne({_id: new ObjectID(req.params.id)}, updateDoc, function(err, doc) {
+    if (err) {
+      handleError(res, err.message, "Failed to update blog content");
+    } else {
+      updateDoc._id = req.params.id;
+      res.status(200).json(updateDoc);
+    }
+  });
+});
+app.delete("/api/blogcontents/:id", function(req, res) {
+  db.collection(BLOGCONTENTS_COLLECTION).deleteOne({_id: new ObjectID(req.params.id)}, function(err, result) {
+    if (err) {
+      handleError(res, err.message, "Failed to delete blog content");
+    } else {
+      res.status(200).json(req.params.id);
+    }
+  });
+});
+
+/********************************************
+  comments collection
+*********************************************/
+app.get("/api/comments", function(req, res) {
+  db.collection(COMMENTS_COLLECTION).find({}).toArray(function(err, docs) {
+    if (err) {
+      handleError(res, err.message, "Failed to get comments");
+    } else {
+      res.status(200).json(docs);
+    }
+  });
+});
+app.get("/api/comments/:id", function(req, res) {
+  db.collection(COMMENTS_COLLECTION).findOne({ _id: new ObjectID(req.params.id) }, function(err, doc) {
+    if (err) {
+      handleError(res, err.message, "Failed to get comment");
+    } else {
+      res.status(200).json(doc);
+    }
+  });
+});
+app.post("/api/comments", function(req, res) {
+  var newComment= req.body;
+  newComment.createDate = new Date();
+
+  if (!req.body.author) {
+    handleError(res, "Invalid user input", "Must provide an author.", 400);
+  } else {
+    db.collection(COMMENTS_COLLECTION).insertOne(newComment, function(err, doc) {
+      if (err) {
+        handleError(res, err.message, "Failed to create new comment.");
+      } else {
+        res.status(201).json(doc.ops[0]);
+      }
+    });
+  }
+});
+app.put("/api/comments/:id", function(req, res) {
+  var updateDoc = req.body;
+  delete updateDoc._id;
+  db.collection(COMMENTS_COLLECTION).updateOne({_id: new ObjectID(req.params.id)}, updateDoc, function(err, doc) {
+    if (err) {
+      handleError(res, err.message, "Failed to update comment");
+    } else {
+      updateDoc._id = req.params.id;
+      res.status(200).json(updateDoc);
+    }
+  });
+});
+app.delete("/api/comments/:id", function(req, res) {
+  db.collection(COMMENTS_COLLECTION).deleteOne({_id: new ObjectID(req.params.id)}, function(err, result) {
+    if (err) {
+      handleError(res, err.message, "Failed to delete comment");
+    } else {
+      res.status(200).json(req.params.id);
+    }
+  });
+});
+
 /********************************************
   blogposts collection
 *********************************************/
+app.get("/api/blogposts", function(req, res) {
+  db.collection(BLOGPOSTS_COLLECTION).find({}).toArray(function(err, docs) {
+    if (err) {
+      handleError(res, err.message, "Failed to get blog posts.");
+    } else {
+      res.status(200).json(docs);
+    }
+  });
+});
 app.get("/api/blogposts/:id", function(req, res) {
   db.collection(BLOGPOSTS_COLLECTION).findOne({ _id: new ObjectID(req.params.id) }, function(err, doc) {
     if (err) {
-      handleError(res, err.message, "Failed to get contact");
+      handleError(res, err.message, "Failed to get blog post");
     } else {
       res.status(200).json(doc);
     }
@@ -93,6 +223,15 @@ app.delete("/api/blogposts/:id", function(req, res) {
 /********************************************
   contacts collection
 *********************************************/
+app.get("/api/contacts", function(req, res) {
+  db.collection(CONTACTS_COLLECTION).find({}).toArray(function(err, docs) {
+    if (err) {
+      handleError(res, err.message, "Failed to get contacts.");
+    } else {
+      res.status(200).json(docs);
+    }
+  });
+});
 app.get("/api/contacts/:id", function(req, res) {
   db.collection(CONTACTS_COLLECTION).findOne({ _id: new ObjectID(req.params.id) }, function(err, doc) {
     if (err) {
