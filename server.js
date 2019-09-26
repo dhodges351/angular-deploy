@@ -1,8 +1,12 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const bodyParser = require("body-parser");
+const multer = require('multer');
 const mongodb = require("mongodb");
 const ObjectID = mongodb.ObjectID;
+const router = express.Router();
+const DIR = './assets/images';
 const app = express();
 var BLOGCONTENTS_COLLECTION = "blogcontents";
 var COMMENTS_COLLECTION = "comments";
@@ -41,6 +45,35 @@ function handleError(res, reason, message, code) {
 app.get('/*', function(req, res) {
   res.sendFile(path.join(__dirname + '/dist/angular-deploy/index.html'));
 });
+
+let storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, DIR);
+  },
+  filename: (req, file, cb) => {
+    //cb(null, file.fieldname + '-' + Date.now() + '.' + path.extname(file.originalname));
+    cb(null, file.originalname);
+  }
+});
+let upload = multer({storage: storage});
+app.get('/api', function (req, res) {
+  res.end('file catcher example');
+}); 
+app.post('/api/upload',upload.single('photo'), function (req, res) {
+    if (!req.file) {
+        console.log("No file received");
+        return res.send({
+          success: false
+        });
+    
+      } else {
+        console.log('file received');
+        return res.send({
+          success: true
+        })
+      }
+});
+app.use('/api/upload', router);
 
 
 /********************************************
