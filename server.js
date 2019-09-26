@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const mongodb = require("mongodb");
 const ObjectID = mongodb.ObjectID;
 const app = express();
+var BLOGPOSTS_COLLECTION = "blogposts";
 var CONTACTS_COLLECTION = "contacts";
 var db;
 app.use(bodyParser.json());
@@ -39,6 +40,59 @@ app.get('/*', function(req, res) {
   res.sendFile(path.join(__dirname + '/dist/angular-deploy/index.html'));
 });
 
+/********************************************
+  blogposts collection
+*********************************************/
+app.get("/api/blogposts/:id", function(req, res) {
+  db.collection(BLOGPOSTS_COLLECTION).findOne({ _id: new ObjectID(req.params.id) }, function(err, doc) {
+    if (err) {
+      handleError(res, err.message, "Failed to get contact");
+    } else {
+      res.status(200).json(doc);
+    }
+  });
+});
+app.post("/api/blogposts", function(req, res) {
+  var newBlogpost= req.body;
+  newBlogpost.createDate = new Date();
+
+  if (!req.body.author) {
+    handleError(res, "Invalid user input", "Must provide an author.", 400);
+  } else {
+    db.collection(BLOGPOSTS_COLLECTION).insertOne(newBlogpost, function(err, doc) {
+      if (err) {
+        handleError(res, err.message, "Failed to create new blog post.");
+      } else {
+        res.status(201).json(doc.ops[0]);
+      }
+    });
+  }
+});
+app.put("/api/blogposts/:id", function(req, res) {
+  var updateDoc = req.body;
+  delete updateDoc._id;
+  db.collection(BLOGPOSTS_COLLECTION).updateOne({_id: new ObjectID(req.params.id)}, updateDoc, function(err, doc) {
+    if (err) {
+      handleError(res, err.message, "Failed to update blog post");
+    } else {
+      updateDoc._id = req.params.id;
+      res.status(200).json(updateDoc);
+    }
+  });
+});
+app.delete("/api/blogposts/:id", function(req, res) {
+  db.collection(BLOGPOSTS_COLLECTION).deleteOne({_id: new ObjectID(req.params.id)}, function(err, result) {
+    if (err) {
+      handleError(res, err.message, "Failed to delete blog post");
+    } else {
+      res.status(200).json(req.params.id);
+    }
+  });
+});
+
+/********************************************
+  contacts collection
+*********************************************/
 app.get("/api/contacts/:id", function(req, res) {
   db.collection(CONTACTS_COLLECTION).findOne({ _id: new ObjectID(req.params.id) }, function(err, doc) {
     if (err) {
@@ -48,7 +102,6 @@ app.get("/api/contacts/:id", function(req, res) {
     }
   });
 });
-
 app.post("/api/contacts", function(req, res) {
   var newContact = req.body;
   newContact.createDate = new Date();
@@ -65,11 +118,9 @@ app.post("/api/contacts", function(req, res) {
     });
   }
 });
-
 app.put("/api/contacts/:id", function(req, res) {
   var updateDoc = req.body;
   delete updateDoc._id;
-
   db.collection(CONTACTS_COLLECTION).updateOne({_id: new ObjectID(req.params.id)}, updateDoc, function(err, doc) {
     if (err) {
       handleError(res, err.message, "Failed to update contact");
@@ -79,7 +130,6 @@ app.put("/api/contacts/:id", function(req, res) {
     }
   });
 });
-
 app.delete("/api/contacts/:id", function(req, res) {
   db.collection(CONTACTS_COLLECTION).deleteOne({_id: new ObjectID(req.params.id)}, function(err, result) {
     if (err) {
