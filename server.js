@@ -41,9 +41,6 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false })); 
 app.use(express.static('dist'));
-app.get('/', function(req, res) {
-   res.sendFile('index.html');
-});
 
 // Generic error handler used by all endpoints.
 function handleError(res, reason, message, code) {
@@ -315,6 +312,10 @@ app.delete("/api/contacts/:id", function(req, res) {
       res.status(200).json(req.params.id);
     }
   });
+});
+
+app.use('*', (req, res, next) => {
+  res.sendFile(path.join(__dirname, 'dist'));
 });
 
 module.exports = app;
