@@ -315,7 +315,7 @@ app.delete("/api/contacts/:id", function(req, res) {
 });
 
 app.use('*', (req, res, next) => {
-  res.sendFile(path.join(__dirname, 'dist'));
+  res.sendFile('dist/index.html');
 });
 
 module.exports = app;
