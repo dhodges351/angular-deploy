@@ -4,9 +4,9 @@ import { ApiService } from '../api.service';
 import { BlogContent } from '../models/blogcontent';
 import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { FileUploader} from 'ng2-file-upload';
-import { DOCUMENT } from '@angular/common';
+import { environment } from '../../environments/environment';
 
-const URL = '/api/upload';
+const URL = environment.apiUrl + '/api/upload';
 
 @Component({
   selector: 'app-blog-content-edit',
@@ -24,7 +24,7 @@ export class BlogContentEditComponent implements OnInit {
   content:string = '';
   imagePathAndFilename: string = '';
   uploadOnly: boolean = false;
-  matcher: string = '';
+  
   constructor(private router: Router, private route: ActivatedRoute, private api: ApiService, private formBuilder: FormBuilder) 
   {     
   }
@@ -78,6 +78,7 @@ export class BlogContentEditComponent implements OnInit {
     {
       if (
         this.blogContentForm.get('currentBlog').touched ||
+        this.blogContentForm.get('image').touched ||
         this.blogContentForm.get('title').touched ||
         this.blogContentForm.get('category').touched ||
         this.blogContentForm.get('content').touched

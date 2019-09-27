@@ -20,7 +20,7 @@ export class BlogPostMainComponent implements OnInit {
   image: string = '';
   category: string = '';
   content: string = '';
-  createdAt: string = '';
+  createdAt: any;
   blogs: Array<Blogpost>;
   filteredBlogs: Array<Blogpost>;
   error: {};    

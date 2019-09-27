@@ -6,6 +6,7 @@ export class BlogContent {
       this.content = '';
       this.category = '';
       this.currentBlog = false;
+      this.createdAt = '';
     }
     public id;
     public title;
@@ -13,4 +14,5 @@ export class BlogContent {
     public content;
     public category;
     public currentBlog;
+    public createdAt;
   }
