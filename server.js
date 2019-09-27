@@ -1,13 +1,17 @@
+const createError = require('http-errors'); 
+const favicon = require('serve-favicon'); 
+const logger = require('morgan');
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const cors = require('cors');
 const bodyParser = require("body-parser");
 const multer = require('multer');
 const mongodb = require("mongodb");
 const ObjectID = mongodb.ObjectID;
+const app = express();
 const router = express.Router();
 const DIR = './assets/images';
-const app = express();
 var BLOGCONTENTS_COLLECTION = "blogcontents";
 var COMMENTS_COLLECTION = "comments";
 var BLOGPOSTS_COLLECTION = "blogposts";
@@ -15,10 +19,7 @@ var CONTACTS_COLLECTION = "contacts";
 var db;
 app.use(bodyParser.json());
 
-// Serve static files....
-app.use(express.static(__dirname + '/dist/angular-deploy'));
-
-mongodb.MongoClient.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/blogDb", function (err, client) {
+mongodb.MongoClient.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/blogDb', function (err, client) {
   if (err) {
     console.log(err);
     process.exit(1);
@@ -35,16 +36,20 @@ mongodb.MongoClient.connect(process.env.MONGODB_URI || "mongodb://localhost:2701
   });
 });
 
+app.use(cors());
+app.use(logger('dev')); 
+app.use(express.json());
+app.use(express.urlencoded({ extended: false })); 
+// app.use(express.static(path.join(__dirname, 'dist')));
+// app.get('*', (_req, res) => {
+//   res.sendFile(path.join(__dirname, 'dist/index.html'));
+// });
+
 // Generic error handler used by all endpoints.
 function handleError(res, reason, message, code) {
   console.log("ERROR: " + reason);
   res.status(code || 500).json({"error": message});
 }
-
-// Send all requests to index.html
-app.get('/*', function(req, res) {
-  res.sendFile(path.join(__dirname + '/dist/angular-deploy/index.html'));
-});
 
 let storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -311,3 +316,5 @@ app.delete("/api/contacts/:id", function(req, res) {
     }
   });
 });
+
+module.exports = app;
