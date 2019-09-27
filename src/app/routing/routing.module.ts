@@ -15,7 +15,7 @@ import { ProfileComponent } from '../pages/profile/profile.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent},  
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'blogPosts', component: BlogPostListComponent, data: { title: 'Blog Posts' } },
   { path: 'contact', component: ContactUsComponent, data: { title: 'Contact Us' } }, 
   { path: 'content', component: BlogContentComponent, data: { title: 'Blog Content' }, },
