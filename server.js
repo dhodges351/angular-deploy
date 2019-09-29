@@ -164,9 +164,9 @@ app.get("/api/comments/:id", function(req, res) {
   });
 });
 app.post("/api/comments", function(req, res) {
-  var newComment= req.body;
-  //newComment.createDate = new Date();
-
+  var newComment= req.body;  
+  newComment.createdAt = new Date();
+  newComment.updatedAt = new Date();
   if (!req.body.author) {
     handleError(res, "Invalid user input", "Must provide an author.", 400);
   } else {
@@ -181,8 +181,15 @@ app.post("/api/comments", function(req, res) {
 });
 app.put("/api/comments/:id", function(req, res) {
   var updateDoc = req.body;
-  delete updateDoc._id;
-  db.collection(COMMENTS_COLLECTION).updateOne({_id: new ObjectID(req.params.id)}, updateDoc, function(err, doc) {
+  db.collection(COMMENTS_COLLECTION).updateOne(
+    {"_id": new ObjectID(req.params.id)}, 
+    { $set: {
+      "blogPostId":updateDoc.blogPostId,
+      "author":updateDoc.author, 
+      "comment":updateDoc.comment,
+      "updatedAt": new Date()
+    } },
+    function(err, doc) {
     if (err) {
       handleError(res, err.message, "Failed to update comment");
     } else {
@@ -224,8 +231,8 @@ app.get("/api/blogposts/:id", function(req, res) {
 });
 app.post("/api/blogposts", function(req, res) {
   var newBlogpost= req.body;
-  //newBlogpost.createDate = new Date();
-
+  newBlogpost.createdAt = new Date();
+  newBlogpost.updatedAt = new Date();
   if (!req.body.author) {
     handleError(res, "Invalid user input", "Must provide an author.", 400);
   } else {
@@ -240,8 +247,17 @@ app.post("/api/blogposts", function(req, res) {
 });
 app.put("/api/blogposts/:id", function(req, res) {
   var updateDoc = req.body;
-  delete updateDoc._id;
-  db.collection(BLOGPOSTS_COLLECTION).updateOne({_id: new ObjectID(req.params.id)}, updateDoc, function(err, doc) {
+  db.collection(BLOGPOSTS_COLLECTION).updateOne(
+    {"_id": new ObjectID(req.params.id)}, 
+    { $set: {
+      "title":updateDoc.title,
+      "category":updateDoc.category, 
+      "short_desc":updateDoc.short_desc,
+      "author":updateDoc.author,
+      "image":updateDoc.image,
+      "updatedAt": new Date()
+    } },  
+    function(err, doc) {
     if (err) {
       handleError(res, err.message, "Failed to update blog post");
     } else {
@@ -283,8 +299,8 @@ app.get("/api/contacts/:id", function(req, res) {
 });
 app.post("/api/contacts", function(req, res) {
   var newContact = req.body;
-  //newContact.createDate = new Date();
-
+  newContact.createdAt = new Date();
+  newContact.updatedAt = new Date();
   if (!req.body.firstname) {
     handleError(res, "Invalid user input", "Must provide a name.", 400);
   } else {
@@ -299,10 +315,19 @@ app.post("/api/contacts", function(req, res) {
 });
 app.put("/api/contacts/:id", function(req, res) {
   var updateDoc = req.body;
-  delete updateDoc._id;
-  db.collection(CONTACTS_COLLECTION).updateOne({_id: new ObjectID(req.params.id)}, updateDoc, function(err, doc) {
+  db.collection(BLOGPOSTS_COLLECTION).updateOne(
+    {"_id": new ObjectID(req.params.id)}, 
+    { $set: {
+      "firstname":updateDoc.firstname,
+      "lastname":updateDoc.lastname, 
+      "email":updateDoc.email,
+      "subject":updateDoc.subject,
+      "message":updateDoc.message,
+      "updatedAt": new Date()
+    } },  
+    function(err, doc) {
     if (err) {
-      handleError(res, err.message, "Failed to update contact");
+      handleError(res, err.message, "Failed to update cpmtact");
     } else {
       updateDoc._id = req.params.id;
       res.status(200).json(updateDoc);

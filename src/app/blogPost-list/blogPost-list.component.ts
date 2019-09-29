@@ -129,11 +129,6 @@ export class BlogPostListComponent implements OnInit {
     };  
   }
 
-  // cloneComments()
-  // {
-  //   return this.blogPostCommentListJson;
-  // }
-
   scrollToTop() {    
     var element = document.getElementById("mainUL");
     element.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});

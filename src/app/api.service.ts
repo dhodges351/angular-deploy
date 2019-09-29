@@ -49,8 +49,8 @@ export class ApiService {
   }
   
   getBlogPost(id: string): Observable<any> {
-    const url = `${apiUrl}/${id}`;
-    return this.http.get(blogPostUrl, httpOptions).pipe(
+    const url = `${blogPostUrl}/${id}`;
+    return this.http.get(url, httpOptions).pipe(
       map(this.extractData),
       catchError(this.handleError));
   }
