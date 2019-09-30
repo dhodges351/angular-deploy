@@ -27,13 +27,14 @@
           Content Category</span>
       </mat-error>
     </mat-form-field>
-    <mat-form-field class="example-full-width">
+    <!-- <mat-form-field class="example-full-width">
       <textarea matInput placeholder="Content" formControlName="content" [errorStateMatcher]="matcher"></textarea>
       <mat-error>
         <span *ngIf="!blogContentForm.get('content').valid && blogContentForm.get('content').touched">Please enter Blog
           Content Text</span>
       </mat-error>
-    </mat-form-field>
+    </mat-form-field> -->
+    <ckeditor #myEditor data="<p></p>"></ckeditor>
     <div class="button-row">
       <button type="submit" [disabled]="!blogContentForm.valid" mat-raised-button color="primary">
         <mat-icon>save</mat-icon>

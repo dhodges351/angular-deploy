@@ -4,11 +4,9 @@
             <td>
                 <div style="margin-top:5px;margin-left:10px;font-size:x-large;font-weight:bold;">
                     {{title}} - {{category}}
-                    <!-- Norwegian Stamps - Northern European -->
                 </div>
                 <div style="margin-bottom:10px;margin-top:5px;margin-left:10px;font-size:small;font-weight:normal;">
                     By Bob Hodges {{createdAt | date: 'MM/dd/yyyy HH:mm:ss' }}
-                    <!-- By Bob Hodges 08/19/2019 -->
                 </div>
             </td>
             <td>
@@ -22,12 +20,8 @@
     </table>
 </div>
 <div id="container1">
-    <p style="font-size:14px;">
-        {{content}}
-        <!-- Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. -->
-    </p>
-    <div fxLayoutAlign="center">
+    <span [innerHtml]="value"></span>
+    <div *ngIf="isShown" fxLayoutAlign="center">
         <img src="{{image}}" height="35%" width="35%" alt="stamp photo" />
-        <!-- <img src="assets/images/1841 Maltese Cross.jpg" height="35%" width="35%" alt="stamp photo" /> -->
     </div>
 </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../api.service';
 import { BlogContent } from '../models/blogcontent';
@@ -6,7 +6,7 @@ import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Valida
 import { FileUploader} from 'ng2-file-upload';
 import { environment } from '../../environments/environment';
 
-const URL = environment.apiUrl + '/api/upload';
+const URL = environment.apiUrl + '/upload';
 
 @Component({
   selector: 'app-blog-content-edit',
@@ -25,6 +25,7 @@ export class BlogContentEditComponent implements OnInit {
   imagePathAndFilename: string = '';
   uploadOnly: boolean = false;
   matcher: string = '';
+  @ViewChild('myEditor', {static:true}) myEditor: any;
   
   constructor(private router: Router, private route: ActivatedRoute, private api: ApiService, private formBuilder: FormBuilder) 
   {     
@@ -57,7 +58,7 @@ export class BlogContentEditComponent implements OnInit {
         category: this.blogContent.category,
         content: this.blogContent.content,
       });
-   };     
+   };       
   }
   
   getBlogContentDetails(id) {
@@ -71,6 +72,7 @@ export class BlogContentEditComponent implements OnInit {
         category: data.category,
         content: data.content,
       });
+      this.myEditor._data = data.content;
     });
   }
   

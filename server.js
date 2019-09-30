@@ -3,10 +3,10 @@ const logger = require('morgan');
 const path = require('path'); 
 const express = require('express');
 const multer = require('multer');
-const router = express.Router();
-const DIR = './assets/images';
+const DIR = './src/assets/images';
 const bodyParser = require("body-parser");
 const app = express();
+const router = express.Router();
 const mongodb = require("mongodb");
 const ObjectID = mongodb.ObjectID;
 var BLOGCONTENTS_COLLECTION = "blogcontents";
@@ -71,6 +71,7 @@ app.post('/api/upload',upload.single('photo'), function (req, res) {
         })
       }
 });
+app.use('/api/upload', router);
 
 /********************************************
   blogcontents collection

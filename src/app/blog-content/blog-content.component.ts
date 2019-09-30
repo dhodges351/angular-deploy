@@ -1,7 +1,7 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from '../api.service';
 import { BlogContent } from '../models/blogcontent';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { FileUploader} from 'ng2-file-upload';
@@ -18,6 +18,7 @@ const URL = environment.apiUrl + '/api/upload';
 export class BlogContentComponent implements OnInit {   
   public blogContent: BlogContent; 
   blogContentForm: FormGroup;
+  id: string = '';
   currentBlog:boolean = false;
   image:string = '';
   title:string = '';
@@ -25,22 +26,25 @@ export class BlogContentComponent implements OnInit {
   content:string = '';
   imagePathAndFilename: string = '';
   uploadOnly: boolean = false;
+  uploadButtonClicked: boolean = false;
   matcher: string = '';
+  @ViewChild('myEditor', {static:true}) myEditor: any;
 
-  constructor(private api: ApiService, private formBuilder: FormBuilder, private router: Router, public snackBar: MatSnackBar) {  	
+  constructor(private api: ApiService, private formBuilder: FormBuilder, private router: Router, private route: ActivatedRoute, public snackBar: MatSnackBar) {  	
     this.blogContent = new BlogContent();
   }
 
   public uploader: FileUploader = new FileUploader({url: URL, itemAlias: 'photo'});
 
-  ngOnInit() {
+  ngOnInit() {    
+    this.getBlogContentDetails(this.route.snapshot.params['id']);
     this.blogContentForm = this.formBuilder.group({
-      'currentBlog': [this.currentBlog, !Validators.required],
+      'currentBlog' : [null, !Validators.required],
       'image' : [null, !Validators.required],
       'title' : [null, Validators.required],
       'category' : [null, Validators.required],
       'content' : [null, Validators.required],
-    });    
+    });
     
     this.uploader.onAfterAddingFile = (file) => { 
       file.withCredentials = false;
@@ -48,7 +52,7 @@ export class BlogContentComponent implements OnInit {
 
     this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
       console.log('ImageUpload:uploaded:', item, status, response);       
-      this.imagePathAndFilename = 'assets/images/' + item._file.name;      
+      this.imagePathAndFilename = 'assets/images/' + item._file.name;  
       this.uploadOnly = true;
       this.blogContentForm.setValue({
         currentBlog: this.blogContent.currentBlog,
@@ -63,7 +67,7 @@ export class BlogContentComponent implements OnInit {
   onFormSubmit(form: any) { 
     this.blogContent.title = this.blogContentForm.get('title').value;
     this.blogContent.category = this.blogContentForm.get('category').value;
-    this.blogContent.content = this.blogContentForm.get('content').value;
+    this.blogContent.content = this.myEditor._data;
     this.blogContent.image = this.blogContentForm.get('image').value;
     this.blogContent.currentBlog = this.blogContentForm.get('currentBlog').value;    
     this.completeSubmit(form);
@@ -71,12 +75,13 @@ export class BlogContentComponent implements OnInit {
 
   completeSubmit(form)
   {
-    if (this.uploadOnly)
+    if ((!this.uploadButtonClicked) || ((this.uploadButtonClicked) && (this.uploadOnly)))
     {
+      form.currentBlog = this.blogContent.currentBlog;
+      form.content = this.blogContent.content;      
       this.api.saveBlogContent(form)
       .subscribe(res => {
-        let id = res['_id'];
-
+        let id = res['_id'];        
         var allBlogContent = []; 
         this.api.getAllBlogContent().subscribe(res => 
         {
@@ -117,5 +122,30 @@ export class BlogContentComponent implements OnInit {
       verticalPosition: 'top'
     });
  }
+
+ setFlag()
+ {
+   this.uploadButtonClicked = true;
+ }
+
+ getBlogContentDetails(id) {
+   if (id == '' || id == null || id == undefined)
+   {
+     return;
+   }
+  this.api.getBlogContentDetails(id).subscribe(data => {
+    this.id = data._id;
+    this.blogContent = data;
+    this.blogContentForm.setValue({
+      currentBlog: data.currentBlog,
+      image: data.image,     
+      title: data.title,
+      category: data.category,
+      content: data.content,
+    });
+    this.myEditor._data = data.content;
+  });
+}
+
 
 }

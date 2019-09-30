@@ -8,7 +8,7 @@
   <a mat-list-item routerLink="/contact" (click)="onSidenavClose()">
     <mat-icon>contact_support</mat-icon><span class="nav-caption">Contact</span>
   </a>
-  <a mat-list-item routerLink="/content" (click)="onSidenavClose()" *ngIf="auth.loggedIn === true && this.isAdmin === true">
+  <a mat-list-item routerLink="/content/id" (click)="onSidenavClose()" *ngIf="auth.loggedIn === true && this.isAdmin === true">
     <mat-icon>add_comment</mat-icon><span class="nav-caption">Content</span>
   </a>
   <a mat-list-item routerLink="/allBlogContent" (click)="onSidenavClose()" *ngIf="auth.loggedIn === true && this.isAdmin === true">

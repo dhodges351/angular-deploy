@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from '../api.service';
 import { Blogpost } from "../models/blogpost";
 import { MatDialog } from '@angular/material';
@@ -23,7 +23,9 @@ export class BlogPostMainComponent implements OnInit {
   createdAt: any;
   blogs: Array<Blogpost>;
   filteredBlogs: Array<Blogpost>;
-  error: {};    
+  error: {};
+  value:string = '';
+  isShown: boolean = false; // image hidden by default
 
   constructor(private router: Router, private route: ActivatedRoute, private apiService: ApiService, public dialog: MatDialog) 
   {
@@ -55,8 +57,12 @@ export class BlogPostMainComponent implements OnInit {
           this.image = this.blogContent[0].image;
           this.category = this.blogContent[0].category;
           this.content = this.blogContent[0].content;
+          this.value = this.content;
           this.createdAt = this.blogContent[0].createdAt;
-          //BlogPostListComponent.blogPostListApp.ngOnInit();         
+          if (this.image != '')
+          {
+            this.isShown = true;
+          }          
         }       
       }, err => {
         console.log(err);
