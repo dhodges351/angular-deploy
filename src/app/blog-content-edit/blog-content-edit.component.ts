@@ -5,6 +5,7 @@ import { BlogContent } from '../models/blogcontent';
 import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { FileUploader} from 'ng2-file-upload';
 import { environment } from '../../environments/environment';
+import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 const URL = environment.apiUrl + '/upload';
 
@@ -26,12 +27,27 @@ export class BlogContentEditComponent implements OnInit {
   uploadOnly: boolean = true;
   uploadButtonClicked: boolean = false;
   matcher: string = '';
+  data:string = '';
+  editor: DecoupledEditor = null;
+
   constructor(private router: Router, private route: ActivatedRoute, private api: ApiService, private formBuilder: FormBuilder) 
   { }  
 
   public uploader: FileUploader = new FileUploader({url: URL, itemAlias: 'photo'});
 
   ngOnInit() {
+
+    DecoupledEditor
+    .create( document.querySelector( '#editor' ) )
+    .then( editor => {
+        const toolbarContainer = document.querySelector( '#toolbar-container' );
+        toolbarContainer.appendChild( editor.ui.view.toolbar.element );        
+        this.editor = editor;        
+    } )
+    .catch( error => {
+        console.error( error );
+    } );
+
     this.id = this.route.snapshot.params['id'];
     this.getBlogContentDetails(this.id);
     this.blogContentForm = this.formBuilder.group({
@@ -53,7 +69,7 @@ export class BlogContentEditComponent implements OnInit {
       this.blogContent.image = this.imagePathAndFilename;
       this.blogContent.title = this.blogContentForm.get('title').value;
       this.blogContent.category = this.blogContentForm.get('category').value;
-      this.blogContent.content = this.blogContentForm.get('content').value;
+      this.blogContent.content = this.editor.getData();
       this.blogContent.currentBlog = this.blogContentForm.get('currentBlog').value
       this.blogContentForm.setValue({          
         image: this.blogContent.image,  
@@ -67,7 +83,7 @@ export class BlogContentEditComponent implements OnInit {
   
   getBlogContentDetails(id) {
     this.api.getBlogContentDetails(id).subscribe(data => {      
-      this.blogContent = data;      
+      this.blogContent = data;
       this.blogContentForm.setValue({          
         image: data.image,  
         currentBlog: data.currentBlog,   
@@ -75,10 +91,12 @@ export class BlogContentEditComponent implements OnInit {
         category: data.category,
         content: data.content
       });
+      this.editor.setData(data.content);
     });
   }
   
-  onFormSubmit(form: NgForm) {     
+  onFormSubmit(form: any) {
+    form.content = this.editor.getData();     
     this.completeSubmit(form);
   }  
 

@@ -41,7 +41,7 @@ import json from 'highlight.js/lib/languages/json';
 import { CallbackComponent } from './pages/callback/callback.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { LoadingComponent } from './loading/loading.component';
-import { CKEditorModule } from 'ckeditor4-angular';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 library.add(fas, far, fab);
 

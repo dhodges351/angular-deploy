@@ -16,15 +16,11 @@
         <span *ngIf="!blogContentForm.get('category').valid && blogContentForm.get('category').touched">Please enter the
           Blog Category</span>
       </mat-error>
-    </mat-form-field>
-    <mat-form-field class="example-full-width">
-      <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="5" cdkAutosizeMaxRows="7" placeholder="Content"
-        formControlName="content" [errorStateMatcher]="matcher"></textarea>
-      <mat-error>
-        <span *ngIf="!blogContentForm.get('content').valid && blogContentForm.get('content').touched">Please enter the
-          Blog Content</span>
-      </mat-error>
-    </mat-form-field>
+    </mat-form-field>   
+    <div id="toolbar-container"></div>
+    <div style="height:150px;border: solid 1px gray;overflow: auto;" id="editor">
+     
+    </div>
     <mat-form-field class="example-full-width">
       <input matInput placeholder="Image" formControlName="image">
     </mat-form-field>
@@ -44,5 +40,5 @@
           RETURN
       </button>
     </div>   
-  </form>
+  </form>  
 </div>

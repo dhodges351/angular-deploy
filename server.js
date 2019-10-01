@@ -13,7 +13,7 @@ if ( app.get('env') === 'development' ) {
 }
 else
 {
-  DIR = 'assets/images';
+  DIR = './dist/assets/images';
 }
 const mongodb = require("mongodb");
 const ObjectID = mongodb.ObjectID;

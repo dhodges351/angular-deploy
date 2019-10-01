@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { FileUploader } from 'ng2-file-upload';
 import { environment } from '../../environments/environment';
+import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 const URL = environment.apiUrl + '/upload';
 
@@ -26,7 +27,9 @@ export class BlogContentComponent implements OnInit {
   imagePathAndFilename: string = '';
   uploadOnly: boolean = true;
   uploadButtonClicked: boolean = false;
-  matcher: string = '';
+  matcher: string = '';  
+  data:string = '';
+  editor: DecoupledEditor = null;
 
   constructor(private api: ApiService, private formBuilder: FormBuilder, private router: Router, public snackBar: MatSnackBar) {
     this.blogContent = new BlogContent();
@@ -35,6 +38,18 @@ export class BlogContentComponent implements OnInit {
   public uploader: FileUploader = new FileUploader({ url: URL, itemAlias: 'photo' });
 
   ngOnInit() {
+
+    DecoupledEditor
+    .create( document.querySelector( '#editor' ) )
+    .then( editor => {
+        const toolbarContainer = document.querySelector( '#toolbar-container' );
+        toolbarContainer.appendChild( editor.ui.view.toolbar.element );        
+        this.editor = editor;        
+    } )
+    .catch( error => {
+        console.error( error );
+    } );
+
     this.blogContentForm = this.formBuilder.group({
       'currentBlog': [false, !Validators.required],
       'image': ['', !Validators.required],
@@ -54,11 +69,11 @@ export class BlogContentComponent implements OnInit {
       this.blogContent.image = this.imagePathAndFilename;
       this.blogContent.title = this.blogContentForm.get('title').value;
       this.blogContent.category = this.blogContentForm.get('category').value;
-      this.blogContent.content = this.blogContentForm.get('content').value;      
+      this.blogContent.content = this.editor.getData();
       this.blogContent.currentBlog = this.blogContentForm.get('currentBlog').value
-      this.blogContentForm.setValue({          
-        image: this.blogContent.image,  
-        currentBlog: this.blogContent.currentBlog,   
+      this.blogContentForm.setValue({
+        image: this.blogContent.image,
+        currentBlog: this.blogContent.currentBlog,
         title: this.blogContent.title,
         category: this.blogContent.category,
         content: this.blogContent.content
@@ -67,43 +82,40 @@ export class BlogContentComponent implements OnInit {
   }
 
   onFormSubmit(form: any) {
+    form.content = this.editor.getData();
     form.image = this.imagePathAndFilename;
     this.completeSubmit(form);
   }
 
-  completeSubmit(form)
-  {
-    if ((!this.uploadButtonClicked) || ((this.uploadButtonClicked) && (!this.uploadOnly))) 
-    {
-      var allBlogContent = []; 
-      this.api.getAllBlogContent().subscribe(res => 
-        {
-          allBlogContent = res;
-          for (var i = 0; i < allBlogContent.length; i++)
-          {
-            var data = allBlogContent[i];
-            data.currentBlog = false;          
-            var id = data._id;
-            this.api.updateBlogContent(id, data)
-              .subscribe(res => {}, (err) => {
-                console.log(err);
-              }
-            );
-          }
-  
-          this.api.saveBlogContent(form)
-            .subscribe(res => {
-              this.uploadOnly = true;
-              this.imagePathAndFilename = '';
-              this.router.navigate(['/allBlogContent']);               
-            }, (err) => {
-              console.log(err);       
+  completeSubmit(form) {
+    if ((!this.uploadButtonClicked) || ((this.uploadButtonClicked) && (!this.uploadOnly))) {
+      var allBlogContent = [];
+      this.api.getAllBlogContent().subscribe(res => {
+        allBlogContent = res;
+        for (var i = 0; i < allBlogContent.length; i++) {
+          var data = allBlogContent[i];
+          data.currentBlog = false;
+          var id = data._id;
+          this.api.updateBlogContent(id, data)
+            .subscribe(res => { }, (err) => {
+              console.log(err);
             }
-          );      
-        }, err => {
-          console.log(err);
-        });         
-    }    
+            );
+        }
+
+        this.api.saveBlogContent(form)
+          .subscribe(res => {
+            this.uploadOnly = true;
+            this.imagePathAndFilename = '';
+            this.router.navigate(['/allBlogContent']);
+          }, (err) => {
+            console.log(err);
+          }
+          );
+      }, err => {
+        console.log(err);
+      });
+    }
   }
 
   openSnackBar(message: string, action: string) {
@@ -117,8 +129,7 @@ export class BlogContentComponent implements OnInit {
     this.uploadButtonClicked = true;
   }
 
-  returnHome()
-  {
+  returnHome() {
     this.router.navigate(['/home']);
   }
 
