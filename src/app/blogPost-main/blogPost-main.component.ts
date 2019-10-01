@@ -25,7 +25,7 @@ export class BlogPostMainComponent implements OnInit {
   filteredBlogs: Array<Blogpost>;
   error: {};
   value:string = '';
-  isShown: boolean = false; // image hidden by default
+  isShown: boolean = true;
 
   constructor(private router: Router, private route: ActivatedRoute, private apiService: ApiService, public dialog: MatDialog) 
   {
@@ -59,9 +59,9 @@ export class BlogPostMainComponent implements OnInit {
           this.content = this.blogContent[0].content;
           this.value = this.content;
           this.createdAt = this.blogContent[0].createdAt;
-          if (this.image != '')
+          if (this.image == null || this.image == '')
           {
-            this.isShown = true;
+            this.isShown = false;
           }          
         }       
       }, err => {

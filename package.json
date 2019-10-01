@@ -2,7 +2,9 @@
   "name": "angular-deploy",
   "version": "0.0.0",
   "scripts": {
-    "start": "node server.js",
+    "client": "ng serve --live-reload=false",
+    "server": "node server.js",
+    "start": "npm-run-all -p client server",
     "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",

@@ -10,7 +10,7 @@ import { BlogPostListComponent } from '../blogPost-list/blogPost-list.component'
 export class HomeComponent implements OnInit {
   static homeApp;
   public selectedIndex = 0;
-  public selected = "../assets/exhibits/US Perfins - Their First Year.pdf";
+  public selected = "../assets/exhibits/Exhibit FRENCH D-DAY COVERS.pdf";
   
   constructor(private data: DataService) 
   {

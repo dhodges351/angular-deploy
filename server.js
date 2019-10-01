@@ -1,12 +1,20 @@
+require('dotenv');
 const cors = require('cors');
 const logger = require('morgan');
 const path = require('path'); 
 const express = require('express');
 const multer = require('multer');
-const DIR = './src/assets/images';
 const bodyParser = require("body-parser");
 const app = express();
 const router = express.Router();
+var DIR = '';
+if ( app.get('env') === 'development' ) {
+  DIR = './src/assets/images';
+}
+else
+{
+  DIR = 'assets/images';
+}
 const mongodb = require("mongodb");
 const ObjectID = mongodb.ObjectID;
 var BLOGCONTENTS_COLLECTION = "blogcontents";
@@ -35,6 +43,7 @@ mongodb.MongoClient.connect(process.env.MONGODB_URI || 'mongodb://localhost:2701
     var port = server.address().port;
     console.log("App now running on port", port);
   });
+  
 });
 
 // Generic error handler used by all endpoints.

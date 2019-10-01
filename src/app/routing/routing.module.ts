@@ -18,7 +18,7 @@ const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'blogPosts', component: BlogPostListComponent, data: { title: 'Blog Posts' } },
   { path: 'contact', component: ContactUsComponent, data: { title: 'Contact Us' } }, 
-  { path: 'content/:id', component: BlogContentComponent, data: { title: 'Blog Content' }, },
+  { path: 'content', component: BlogContentComponent, data: { title: 'Blog Content' }, },
   { path: 'allBlogContent', component: BlogContentListComponent, data: { title: 'All Blog Content' }, }, 
   { path: 'contentEdit/:id', component: BlogContentEditComponent, data: { title: 'Edit Blog Content' } },  
   { path: 'about', component: AboutComponent, data: { title: 'About' } }, 
