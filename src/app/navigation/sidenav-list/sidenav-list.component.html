@@ -14,10 +14,10 @@
   <a mat-list-item routerLink="/allBlogContent" (click)="onSidenavClose()" *ngIf="auth.loggedIn === true && this.isAdmin === true">
     <mat-icon>menu</mat-icon><span class="nav-caption">All Blog Content</span>
   </a>
-  <!-- <a mat-list-item routerLink="/login" (click)="onSidenavClose()">
-    <mat-icon>account_box</mat-icon><span class="nav-caption">Login</span>
+  <a mat-list-item id="qsLoginBtn" (click)="auth.login(); onSidenavClose();">
+    <mat-icon>account_box</mat-icon><span class="nav-caption">Log In</span>
   </a> 
-  <a mat-list-item routerLink="/registration" (click)="onSidenavClose()">
-    <mat-icon>edit</mat-icon><span class="nav-caption">Register</span>
-  </a>  -->
+  <a mat-list-item id="qsLoginBtn" (click)="auth.logout(); onSidenavClose();">
+    <mat-icon>account_box</mat-icon><span class="nav-caption">Log Out</span>
+  </a> 
 </mat-nav-list>

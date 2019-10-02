@@ -10,7 +10,7 @@
           <span style="font-family:cursive;">The Gourmet Philatelist</span>
         </a>
       </div>
-      <div style="margin-top:10px;" fxFlex fxLayout fxLayoutAlign="center">
+      <div style="margin-top:10px;" fxFlex fxLayout fxLayoutAlign="center" fxShow="true" fxHide.lt-sm="true">
         <ul class="imgUl" fxLayout fxLayoutGap="5px">
           <li>
             <img src="assets/images/greenguy.jpg" />
@@ -29,7 +29,7 @@
           </li>
         </ul>
       </div>
-      <div fxFlex fxLayout fxLayoutAlign="end">
+      <div fxFlex fxLayout fxLayoutAlign="end" fxShow="true" fxHide.lt-sm="true">
         <ul class="imgUl" fxLayout fxLayoutGap="5px">
           <li *ngIf="auth.loggedIn === false">
             <button class="btn btn-primary btn-margin" id="qsLoginBtn" (click)="auth.login()">
