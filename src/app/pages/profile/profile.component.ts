@@ -25,8 +25,23 @@ export class ProfileComponent implements OnInit {
     
     var jObj = JSON.parse(this.profileJson);
     if (jObj)
-    {
-      this.userName = jObj.name;
+    {      
+      if (jObj.name != null && jObj.name.indexOf('@') > 0)
+      {
+        if (jObj.nickname != null)
+        {
+          this.userName = jObj.nickname;
+        }
+        else
+        {
+          this.userName = '';
+        }        
+      }
+      else
+      {
+        this.userName = jObj.name;
+      }
+      
       this.userEmail = jObj.email;
     }    
   }   

@@ -22,6 +22,10 @@ export class HeaderComponent implements OnInit {
       if (this.currentUserName == null || this.currentUserName == '')
       {
         this.currentUserName = localStorage.getItem('Item 1');
+        if (this.currentUserName != null && this.currentUserName.indexOf('@') > 0)
+        {
+          this.currentUserName = localStorage.getItem('Item 2');
+        }
       }
   }
 

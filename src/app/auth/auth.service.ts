@@ -111,9 +111,17 @@ export class AuthService {
     const authCompleteSub = authComplete$.subscribe(([user, loggedIn]) => {      
       // Redirect to target route after callback processing       
 
-      localStorage.setItem('Item 1', user.name);  
-
-      this.stateSvc.setCurrentUserName(user.name);    
+      localStorage.setItem('Item 1', user.name);
+      localStorage.setItem('Item 2', user.nickname);
+    
+      if (user.name != null && user.name.indexOf('@') > 0 && user.nickname != null && user.nickname != null && user.nickname != '')
+      {
+        this.stateSvc.setCurrentUserName(user.nickname);
+      }
+      else
+      {
+        this.stateSvc.setCurrentUserName(user.name);
+      }
 
       this.router.navigate([targetRoute]);
          
@@ -133,5 +141,4 @@ export class AuthService {
       });
     });
   }
-
 }

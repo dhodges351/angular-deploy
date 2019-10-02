@@ -12,7 +12,9 @@ import { ModalComponent } from '../modal/modal.component';
 import { DOCUMENT } from '@angular/common';
 import { AuthService } from 'src/app/auth/auth.service';
 import * as _ from 'lodash';
-const URL = '/upload';
+import { environment } from '../../environments/environment';
+
+const URL = environment.apiUrl + '/upload';
 
 @Component({
   selector: 'app-blogPost-list',
@@ -64,10 +66,13 @@ export class BlogPostListComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.loggedInUser = localStorage.getItem('Item 1');
+    this.loggedInUser = localStorage.getItem('Item 1');   
+    if (this.loggedInUser == null || this.loggedInUser == '' || this.loggedInUser.indexOf('@') > 0)
+    {
+      this.loggedInUser = localStorage.getItem('Item 2');
+    }
     this.displayedPostColumns = ['image', 'title', 'category', 'author', 'createdAt', 'edit'];
-
-    //this.getBlogPost(this.id);
+    
     this.blogPostForm = this.formBuilder.group({
       'image': ['', !Validators.required],
       'title': ['', Validators.required],
@@ -75,9 +80,6 @@ export class BlogPostListComponent implements OnInit {
       'short_desc': ['', Validators.required],
       'author': ['', Validators.required],
     });
-
-    // this.blogPosts = this.blogPostListJson;
-    // this.dataSource = this.blogPosts; 
 
     this.api.getBlogPosts()
       .subscribe(res => {
@@ -223,13 +225,7 @@ export class BlogPostListComponent implements OnInit {
     });
   }
 
-  getFilteredComments(id) {
-    //this.comments = this.cloneComments();        
-            
-    // this.dataSource1 = this.comments.filter(
-    //       item => item.blogPostId === id
-    //       );      
-
+  getFilteredComments(id) { 
     this.api.getComments()
       .subscribe(res => {        
         this.comments = res;        

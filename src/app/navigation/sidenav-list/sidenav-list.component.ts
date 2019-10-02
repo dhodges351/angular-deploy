@@ -20,7 +20,7 @@ export class SidenavListComponent implements OnInit {
       .subscribe(
         userName => {
           this.currentUserName = userName;
-          if (this.currentUserName == 'Bob Hodges' || this.currentUserName == 'Debra Hodges')
+          if (this.currentUserName == 'bob_hodges' || this.currentUserName == 'Debra Hodges')
           {        
             this.isAdmin = true; 
           }
@@ -32,9 +32,13 @@ export class SidenavListComponent implements OnInit {
       if (this.currentUserName == null || this.currentUserName == '')
       {
         this.currentUserName = localStorage.getItem('Item 1');
+        if (this.currentUserName != null && this.currentUserName.indexOf('@') > 0)
+        {
+          this.currentUserName = localStorage.getItem('Item 2');
+        }
       }
     
-      if (this.currentUserName == 'Bob Hodges' || this.currentUserName == 'Debra Hodges')
+      if (this.currentUserName == null && (this.currentUserName == 'bob_hodges' || this.currentUserName == 'Debra Hodges'))
       {        
         this.isAdmin = true; 
       }
