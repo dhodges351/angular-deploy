@@ -19,9 +19,22 @@
         </tr>
     </table>
 </div>
-<div id="container1">
-    <span [innerHtml]="value"></span>
-    <div *ngIf="isShown" fxLayoutAlign="center">
-        <img src="{{image}}" height="35%" width="35%" alt="stamp photo" />
+
+<div fxLayout="row">
+    <div fxFlex="70%" style="margin:10px;">
+        <span [innerHtml]="value"></span>
+        <div *ngIf="isShown" fxLayoutAlign="center">
+            <img src="{{image}}" height="35%" width="35%" alt="stamp photo" />
+        </div>    
+    </div>
+    <div fxFlex="30%" style="text-align:left;margin-left:30px; margin-top:10px;">
+        <b>Previous Blogs</b>
+        <ul>
+            <li *ngFor="let blog of blogs">
+                <button (click)="setCurrentBlog(blog._id)">
+                    {{blog.category}} - {{blog.createdAt | date: 'MM/dd/yyyy'}}
+                </button>
+            </li>
+        </ul>
     </div>
 </div>

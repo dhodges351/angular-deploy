@@ -38,7 +38,7 @@ export class SidenavListComponent implements OnInit {
         }
       }
     
-      if (this.currentUserName == null && (this.currentUserName == 'bob_hodges' || this.currentUserName == 'Debra Hodges'))
+      if (this.currentUserName != null && (this.currentUserName == 'bob_hodges' || this.currentUserName == 'Debra Hodges'))
       {        
         this.isAdmin = true; 
       }
@@ -51,14 +51,4 @@ export class SidenavListComponent implements OnInit {
   public onSidenavClose = () => {
     this.sidenavClose.emit();
   } 
-
-  public logUserIn()
-  {
-    alert('here');
-  }
-
-  public logUserOut()
-  {
-    alert('here');
-  }
 }

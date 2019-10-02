@@ -23,3 +23,7 @@ mat-tab-group p {
 #container {
     margin: 10px;
 }
+
+.container-fluid {
+    padding:0px;
+}

@@ -3,24 +3,20 @@
   background-color: orangered;
 }
 
-#container {
-  display: flex;
-  justify-content:center;
-  align-content:center;
-  flex-direction:column; 
-  background-color: lightgray;
-  padding: 10px;
+ul{
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
 
-#container1 {
-  display: flex;
-  justify-content:center;
-  align-content:center;
-  flex-direction:column; 
-  margin:10px;  
-}
-
-#container2 {
-  margin:20px;
-  text-align:center;
+button {
+  background: none!important;
+  border: none;
+  padding: 0!important;
+  /*optional*/
+  font-family: arial, sans-serif;
+  /*input has OS specific font-family*/
+  color: #069;
+  text-decoration: underline;
+  cursor: pointer;
 }

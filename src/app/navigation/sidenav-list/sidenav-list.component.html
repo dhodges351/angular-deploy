@@ -8,16 +8,16 @@
   <a mat-list-item routerLink="/contact" (click)="onSidenavClose()">
     <mat-icon>contact_support</mat-icon><span class="nav-caption">Contact</span>
   </a>
+  <a mat-list-item id="qsLoginBtn" (click)="[onSidenavClose(), auth.login()]">
+      <mat-icon>account_box</mat-icon><span class="nav-caption">Log In</span>
+  </a> 
+  <a mat-list-item id="qsLoginBtn" (click)="[onSidenavClose(), auth.logout()]">
+    <mat-icon>account_box</mat-icon><span class="nav-caption">Log Out</span>
+  </a> 
   <a mat-list-item routerLink="/content" (click)="onSidenavClose()" *ngIf="auth.loggedIn === true && this.isAdmin === true">
     <mat-icon>add_comment</mat-icon><span class="nav-caption">Content</span>
   </a>
   <a mat-list-item routerLink="/allBlogContent" (click)="onSidenavClose()" *ngIf="auth.loggedIn === true && this.isAdmin === true">
     <mat-icon>menu</mat-icon><span class="nav-caption">All Blog Content</span>
-  </a>
-  <a mat-list-item id="qsLoginBtn" (click)="auth.login(); onSidenavClose();">
-    <mat-icon>account_box</mat-icon><span class="nav-caption">Log In</span>
-  </a> 
-  <a mat-list-item id="qsLoginBtn" (click)="auth.logout(); onSidenavClose();">
-    <mat-icon>account_box</mat-icon><span class="nav-caption">Log Out</span>
   </a> 
 </mat-nav-list>

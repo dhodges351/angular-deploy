@@ -7,6 +7,7 @@ import { BlogContent } from '../models/blogcontent';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BlogPostListComponent } from '../blogPost-list/blogPost-list.component';
 import { HomeComponent } from '../home/home.component';
+import * as _ from 'underscore';
 
 @Component({
   selector: 'app-blogPost-main',
@@ -46,12 +47,14 @@ export class BlogPostMainComponent implements OnInit {
     });
   }
 
-  ngOnInit() {    
+  ngOnInit() {
     this.apiService.getAllBlogContent()
       .subscribe(res => {
         console.log(res); 
         if (res)
         {
+          let sortedArray = _.sortBy(res, 'createdAt').reverse(); 
+          this.blogs = sortedArray;          
           this.blogContent = res.filter(o => o.currentBlog == true);
           this.title = this.blogContent[0].title;
           this.image = this.blogContent[0].image;
@@ -68,4 +71,21 @@ export class BlogPostMainComponent implements OnInit {
         console.log(err);
     });    
   }  
+
+  setCurrentBlog(id)
+  {
+    this.apiService.getBlogContentDetails(id).subscribe(data => {
+      this.blogContent = data;
+      this.title = data.title;
+      this.image = data.image;
+      this.category = data.category;
+      this.content = data.content;
+      this.value = this.content;
+      this.createdAt = data.createdAt;
+      if (this.image == null || this.image == '')
+      {
+        this.isShown = false;
+      }          
+    });
+  }
 }
