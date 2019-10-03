@@ -21,6 +21,7 @@ var BLOGCONTENTS_COLLECTION = "blogcontents";
 var COMMENTS_COLLECTION = "comments";
 var BLOGPOSTS_COLLECTION = "blogposts";
 var CONTACTS_COLLECTION = "contacts";
+var GALLERY_COLLECTION = "gallery";
 var db;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -348,6 +349,73 @@ app.delete("/api/contacts/:id", function(req, res) {
   db.collection(CONTACTS_COLLECTION).deleteOne({_id: new ObjectID(req.params.id)}, function(err, result) {
     if (err) {
       handleError(res, err.message, "Failed to delete contact");
+    } else {
+      res.status(200).json(req.params.id);
+    }
+  });
+});
+
+/********************************************
+  gallery collection
+*********************************************/
+app.get("/api/gallery", function(req, res) {
+  db.collection(GALLERY_COLLECTION).find({}).toArray(function(err, docs) {
+    if (err) {
+      handleError(res, err.message, "Failed to get gallery items");
+    } else {
+      res.status(200).json(docs);
+    }
+  });
+});
+app.get("/api/gallery/:id", function(req, res) {
+  db.collection(GALLERY_COLLECTION).findOne({ _id: new ObjectID(req.params.id) }, function(err, doc) {
+    if (err) {
+      handleError(res, err.message, "Failed to get gallery item");
+    } else {
+      res.status(200).json(doc);
+    }
+  });
+});
+app.post("/api/gallery", function(req, res) {
+  var newGalleryItem= req.body;  
+  newGalleryItem.createdAt = new Date();
+  newGalleryItem.updatedAt = new Date();
+  if (!req.body.author) {
+    handleError(res, "Invalid user input", "Must provide an author.", 400);
+  } else {
+    db.collection(GALLERY_COLLECTION).insertOne(newGalleryItem, function(err, doc) {
+      if (err) {
+        handleError(res, err.message, "Failed to create new gallery item.");
+      } else {
+        res.status(201).json(doc.ops[0]);
+      }
+    });
+  }
+});
+app.put("/api/gallery/:id", function(req, res) {
+  var updateDoc = req.body;
+  db.collection(GALLERY_COLLECTION).updateOne(
+    {"_id": new ObjectID(req.params.id)}, 
+    { $set: {      
+      "title":updateDoc.title, 
+      "author":updateDoc.author, 
+      "image":updateDoc.image,
+      "details":updateDoc.details,
+      "updatedAt": new Date()
+    } },
+    function(err, doc) {
+    if (err) {
+      handleError(res, err.message, "Failed to update gallery item");
+    } else {
+      updateDoc._id = req.params.id;
+      res.status(200).json(updateDoc);
+    }
+  });
+});
+app.delete("/api/gallery/:id", function(req, res) {
+  db.collection(GALLERY_COLLECTION).deleteOne({_id: new ObjectID(req.params.id)}, function(err, result) {
+    if (err) {
+      handleError(res, err.message, "Failed to delete gallery item");
     } else {
       res.status(200).json(req.params.id);
     }

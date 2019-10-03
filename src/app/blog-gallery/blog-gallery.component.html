@@ -1,4 +1,4 @@
-<div fxLayout fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="5px" fxLayoutGap.xs="0">
+<!-- <div fxLayout fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="5px" fxLayoutGap.xs="0">
   <div fxFlex="25%">
     <mat-card>
       <mat-card-title>1830 Brighton Penny Post</mat-card-title>
@@ -113,4 +113,34 @@
       <mat-card-footer><a href="#" onclick="return false;">Details...</a></mat-card-footer>
     </mat-card>
   </div>
+</div> -->
+
+<!-- <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.5%" fxLayoutAlign="center">
+  <mat-card *ngFor="let galleryItem of galleryItems">
+      <mat-card-title>{{galleryItem.title}}</mat-card-title>
+      <mat-card-content>
+        <img height="25%" width="25%" src={{galleryItem.image}}>
+      </mat-card-content>
+      <mat-card-footer><a href="#" onclick="return false;">Details...</a></mat-card-footer>
+  </mat-card>
+</div> -->
+
+
+<div class="button-row">
+  <a mat-raised-button color="primary" (click)="addGalleryItem()">
+    <mat-icon>add</mat-icon>
+  </a>
 </div>
+
+<div class="container margin-top-20" fxLayout="row wrap" fxLayoutAlign="space-evenly stretch" fxLayoutGap="10px">   
+    <mat-card fxFlex="0 1 calc(10% - 10px)" *ngFor="let galleryItem of galleryItems; let i = index" class="product" fxLayout="column">
+        <mat-card-title>{{galleryItem.title}}</mat-card-title>
+      <img class="image" mat-card-image src="{{galleryItem.image}}" alt="photo"> 
+      <br />
+      <a href="#" onclick="return false;">Details...</a> 
+      <mat-card-actions fxFlexAlign="end" align="end">
+          <button mat-icon-button> <mat-icon>mode_edit</mat-icon> </button>
+          <button mat-icon-button> <mat-icon>delete</mat-icon> </button>
+        </mat-card-actions>    
+    </mat-card>
+  </div>

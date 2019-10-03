@@ -13,6 +13,7 @@ const apiUrl = environment.apiUrl;
 const blogPostUrl = apiUrl + '/blogposts';
 const blogContentUrl = apiUrl + '/blogcontents';
 const commentUrl = apiUrl + '/comments';
+const galleryUrl = apiUrl + '/gallery';
 
 @Injectable({
   providedIn: 'root'
@@ -163,5 +164,40 @@ export class ApiService {
       map(this.extractData),
       catchError(this.handleError));
   }
-    
+
+  saveGalleryItem(data): Observable<any>{
+    return this.http.post(galleryUrl, data, 
+    httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  getGalleryItem(id: string): Observable<any> {   
+    const url = `${galleryUrl}/${id}`;
+    return this.http.get(url, httpOptions).pipe(
+      map(this.extractData),
+      catchError(this.handleError));
+  }
+
+  updateGalleryItem(id: string, data): Observable<any> {
+    return this.http.put(galleryUrl + '/' + id, data, httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+  
+  deleteGalleryItem(id: string): Observable<{}> {   
+    const url = `${galleryUrl}/${id}`;
+    return this.http.delete(url, httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  getGalleryItems(): Observable<any> {
+    return this.http.get(galleryUrl, httpOptions).pipe(
+      map(this.extractData),
+      catchError(this.handleError));
+  }    
 }
