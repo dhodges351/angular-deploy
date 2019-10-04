@@ -25,9 +25,15 @@ export class BlogGalleryComponent implements OnInit {
   createdAt: any;
   galleryItems: Array<GalleryItem>;
   data:any
+  loggedInUser: string = '';
 
   constructor(private router: Router, private route: ActivatedRoute, private apiService: ApiService, public dialog: MatDialog) 
   {     
+    this.loggedInUser = localStorage.getItem('Item 1');   
+    if (this.loggedInUser == null || this.loggedInUser == '' || this.loggedInUser.indexOf('@') > 0)
+    {
+      this.loggedInUser = localStorage.getItem('Item 2');
+    }     
   }
 
   public uploader: FileUploader = new FileUploader({ url: URL, itemAlias: 'photo' });
@@ -56,7 +62,7 @@ export class BlogGalleryComponent implements OnInit {
     });
   }
 
-  ngOnInit() {   
+  ngOnInit() {    
     this.apiService.getGalleryItems()
       .subscribe(res => {
         console.log(res); 

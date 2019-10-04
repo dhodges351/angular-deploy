@@ -35,7 +35,9 @@ export class ModalGalleryComponent implements OnInit {
     private formBuilder: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) 
-  {} 
+  {
+    this.galleryItemObject = new GalleryItem();
+  } 
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -70,12 +72,16 @@ export class ModalGalleryComponent implements OnInit {
     this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
         console.log('ImageUpload:uploaded:', item, status, response);
         this.imagePathAndFilename = 'assets/images/' + item._file.name;
-        this.blogGalleryForm.setValue({        
-          image: this.imagePathAndFilename,     
-          title: this.galleryItemObject.title,
-          details: this.galleryItemObject.details,
-          author: this.galleryItemObject.author
-        });
+        this.galleryItemObject.image = this.imagePathAndFilename;
+        this.galleryItemObject.title = this.blogGalleryForm.get('title').value;
+        this.galleryItemObject.author = this.blogGalleryForm.get('author').value;
+        this.galleryItemObject.details = this.blogGalleryForm.get('details').value;
+        this.blogGalleryForm.setValue({
+        image: this.galleryItemObject.image,        
+        title: this.galleryItemObject.title,
+        author: this.galleryItemObject.author,
+        details: this.galleryItemObject.details
+      });
      };     
   }  
 
@@ -93,9 +99,9 @@ export class ModalGalleryComponent implements OnInit {
       });
   }  
   
-  onFormSubmit(form: NgForm) {
+  onFormSubmit(form: NgForm) {    
     this.onAdd.emit();
-    if (this.id != '' && this.id != null && this.id != undefined)
+    if (this.id != '' && this.id != null && this.id != undefined && this.id != 'id')
     {
       this.apiService.updateGalleryItem(this.id, form)
       .subscribe(data => {        

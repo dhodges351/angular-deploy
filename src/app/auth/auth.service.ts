@@ -134,6 +134,7 @@ export class AuthService {
     // Ensure Auth0 client instance exists
     this.auth0Client$.subscribe((client: Auth0Client) => {
       localStorage.removeItem('Item 1');
+      localStorage.removeItem('Item 2');
       // Call method to log out
       client.logout({
         client_id: config.clientId,

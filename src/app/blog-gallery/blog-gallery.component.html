@@ -1,6 +1,6 @@
 <div class="container-fluid" style="margin-top:10px;">
   <div class="button-row">
-    <a mat-raised-button color="primary" (click)="openDialog('id')">
+    <a mat-raised-button color="primary" fxShow="{{this.loggedInUser == 'Debra Hodges'  || this.loggedInUser == 'bob_hodges' ?'true':'false'}}" (click)="openDialog('id')">
       <mat-icon>add</mat-icon>
     </a>
   </div>
@@ -11,9 +11,9 @@
       <br />
       <a [routerLink]="['/galleryDetails/',galleryItem._id]">Details...</a>
       <mat-card-actions fxFlexAlign="end" align="end">
-          <button mat-icon-button (click)="editItem(galleryItem._id)"> <mat-icon>mode_edit</mat-icon> </button>
-          <button mat-icon-button (click)="deleteItem(galleryItem._id)"> <mat-icon>delete</mat-icon> </button>
-        </mat-card-actions>    
+          <button mat-icon-button fxShow="{{this.loggedInUser == 'Debra Hodges' || this.loggedInUser == 'bob_hodges' ?'true':'false'}}" (click)="editItem(galleryItem._id)"><mat-icon>mode_edit</mat-icon></button>
+          <button mat-icon-button fxShow="{{this.loggedInUser == 'Debra Hodges' || this.loggedInUser == 'bob_hodges' ?'true':'false'}}" (click)="deleteItem(galleryItem._id)"><mat-icon>delete</mat-icon> </button>
+      </mat-card-actions>    
     </mat-card>
   </div>
 </div>
