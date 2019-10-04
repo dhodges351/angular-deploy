@@ -2,46 +2,61 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
 import { GalleryItem } from "../models/galleryitem";
 import { MatDialog } from '@angular/material';
-import { ModalComponent } from '../modal/modal.component';
+import { ModalGalleryComponent } from '../modal/modal-gallery.component';
+import { FileUploader } from 'ng2-file-upload';
+import { environment } from '../../environments/environment';
+import { Router, ActivatedRoute } from '@angular/router';
+
+const URL = environment.apiUrl + '/upload';
 
 @Component({
   selector: 'app-blog-gallery',
   templateUrl: './blog-gallery.component.html',
   styleUrls: ['./blog-gallery.component.css']
 })
+
 export class BlogGalleryComponent implements OnInit {
   galleryItem: GalleryItem;
+  id: string = '';
   title: string = '';
   author: string = '';
   image: string = '';
   details: string = '';  
   createdAt: any;
   galleryItems: Array<GalleryItem>;
+  data:any
 
-  // products = [
-  //   { name: "Product A", description: "some description", picture: { uri: 'https://dummyimage.com/600x150/000/fff' } },
-  //   { name: "Product B", description: "some description", picture: { uri: 'https://dummyimage.com/300x300/000/fff' } },
-  //   { name: "Product C", description: "some description", picture: { uri: 'https://dummyimage.com/300x400/000/fff' } },
-  //   { name: "Product D", description: "some description", picture: { uri: 'https://dummyimage.com/600x500/000/fff' } }]
-  
-
-  constructor(private apiService: ApiService, public dialog: MatDialog) 
+  constructor(private router: Router, private route: ActivatedRoute, private apiService: ApiService, public dialog: MatDialog) 
   {     
   }
 
-  ngOnInit() {
-    // this.galleryItem = new GalleryItem();
-    // this.galleryItem.title = "N048.5I NCH Perfin 1870";
-    // this.galleryItem.author = "Bob Hodges";
-    // this.galleryItem.image = "assets/images/N048.5I NCH Perfin 1870.jpg";
-    // this.galleryItem.details = "Another very fine stamp.";
+  public uploader: FileUploader = new FileUploader({ url: URL, itemAlias: 'photo' });
 
-    // this.apiService.saveGalleryItem(this.galleryItem)
-    //   .subscribe(res => {            
-    //   }, (err) => {
-    //   console.log(err);
-    // });
 
+  openDialog(_id): void {
+    const dialogRef = this.dialog.open(ModalGalleryComponent, {
+      width: '600px', data: { id: _id, title:'', author:'', details:'', image:'' },
+    });
+    
+    const sub = dialogRef.componentInstance.onAdd.subscribe(() => { 
+    });   
+
+    dialogRef.afterClosed().subscribe(result => {   
+      const unsub = dialogRef.componentInstance.onAdd.unsubscribe();    
+      this.apiService.getGalleryItems()
+      .subscribe(res => {
+        console.log(res); 
+        if (res)
+        {           
+          this.galleryItems = res;           
+        }       
+        }, err => {
+          console.log(err);
+      }); 
+    });
+  }
+
+  ngOnInit() {   
     this.apiService.getGalleryItems()
       .subscribe(res => {
         console.log(res); 
@@ -52,11 +67,22 @@ export class BlogGalleryComponent implements OnInit {
       }, err => {
         console.log(err);
     });    
- }
+  } 
 
- 
-  addGalleryItem() {
-    this.galleryItems.push({ title: Math.random().toString(36).substring(7), details: Math.random().toString(36).substring(50), author: 'Bob Hodges', image: { uri: 'assets/images/greenguy.jpg' } });
+  deleteItem(id)
+  {
+    this.apiService.deleteGalleryItem(id)
+    .subscribe(res => {
+      this.ngOnInit();   
+      }, (err) => {
+        console.log(err);
+      }
+    );
+  }
+
+  editItem(id)
+  {    
+    this.openDialog(id);
   }
 
 }

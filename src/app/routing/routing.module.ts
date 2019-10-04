@@ -12,6 +12,7 @@ import { BlogContentEditComponent } from '../blog-content-edit/blog-content-edit
 import { CallbackComponent } from '../pages/callback/callback.component';
 import { AuthGuard } from '../auth/auth.guard';
 import { ProfileComponent } from '../pages/profile/profile.component';
+import { BlogGalleryDetailsComponent } from '../blog-gallery-details/blog-gallery-details.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent},  
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'allBlogContent', component: BlogContentListComponent, data: { title: 'All Blog Content' }, }, 
   { path: 'contentEdit/:id', component: BlogContentEditComponent, data: { title: 'Edit Blog Content' } },  
   { path: 'about', component: AboutComponent, data: { title: 'About' } }, 
+  { path: 'galleryDetails/:id', component: BlogGalleryDetailsComponent, data: { title: 'Gallery Item Details' } },  
   {
     path: 'callback',
     component: CallbackComponent

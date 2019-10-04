@@ -4,16 +4,18 @@ import { BehaviorSubject, Subject } from 'rxjs';
 @Injectable()
 export class StateService {
 
-// BehaviorSubject to store UserName
-private currentUserNameStore = new Subject<any>();
+  public fromGalleryDetails: boolean = false;
 
-// Make UserName store Observable
-public currentUserName$ = this.currentUserNameStore.asObservable();
+  // BehaviorSubject to store UserName
+  private currentUserNameStore = new Subject<any>();
 
-constructor() { }
+  // Make UserName store Observable
+  public currentUserName$ = this.currentUserNameStore.asObservable();
 
- // Setter to update UserName
-setCurrentUserName(userName: string) {
-    this.currentUserNameStore.next(userName);
+  constructor() { }
+
+  // Setter to update UserName
+  setCurrentUserName(userName: string) {
+      this.currentUserNameStore.next(userName);
   }
 }

@@ -1,146 +1,19 @@
-<!-- <div fxLayout fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="5px" fxLayoutGap.xs="0">
-  <div fxFlex="25%">
-    <mat-card>
-      <mat-card-title>1830 Brighton Penny Post</mat-card-title>
-      <mat-card-content>
-        <img mat-card-image class="img" src="../assets/images/1830 Brighton Penny Post.jpg">
-      </mat-card-content>
-      <mat-card-footer><a href="#" onclick="return false;">Details...</a></mat-card-footer>
-    </mat-card>
+<div class="container-fluid" style="margin-top:10px;">
+  <div class="button-row">
+    <a mat-raised-button color="primary" (click)="openDialog()">
+      <mat-icon>add</mat-icon>
+    </a>
   </div>
-  <div fxFlex="25%">
-    <mat-card>
-      <mat-card-title>1841 Maltese Cross</mat-card-title>
-      <mat-card-content>
-        <img mat-card-image class="img" src="../assets/images/1841 Maltese Cross.jpg">
-      </mat-card-content>
-      <mat-card-footer><a href="#" onclick="return false;">Details...</a></mat-card-footer>
-    </mat-card>
-  </div>
-  <div fxFlex="25%">
-    <mat-card>
-      <mat-card-title>Milwaukee Precancel Error</mat-card-title>
-      <mat-card-content>
-        <img mat-card-image class="img" src="../assets/images/Milwaukee Precancel Error.jpg">
-      </mat-card-content>
-      <mat-card-footer><a href="#" onclick="return false;">Details...</a></mat-card-footer>
-    </mat-card>
-  </div>
-  <div fxFlex="25%">
-    <mat-card>
-      <mat-card-title>GLYN Perfin</mat-card-title>
-      <mat-card-content>
-        <img mat-card-image class="img" src="../assets/images/GLYN Perfin.jpg">
-      </mat-card-content>
-      <mat-card-footer><a href="#" onclick="return false;">Details...</a></mat-card-footer>
-    </mat-card>
-  </div>
-</div>
-<br />
-<div fxLayout fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="5px" fxLayoutGap.xs="0">
-  <div fxFlex="25%">
-    <mat-card>
-      <mat-card-title>1872 London EC Duplex</mat-card-title>
-      <mat-card-content>
-        <img mat-card-image class="img" src="../assets/images/1872 London EC Duplex.jpg">
-      </mat-card-content>
-      <mat-card-footer><a href="#" onclick="return false;">Details...</a></mat-card-footer>
-    </mat-card>
-  </div>
-  <div fxFlex="25%">
-    <mat-card>
-      <mat-card-title>Q000.6 front</mat-card-title>
-      <mat-card-content>
-        <img mat-card-image class="img" src="../assets/images/Q000.6 front.jpg">
-      </mat-card-content>
-      <mat-card-footer><a href="#" onclick="return false;">Details...</a></mat-card-footer>
-    </mat-card>
-  </div>
-  <div fxFlex="25%">
-    <mat-card>
-      <mat-card-title>Rare 48ED29</mat-card-title>
-      <mat-card-content>
-        <img mat-card-image class="img" src="../assets/images/Rare 48ED29.jpg">
-      </mat-card-content>
-      <mat-card-footer><a href="#" onclick="return false;">Details...</a></mat-card-footer>
-    </mat-card>
-  </div>
-  <div fxFlex="25%">
-    <mat-card>
-      <mat-card-title>N048.5I NCH Perfin 1870</mat-card-title>
-      <mat-card-content>
-        <img mat-card-image class="img" src="../assets/images/N048.5I NCH Perfin 1870.jpg">
-      </mat-card-content>
-      <mat-card-footer><a href="#" onclick="return false;">Details...</a></mat-card-footer>
-    </mat-card>
-  </div>
-</div>
-<br />
-<div fxLayout fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="5px" fxLayoutGap.xs="0">
-  <div fxFlex="25%">
-    <mat-card>
-      <mat-card-title>Image</mat-card-title>
-      <mat-card-content>
-        <img mat-card-image class="img" src="" alt="&nbsp;photo">
-      </mat-card-content>
-      <mat-card-footer><a href="#" onclick="return false;">Details...</a></mat-card-footer>
-    </mat-card>
-  </div>
-  <div fxFlex="25%">
-    <mat-card>
-      <mat-card-title>Image</mat-card-title>
-      <mat-card-content>
-        <img mat-card-image class="img" src="" alt="&nbsp;photo">
-      </mat-card-content>
-      <mat-card-footer><a href="#" onclick="return false;">Details...</a></mat-card-footer>
-    </mat-card>
-  </div>
-  <div fxFlex="25%">
-    <mat-card>
-      <mat-card-title>Image</mat-card-title>
-      <mat-card-content>
-        <img mat-card-image class="img" src="" alt="&nbsp;photo">
-      </mat-card-content>
-      <mat-card-footer><a href="#" onclick="return false;">Details...</a></mat-card-footer>
-    </mat-card>
-  </div>
-  <div fxFlex="25%">
-    <mat-card>
-      <mat-card-title>Image</mat-card-title>
-      <mat-card-content>
-        <img mat-card-image class="img" src="" alt="&nbsp;photo">
-      </mat-card-content>
-      <mat-card-footer><a href="#" onclick="return false;">Details...</a></mat-card-footer>
-    </mat-card>
-  </div>
-</div> -->
-
-<!-- <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.5%" fxLayoutAlign="center">
-  <mat-card *ngFor="let galleryItem of galleryItems">
-      <mat-card-title>{{galleryItem.title}}</mat-card-title>
-      <mat-card-content>
-        <img height="25%" width="25%" src={{galleryItem.image}}>
-      </mat-card-content>
-      <mat-card-footer><a href="#" onclick="return false;">Details...</a></mat-card-footer>
-  </mat-card>
-</div> -->
-
-
-<div class="button-row">
-  <a mat-raised-button color="primary" (click)="addGalleryItem()">
-    <mat-icon>add</mat-icon>
-  </a>
-</div>
-
-<div class="container margin-top-20" fxLayout="row wrap" fxLayoutAlign="space-evenly stretch" fxLayoutGap="10px">   
-    <mat-card fxFlex="0 1 calc(10% - 10px)" *ngFor="let galleryItem of galleryItems; let i = index" class="product" fxLayout="column">
+  <div class="container margin-top-20" fxLayout="row wrap" fxLayoutAlign="space-evenly stretch" fxLayoutGap="5px">   
+    <mat-card fxFlex="0 1 calc(20% - 10px)" *ngFor="let galleryItem of galleryItems; let i = index" class="galleryItem" fxLayout="column">
         <mat-card-title>{{galleryItem.title}}</mat-card-title>
       <img class="image" mat-card-image src="{{galleryItem.image}}" alt="photo"> 
       <br />
-      <a href="#" onclick="return false;">Details...</a> 
+      <a [routerLink]="['/galleryDetails/',galleryItem._id]">Details...</a>
       <mat-card-actions fxFlexAlign="end" align="end">
-          <button mat-icon-button> <mat-icon>mode_edit</mat-icon> </button>
-          <button mat-icon-button> <mat-icon>delete</mat-icon> </button>
+          <button mat-icon-button (click)="editItem(galleryItem._id)"> <mat-icon>mode_edit</mat-icon> </button>
+          <button mat-icon-button (click)="deleteItem(galleryItem._id)"> <mat-icon>delete</mat-icon> </button>
         </mat-card-actions>    
     </mat-card>
   </div>
+</div>

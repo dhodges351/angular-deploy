@@ -42,6 +42,8 @@ import { CallbackComponent } from './pages/callback/callback.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { LoadingComponent } from './loading/loading.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { ModalGalleryComponent } from './modal/modal-gallery.component';
+import { BlogGalleryDetailsComponent } from './blog-gallery-details/blog-gallery-details.component';
 
 library.add(fas, far, fab);
 
@@ -70,7 +72,9 @@ export function hljsLanguages() {
     BlogGalleryComponent,
     LoadingComponent,
     CallbackComponent,
-    ProfileComponent
+    ProfileComponent,
+    ModalGalleryComponent,
+    BlogGalleryDetailsComponent
   ],
   imports: [
     BrowserModule,
@@ -94,7 +98,7 @@ export function hljsLanguages() {
     CKEditorModule
   ],
   providers: [DataService, StateService],  
-  entryComponents: [ModalComponent, ModalCommentComponent],
+  entryComponents: [ModalComponent, ModalCommentComponent, ModalGalleryComponent],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

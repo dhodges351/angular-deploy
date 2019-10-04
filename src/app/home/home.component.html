@@ -5,29 +5,33 @@
     </mat-tab>
     <mat-tab label="Posts">
       <mat-card>
-        <app-blogPost-list></app-blogPost-list> 
+        <app-blogPost-list></app-blogPost-list>
       </mat-card>
     </mat-tab>
     <mat-tab label="Gallery">
-      <mat-card>
         <app-blog-gallery></app-blog-gallery>
-      </mat-card>
     </mat-tab>
-    <mat-tab label="Exhibits">
+    <mat-tab label="Exhibits/Studies">
       <div id="container">
-          <mat-form-field style="width: 100%;">
-              <mat-label>Select an option</mat-label>
-              <mat-select [(value)]="selected">                
-                <mat-option value="../assets/exhibits/Exhibit FRENCH D-DAY COVERS.pdf">Exhibit FRENCH D-DAY COVERS</mat-option>
-                <mat-option value="../assets/exhibits/Exhibit WASHINGTON_FRANKLIN PERFIN COVERS.pdf">Exhibit WASHINGTON_FRANKLIN PERFIN COVERS</mat-option>
-                <mat-option value="../assets/exhibits/US Private Die Proprietary.pdf">US Private Die Proprietary</mat-option>
-                <mat-option value="../assets/exhibits/US Perfins - Their First Year.pdf">US Perfins - Their First Year</mat-option>
-                <mat-option value="../assets/exhibits/US Perfins - The Classics and Rarities.pdf">US Perfins - The Classics and Rarities</mat-option>
-                <mat-option value="../assets/exhibits/A Journey Through History with a Single Postal Cover.pdf">A Journey Through History with a Single Postal Cover</mat-option>
-              </mat-select>
-            </mat-form-field>
-          <pdf-viewer src="{{selected}}"></pdf-viewer>
-      </div>       
+        <mat-form-field style="width: 100%;">
+          <mat-label>Select an option</mat-label>
+          <mat-select [(value)]="selected">
+            <mat-option value="../assets/exhibits/Exhibit FRENCH D-DAY COVERS.pdf">Exhibit FRENCH D-DAY COVERS
+            </mat-option>
+            <mat-option value="../assets/exhibits/Exhibit WASHINGTON_FRANKLIN PERFIN COVERS.pdf">Exhibit
+              WASHINGTON_FRANKLIN PERFIN COVERS</mat-option>
+            <mat-option value="../assets/exhibits/US Private Die Proprietary.pdf">US Private Die Proprietary
+            </mat-option>
+            <mat-option value="../assets/exhibits/US Perfins - Their First Year.pdf">US Perfins - Their First Year
+            </mat-option>
+            <mat-option value="../assets/exhibits/US Perfins - The Classics and Rarities.pdf">US Perfins - The Classics
+              and Rarities</mat-option>
+            <mat-option value="../assets/exhibits/A Journey Through History with a Single Postal Cover.pdf">A Journey
+              Through History with a Single Postal Cover</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <pdf-viewer src="{{selected}}"></pdf-viewer>
+      </div>
     </mat-tab>
     <mat-tab label="Profile">
       <app-profile></app-profile>

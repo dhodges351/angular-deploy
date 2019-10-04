@@ -1,0 +1,43 @@
+<div mat-dialog-content>
+    <form [formGroup]="blogGalleryForm" (ngSubmit)="onFormSubmit(blogGalleryForm.value)">
+        <mat-form-field class="example-full-width">
+            <input matInput placeholder="Title" formControlName="title" [errorStateMatcher]="matcher">
+            <mat-error>
+                <span *ngIf="!blogGalleryForm.get('title').valid && blogGalleryForm.get('title').touched">
+                    Please enter the title</span>
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+            <input matInput placeholder="Author" formControlName="author" [errorStateMatcher]="matcher">
+            <mat-error>
+                <span *ngIf="!blogGalleryForm.get('author').valid && blogGalleryForm.get('author').touched">
+                    Please enter the author</span>
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+            <textarea matInput placeholder="Details" formControlName="details" [errorStateMatcher]="matcher"></textarea>
+            <mat-error>
+                <span *ngIf="!blogGalleryForm.get('details').valid && blogGalleryForm.get('details').touched">
+                    Please enter the details</span>
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+            <input matInput placeholder="Image" formControlName="image" [errorStateMatcher]="matcher">
+            <mat-error>
+                <span *ngIf="!blogGalleryForm.get('image').valid && blogGalleryForm.get('image').touched">Please enter
+                    an image.
+                </span>
+            </mat-error>
+        </mat-form-field>
+        <div class="button-row">
+            <button type="submit" [disabled]="!blogGalleryForm.valid" mat-raised-button color="primary">
+                <mat-icon>save</mat-icon>
+            </button>
+            &nbsp;&nbsp;<input type="file" name="photo" ng2FileSelect [uploader]="uploader" />
+            <button mat-raised-button [disabled]="!uploader.getNotUploadedItems().length"
+                (click)="$event.preventDefault(); uploader.uploadAll()">
+                Upload Image
+            </button>           
+        </div>
+    </form>
+</div>

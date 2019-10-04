@@ -8,6 +8,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { BlogPostListComponent } from '../blogPost-list/blogPost-list.component';
 import { HomeComponent } from '../home/home.component';
 import * as _ from 'underscore';
+import { StateService } from '../state.service';
 
 @Component({
   selector: 'app-blogPost-main',
@@ -28,7 +29,7 @@ export class BlogPostMainComponent implements OnInit {
   value:string = '';
   isShown: boolean = true;
 
-  constructor(private router: Router, private route: ActivatedRoute, private apiService: ApiService, public dialog: MatDialog) 
+  constructor(public stateSvc: StateService, router: Router, private route: ActivatedRoute, private apiService: ApiService, public dialog: MatDialog) 
   {
   }  
 
@@ -69,7 +70,12 @@ export class BlogPostMainComponent implements OnInit {
         }       
       }, err => {
         console.log(err);
-    });    
+    }); 
+   
+    if (this.stateSvc.fromGalleryDetails)
+    {
+      HomeComponent.homeApp.selectedIndex = 2;
+    }
   }  
 
   setCurrentBlog(id)

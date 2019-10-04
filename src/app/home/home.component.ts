@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DataService } from '../data.service';
 import { BlogPostListComponent } from '../blogPost-list/blogPost-list.component';
+import { BlogGalleryComponent } from '../blog-gallery/blog-gallery.component';
 
 @Component({
   selector: 'app-home',
