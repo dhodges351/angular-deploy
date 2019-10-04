@@ -60,7 +60,7 @@ export class ModalGalleryComponent implements OnInit {
 
     this.id = this.data.id;
 
-    if (this.id != '' && this.id != null && this.id != undefined)
+    if (this.id != '' && this.id != null && this.id != undefined && this.id != 'id')
     {
       this.getGalleryItem(this.id);      
     }
