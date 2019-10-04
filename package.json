@@ -2,10 +2,8 @@
   "name": "angular-deploy",
   "version": "0.0.0",
   "scripts": {
-    "client": "ng serve --live-reload=false",
-    "server": "nodemon server.js",
-    "start": "npm-run-all -p client server",
-    "build": "ng build",
+    "start": "node server.js",
+    "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
