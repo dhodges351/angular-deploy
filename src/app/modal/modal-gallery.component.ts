@@ -69,14 +69,7 @@ export class ModalGalleryComponent implements OnInit {
 
     this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
         console.log('ImageUpload:uploaded:', item, status, response);
-        if (environment.apiUrl.indexOf('localhost') > 0)
-        {
-          this.imagePathAndFilename = 'assets/images/' + item._file.name;
-        }
-        else
-        {
-          this.imagePathAndFilename = './dist/assets/images/' + item._file.name;
-        }    
+        this.imagePathAndFilename = 'assets/images/' + item._file.name;
         this.blogGalleryForm.setValue({        
           image: this.imagePathAndFilename,     
           title: this.galleryItemObject.title,
