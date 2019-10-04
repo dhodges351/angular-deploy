@@ -12,8 +12,7 @@ import { StateService } from '../state.service';
 })
 
 export class BlogGalleryDetailsComponent implements OnInit {
-  public blogGalleryItem: GalleryItem; 
-  //blogGalleryDetailsForm: FormGroup;
+  public blogGalleryItem: GalleryItem;   
   id: string = '';  
   image: string = '';
   title:string = '';  
@@ -29,7 +28,10 @@ export class BlogGalleryDetailsComponent implements OnInit {
 
   getGalleryItemDetails(id) {
     this.apiService.getGalleryItem(id).subscribe(data => {      
-      this.blogGalleryItem = data;     
+      this.blogGalleryItem = data;
+      this.title = data.title;
+      this.image = data.image;
+      this.details = data.details;
     });
   }
 

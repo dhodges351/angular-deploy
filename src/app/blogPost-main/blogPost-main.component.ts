@@ -66,16 +66,17 @@ export class BlogPostMainComponent implements OnInit {
           if (this.image == null || this.image == '')
           {
             this.isShown = false;
+          }
+          if (this.stateSvc.fromGalleryDetails)
+          {
+            HomeComponent.homeApp.selectedIndex = 2;
           }          
         }       
       }, err => {
         console.log(err);
     }); 
    
-    if (this.stateSvc.fromGalleryDetails)
-    {
-      HomeComponent.homeApp.selectedIndex = 2;
-    }
+    
   }  
 
   setCurrentBlog(id)

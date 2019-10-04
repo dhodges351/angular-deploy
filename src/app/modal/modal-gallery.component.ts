@@ -19,12 +19,10 @@ export class ModalGalleryComponent implements OnInit {
   blogGalleryForm: FormGroup;
   galleryItemObject: GalleryItem;
   id: string = '';
-  public title: string = '';
-  public image: string = '';
-  public author:string = '';
-  public details:string = '';
-  params: object;
-  galleryItemId: string = '';
+  title: string = '';
+  image: string = '';
+  author:string = '';
+  details:string = '';
   matcher: string = '';
   imagePathAndFilename: string = '';
   uploadOnly: boolean = false;
@@ -62,26 +60,23 @@ export class ModalGalleryComponent implements OnInit {
 
     if (this.id != '' && this.id != null && this.id != undefined && this.id != 'id')
     {
-      this.getGalleryItem(this.id);      
+      this.getGalleryItemDetails(this.id);      
     }
-    else
-    {
-      this.blogGalleryForm.setValue({
-        title: '',
-        author:'',
-        image:'',
-        details:''
-      });
-    }    
     
     this.uploader.onAfterAddingFile = (file) => { 
       file.withCredentials = false; 
     };
 
     this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
-        console.log('ImageUpload:uploaded:', item, status, response);       
-        this.imagePathAndFilename = 'assets/images/' + item._file.name;
-        this.galleryItemObject = this.blogGalleryForm.getRawValue();
+        console.log('ImageUpload:uploaded:', item, status, response);
+        if (environment.apiUrl.indexOf('localhost') > 0)
+        {
+          this.imagePathAndFilename = 'assets/images/' + item._file.name;
+        }
+        else
+        {
+          this.imagePathAndFilename = './dist/assets/images/' + item._file.name;
+        }    
         this.blogGalleryForm.setValue({        
           image: this.imagePathAndFilename,     
           title: this.galleryItemObject.title,
@@ -91,12 +86,11 @@ export class ModalGalleryComponent implements OnInit {
      };     
   }  
 
-  getGalleryItem(id) {
+  getGalleryItemDetails(id) {
     this.apiService.getGalleryItem(id)
       .subscribe(data => {
         console.log(data);
         this.galleryItemObject = data;
-        this.id = data._id;
         this.blogGalleryForm.setValue({
           title: data.title,
           author: data.author,
@@ -111,16 +105,7 @@ export class ModalGalleryComponent implements OnInit {
     if (this.id != '' && this.id != null && this.id != undefined)
     {
       this.apiService.updateGalleryItem(this.id, form)
-      .subscribe(data => {
-        console.log(data);
-        this.galleryItemObject = data;
-        this.id = data._id;
-        this.blogGalleryForm.setValue({
-          title: data.title,
-          author: data.author,
-          details: data.details,
-          image: data.image
-        });
+      .subscribe(data => {        
         this.onClose(); 
       });
     }

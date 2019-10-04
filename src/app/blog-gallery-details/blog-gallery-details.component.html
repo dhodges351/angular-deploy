@@ -1,11 +1,11 @@
 <div style="margin:20px;">
     <mat-card>
-        <mat-card-title>{{blogGalleryItem.title}}</mat-card-title>
+        <mat-card-title>{{this.title}}</mat-card-title>
         <div style="margin-bottom:40px;text-align: center;">
-            <img height="35%" width="35%" src="{{blogGalleryItem.image}}" alt="photo"> 
+            <img height="35%" width="35%" src={{this.image}} alt="photo"> 
         </div>
         <mat-card-content>
-            {{blogGalleryItem.details}}
+            {{this.details}}
         </mat-card-content>
         <mat-card-actions fxFlexAlign="end" align="end">            
             <button mat-button (click)="returnToGallery()">
