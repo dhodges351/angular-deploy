@@ -17,6 +17,7 @@ export class BlogGalleryDetailsComponent implements OnInit {
   image: string = '';
   title:string = '';  
   details:string = '';
+  value:string = '';
 
   constructor(public stateSvc: StateService, private router: Router, private route: ActivatedRoute, private apiService: ApiService, private formBuilder: FormBuilder) 
   { }  
@@ -32,6 +33,7 @@ export class BlogGalleryDetailsComponent implements OnInit {
       this.title = data.title;
       this.image = data.image;
       this.details = data.details;
+      this.value = this.details;
     });
   }
 

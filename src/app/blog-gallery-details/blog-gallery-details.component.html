@@ -5,7 +5,7 @@
             <img height="35%" width="35%" src="{{image}}" alt="photo"> 
         </div>
         <mat-card-content>
-            {{details}}
+            <span [innerHtml]="value"></span>
         </mat-card-content>
         <mat-card-actions fxFlexAlign="end" align="end">            
             <button mat-button (click)="returnToGallery()">

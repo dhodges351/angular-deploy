@@ -4,9 +4,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../api.service';
 import { GalleryItem } from '../models/galleryitem';
 import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
-import { FileUploader, FileItem, FileUploaderOptions} from 'ng2-file-upload';
+import { FileUploader,  FileUploaderOptions} from 'ng2-file-upload';
 import { environment } from '../../environments/environment';
-import { fileURLToPath } from 'url';
+import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 const URL = environment.apiUrl + '/upload';
 
@@ -26,8 +26,8 @@ export class ModalGalleryComponent implements OnInit {
   matcher: string = '';
   imagePathAndFilename: string = '';
   uploadOnly: boolean = false;
+  editor: DecoupledEditor = null;
   public uploader: FileUploader = new FileUploader({url: URL, itemAlias: 'photo'});
-  opts: FileUploaderOptions;
 
   constructor(public dialogRef: MatDialogRef<ModalGalleryComponent>,     
     private router: Router, private route: ActivatedRoute, 
@@ -50,11 +50,21 @@ export class ModalGalleryComponent implements OnInit {
   }
 
   ngOnInit() {
+    DecoupledEditor
+    .create( document.querySelector( '#editor' ) )
+    .then( editor => {
+        const toolbarContainer = document.querySelector( '#toolbar-container' );
+        toolbarContainer.appendChild( editor.ui.view.toolbar.element );        
+        this.editor = editor;        
+    } )
+    .catch( error => {
+        console.error( error );
+    } );
 
     this.blogGalleryForm = this.formBuilder.group({
       'title': ['', Validators.required],
       'author': ['', Validators.required],
-      'details': ['', Validators.required],
+      'details': ['', !Validators.required],
       'image': ['', Validators.required],
     });
 
@@ -75,7 +85,7 @@ export class ModalGalleryComponent implements OnInit {
         this.galleryItemObject.image = this.imagePathAndFilename;
         this.galleryItemObject.title = this.blogGalleryForm.get('title').value;
         this.galleryItemObject.author = this.blogGalleryForm.get('author').value;
-        this.galleryItemObject.details = this.blogGalleryForm.get('details').value;
+        this.galleryItemObject.details = this.editor.getData();
         this.blogGalleryForm.setValue({
         image: this.galleryItemObject.image,        
         title: this.galleryItemObject.title,
@@ -96,13 +106,16 @@ export class ModalGalleryComponent implements OnInit {
           details: data.details,
           image: data.image
         });
+        this.editor.setData(data.details);
       });
   }  
   
-  onFormSubmit(form: NgForm) {    
+  onFormSubmit(form: any) {
+    form.details = this.editor.getData();      
     this.onAdd.emit();
     if (this.id != '' && this.id != null && this.id != undefined && this.id != 'id')
     {
+      
       this.apiService.updateGalleryItem(this.id, form)
       .subscribe(data => {        
         this.onClose(); 

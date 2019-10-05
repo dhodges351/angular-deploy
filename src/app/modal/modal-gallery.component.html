@@ -14,13 +14,17 @@
                     Please enter the author</span>
             </mat-error>
         </mat-form-field>
-        <mat-form-field class="example-full-width">
+        <!-- <mat-form-field class="example-full-width">
             <textarea matInput placeholder="Details" formControlName="details" [errorStateMatcher]="matcher"></textarea>
             <mat-error>
                 <span *ngIf="!blogGalleryForm.get('details').valid && blogGalleryForm.get('details').touched">
                     Please enter the details</span>
             </mat-error>
-        </mat-form-field>
+        </mat-form-field> -->
+        <div id="toolbar-container"></div>
+        <div style="height:150px;border: solid 1px gray;overflow: auto;" id="editor">
+        
+        </div>
         <mat-form-field class="example-full-width">
             <input matInput placeholder="Image" formControlName="image" [errorStateMatcher]="matcher">
             <mat-error>
