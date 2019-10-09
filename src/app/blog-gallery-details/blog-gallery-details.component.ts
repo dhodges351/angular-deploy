@@ -15,6 +15,7 @@ export class BlogGalleryDetailsComponent implements OnInit {
   public blogGalleryItem: GalleryItem;   
   id: string = '';  
   image: string = '';
+  category: string = '';
   title:string = '';  
   details:string = '';
   value:string = '';
@@ -31,6 +32,7 @@ export class BlogGalleryDetailsComponent implements OnInit {
     this.apiService.getGalleryItem(id).subscribe(data => {      
       this.blogGalleryItem = data;
       this.title = data.title;
+      this.category = data.category;
       this.image = data.image;
       this.details = data.details;
       this.value = this.details;

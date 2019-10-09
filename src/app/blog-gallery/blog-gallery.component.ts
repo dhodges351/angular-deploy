@@ -21,11 +21,14 @@ export class BlogGalleryComponent implements OnInit {
   title: string = '';
   author: string = '';
   image: string = '';
+  category: string = '';
   details: string = '';  
   createdAt: any;
   galleryItems: Array<GalleryItem>;
   data:any
   loggedInUser: string = '';
+  public selectedIndex = 0;
+  public selected = "General";
 
   constructor(private router: Router, private route: ActivatedRoute, private apiService: ApiService, public dialog: MatDialog) 
   {     
@@ -40,8 +43,8 @@ export class BlogGalleryComponent implements OnInit {
 
 
   openDialog(_id): void {
-    const dialogRef = this.dialog.open(ModalGalleryComponent, {
-      width: '600px', data: { id: _id, title:'', author:'', details:'', image:'' },
+    const dialogRef = this.dialog.open(ModalGalleryComponent, {     
+      width: '700px', data: { id: _id, title:'', category: '', author:'', details:'', image:'' },
     });
     
     const sub = dialogRef.componentInstance.onAdd.subscribe(() => { 
@@ -68,7 +71,7 @@ export class BlogGalleryComponent implements OnInit {
         console.log(res); 
         if (res)
         {           
-          this.galleryItems = res; 
+          this.galleryItems = res.filter(o => o.category == this.selected);
         }       
       }, err => {
         console.log(err);
@@ -89,6 +92,20 @@ export class BlogGalleryComponent implements OnInit {
   editItem(id)
   {    
     this.openDialog(id);
+  }
+
+  onChange() {
+    console.log(this.selected);
+    this.apiService.getGalleryItems()
+      .subscribe(res => {
+        console.log(res); 
+        if (res)
+        {           
+          this.galleryItems = res.filter(o => o.category == this.selected);
+        }       
+      }, err => {
+        console.log(err);
+    });    
   }
 
 }

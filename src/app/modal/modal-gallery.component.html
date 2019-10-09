@@ -1,4 +1,4 @@
-<div mat-dialog-content>
+<div>
     <form [formGroup]="blogGalleryForm" (ngSubmit)="onFormSubmit(blogGalleryForm.value)">
         <mat-form-field class="example-full-width">
             <input matInput placeholder="Title" formControlName="title" [errorStateMatcher]="matcher">
@@ -8,22 +8,24 @@
             </mat-error>
         </mat-form-field>
         <mat-form-field class="example-full-width">
+            <mat-label>Select an option</mat-label>
+            <mat-select [(value)]="selected" (selectionChange)="onChange()">
+                <mat-option value="General">General</mat-option>
+                <mat-option value="Great Britain Postmarks">Great Britain Postmarks</mat-option>
+                <mat-option value="US Perfin Covers">US Perfin Covers</mat-option>
+                <mat-option value="US Pre-Cancel Errors">US Pre-Cancel Errors</mat-option>
+                <mat-option value="Australia KGV Plate">Australia KGV Plate</mat-option>        
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
             <input matInput placeholder="Author" formControlName="author" [errorStateMatcher]="matcher">
             <mat-error>
                 <span *ngIf="!blogGalleryForm.get('author').valid && blogGalleryForm.get('author').touched">
                     Please enter the author</span>
             </mat-error>
-        </mat-form-field>
-        <!-- <mat-form-field class="example-full-width">
-            <textarea matInput placeholder="Details" formControlName="details" [errorStateMatcher]="matcher"></textarea>
-            <mat-error>
-                <span *ngIf="!blogGalleryForm.get('details').valid && blogGalleryForm.get('details').touched">
-                    Please enter the details</span>
-            </mat-error>
-        </mat-form-field> -->
+        </mat-form-field>        
         <div id="toolbar-container"></div>
-        <div style="height:150px;border: solid 1px gray;overflow: auto;" id="editor">
-        
+        <div style="height:250px;border: solid 1px gray;overflow: auto;" id="editor">        
         </div>
         <mat-form-field class="example-full-width">
             <input matInput placeholder="Image" formControlName="image" [errorStateMatcher]="matcher">

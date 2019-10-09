@@ -23,7 +23,10 @@ export class ModalGalleryComponent implements OnInit {
   image: string = '';
   author:string = '';
   details:string = '';
+  category:string = '';
   matcher: string = '';
+  public selectedIndex = 0;
+  public selected = "General";
   imagePathAndFilename: string = '';
   uploadOnly: boolean = false;
   editor: DecoupledEditor = null;
@@ -63,6 +66,7 @@ export class ModalGalleryComponent implements OnInit {
 
     this.blogGalleryForm = this.formBuilder.group({
       'title': ['', Validators.required],
+      'category': [this.selected, !Validators.required],
       'author': ['', Validators.required],
       'details': ['', !Validators.required],
       'image': ['', Validators.required],
@@ -85,10 +89,12 @@ export class ModalGalleryComponent implements OnInit {
         this.galleryItemObject.image = this.imagePathAndFilename;
         this.galleryItemObject.title = this.blogGalleryForm.get('title').value;
         this.galleryItemObject.author = this.blogGalleryForm.get('author').value;
+        this.galleryItemObject.category = this.selected;
         this.galleryItemObject.details = this.editor.getData();
         this.blogGalleryForm.setValue({
         image: this.galleryItemObject.image,        
         title: this.galleryItemObject.title,
+        category: this.galleryItemObject.category,
         author: this.galleryItemObject.author,
         details: this.galleryItemObject.details
       });
@@ -99,18 +105,22 @@ export class ModalGalleryComponent implements OnInit {
     this.apiService.getGalleryItem(id)
       .subscribe(data => {
         console.log(data);
+        console.log(this.selected);
         this.galleryItemObject = data;
         this.blogGalleryForm.setValue({
           title: data.title,
           author: data.author,
           details: data.details,
+          category: data.category,
           image: data.image
-        });
+        });        
+        this.selected = data.category;
         this.editor.setData(data.details);
       });
   }  
   
   onFormSubmit(form: any) {
+    form.category = this.selected;
     form.details = this.editor.getData();      
     this.onAdd.emit();
     if (this.id != '' && this.id != null && this.id != undefined && this.id != 'id')
@@ -131,5 +141,10 @@ export class ModalGalleryComponent implements OnInit {
         }
       );
     }
+  }
+
+  onChange() {
+    console.log(this.selected);
+    this.category = this.selected;    
   }
 }

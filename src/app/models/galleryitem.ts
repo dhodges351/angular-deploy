@@ -3,10 +3,12 @@ export class GalleryItem {
       this.title = '';
       this.author = '';
       this.image = '';
-      this.details = '';      
+      this.details = '';
+      this.category = '';  
     }    
     public title;
     public author;
     public image;  
-    public details; 
+    public details;
+    public category;
 }

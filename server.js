@@ -397,7 +397,8 @@ app.put("/api/gallery/:id", function(req, res) {
   db.collection(GALLERY_COLLECTION).updateOne(
     {"_id": new ObjectID(req.params.id)}, 
     { $set: {      
-      "title":updateDoc.title, 
+      "title":updateDoc.title,
+      "category":updateDoc.category, 
       "author":updateDoc.author, 
       "image":updateDoc.image,
       "details":updateDoc.details,
