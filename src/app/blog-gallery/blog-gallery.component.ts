@@ -6,6 +6,7 @@ import { ModalGalleryComponent } from '../modal/modal-gallery.component';
 import { FileUploader } from 'ng2-file-upload';
 import { environment } from '../../environments/environment';
 import { Router, ActivatedRoute } from '@angular/router';
+import * as _ from 'underscore';
 
 const URL = environment.apiUrl + '/upload';
 
@@ -57,7 +58,7 @@ export class BlogGalleryComponent implements OnInit {
         console.log(res); 
         if (res)
         {           
-          this.galleryItems = res;           
+          this.processGalleryItems(res);        
         }       
         }, err => {
           console.log(err);
@@ -70,8 +71,8 @@ export class BlogGalleryComponent implements OnInit {
       .subscribe(res => {
         console.log(res); 
         if (res)
-        {           
-          this.galleryItems = res.filter(o => o.category == this.selected);
+        {   
+          this.processGalleryItems(res);
         }       
       }, err => {
         console.log(err);
@@ -101,11 +102,18 @@ export class BlogGalleryComponent implements OnInit {
         console.log(res); 
         if (res)
         {           
-          this.galleryItems = res.filter(o => o.category == this.selected);
+          this.processGalleryItems(res);
         }       
       }, err => {
         console.log(err);
     });    
+  }
+
+  processGalleryItems(res)
+  {
+    let sortedArray = _.sortBy(res, 'title').reverse(); 
+    this.galleryItems = sortedArray;         
+    this.galleryItems = res.filter(o => o.category == this.selected);
   }
 
 }
