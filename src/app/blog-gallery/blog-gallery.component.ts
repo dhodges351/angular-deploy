@@ -7,6 +7,7 @@ import { FileUploader } from 'ng2-file-upload';
 import { environment } from '../../environments/environment';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as _ from 'underscore';
+import { StateService } from '../state.service';
 
 const URL = environment.apiUrl + '/upload';
 
@@ -31,7 +32,7 @@ export class BlogGalleryComponent implements OnInit {
   public selectedIndex = 0;
   public selected = "General";
 
-  constructor(private router: Router, private route: ActivatedRoute, private apiService: ApiService, public dialog: MatDialog) 
+  constructor(public stateSvc: StateService, private router: Router, private route: ActivatedRoute, private apiService: ApiService, public dialog: MatDialog) 
   {     
     this.loggedInUser = localStorage.getItem('Item 1');   
     if (this.loggedInUser == null || this.loggedInUser == '' || this.loggedInUser.indexOf('@') > 0)
@@ -41,7 +42,6 @@ export class BlogGalleryComponent implements OnInit {
   }
 
   public uploader: FileUploader = new FileUploader({ url: URL, itemAlias: 'photo' });
-
 
   openDialog(_id): void {
     const dialogRef = this.dialog.open(ModalGalleryComponent, {     
@@ -66,7 +66,8 @@ export class BlogGalleryComponent implements OnInit {
     });
   }
 
-  ngOnInit() {    
+  ngOnInit() {         
+
     this.apiService.getGalleryItems()
       .subscribe(res => {
         console.log(res); 
@@ -110,10 +111,15 @@ export class BlogGalleryComponent implements OnInit {
   }
 
   processGalleryItems(res)
-  {
-    let sortedArray = _.sortBy(res, 'title').reverse(); 
-    this.galleryItems = sortedArray;         
-    this.galleryItems = res.filter(o => o.category == this.selected);
+  {    
+    if (this.stateSvc.fromGalleryDetailsCategory != "")
+    {
+      this.selected = this.stateSvc.fromGalleryDetailsCategory;
+    }          
+    this.galleryItems = res.filter(o => o.category == this.selected); 
+    let sortedArray = _.sortBy(this.galleryItems, 'title'); 
+    this.galleryItems = sortedArray;  
+    this.stateSvc.fromGalleryDetailsCategory = "";   
   }
 
 }

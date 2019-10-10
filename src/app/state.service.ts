@@ -5,6 +5,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 export class StateService {
 
   public fromGalleryDetails: boolean = false;
+  public fromGalleryDetailsCategory: string = "";
 
   // BehaviorSubject to store UserName
   private currentUserNameStore = new Subject<any>();

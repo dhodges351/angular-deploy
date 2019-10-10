@@ -40,8 +40,9 @@ export class BlogGalleryDetailsComponent implements OnInit {
   }
 
   returnToGallery()
-  {
+  {    
     this.stateSvc.fromGalleryDetails = true;
+    this.stateSvc.fromGalleryDetailsCategory = this.category;
     this.router.navigate(['/home']);
   }
 
