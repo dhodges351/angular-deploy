@@ -14,6 +14,7 @@ const blogPostUrl = apiUrl + '/blogposts';
 const blogContentUrl = apiUrl + '/blogcontents';
 const commentUrl = apiUrl + '/comments';
 const galleryUrl = apiUrl + '/gallery';
+const galleryS3Url = apiUrl + '/s3upload';
 
 @Injectable({
   providedIn: 'root'
@@ -199,5 +200,5 @@ export class ApiService {
     return this.http.get(galleryUrl, httpOptions).pipe(
       map(this.extractData),
       catchError(this.handleError));
-  }    
+  } 
 }

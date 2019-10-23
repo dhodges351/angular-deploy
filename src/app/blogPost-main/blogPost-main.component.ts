@@ -28,6 +28,7 @@ export class BlogPostMainComponent implements OnInit {
   error: {};
   value:string = '';
   isShown: boolean = true;
+  imageList:Array<string> = new Array<string>();
 
   constructor(public stateSvc: StateService, router: Router, private route: ActivatedRoute, private apiService: ApiService, public dialog: MatDialog) 
   {
@@ -35,7 +36,7 @@ export class BlogPostMainComponent implements OnInit {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(ModalComponent, {
-      width: '600px', data: { title: '' },
+      width: '650px', data: { title: '' },
     });
     
     const sub = dialogRef.componentInstance.onAdd.subscribe(() => {
@@ -56,17 +57,38 @@ export class BlogPostMainComponent implements OnInit {
         {
           let sortedArray = _.sortBy(res, 'createdAt').reverse(); 
           this.blogs = sortedArray;          
-          this.blogContent = res.filter(o => o.currentBlog == true);
+          this.blogContent = res.filter(o => o.currentBlog == true);         
           this.title = this.blogContent[0].title;
           this.image = this.blogContent[0].image;
           this.category = this.blogContent[0].category;
           this.content = this.blogContent[0].content;
           this.value = this.content;
           this.createdAt = this.blogContent[0].createdAt;
-          if (this.image == null || this.image == '')
+
+          if (this.image && this.image.length > 0)
+          {
+            if (this.image.toString().indexOf(',') > 0)
+            {
+                var fileNames = this.image.toString().split(',');
+                fileNames.forEach(element => {
+                  var fileName = element.replace(' ', '');
+                  if (fileName.length > 0)
+                  {
+                    this.imageList.push('https://gourmet-philatelist-assets.s3.amazonaws.com/folder/' + fileName);
+                  }
+                });
+            }
+            else
+            {
+              this.imageList.push(this.image);
+            }
+            this.isShown = true;          
+          }
+
+          if (this.image == null || this.image == '' || this.imageList.length == 0)
           {
             this.isShown = false;
-          }
+          }          
           if (this.stateSvc.fromGalleryDetails)
           {
             HomeComponent.homeApp.selectedIndex = 2;
@@ -74,13 +96,11 @@ export class BlogPostMainComponent implements OnInit {
         }       
       }, err => {
         console.log(err);
-    }); 
-   
-    
+    });     
   }  
 
   setCurrentBlog(id)
-  {
+  {   
     this.apiService.getBlogContentDetails(id).subscribe(data => {
       this.blogContent = data;
       this.title = data.title;
@@ -89,6 +109,28 @@ export class BlogPostMainComponent implements OnInit {
       this.content = data.content;
       this.value = this.content;
       this.createdAt = data.createdAt;
+
+      this.imageList = new Array<string>();
+      if (this.image && this.image.length > 0)
+      {
+        if (this.image.toString().indexOf(',') > 0)
+        {
+            var fileNames = this.image.toString().split(',');
+            fileNames.forEach(element => {
+              var fileName = element.replace(' ', '');
+              if (fileName.length > 0)
+              {
+                this.imageList.push('https://gourmet-philatelist-assets.s3.amazonaws.com/folder/' + fileName);
+              }
+            });
+        }
+        else
+        {
+          this.imageList.push(this.image);
+        }
+        this.isShown = true; 
+      }
+
       if (this.image == null || this.image == '')
       {
         this.isShown = false;

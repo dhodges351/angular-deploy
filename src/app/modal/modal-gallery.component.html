@@ -14,7 +14,7 @@
                 <mat-option value="Great Britain Postmarks">Great Britain Postmarks</mat-option>
                 <mat-option value="US Perfin Covers">US Perfin Covers</mat-option>
                 <mat-option value="US Pre-Cancel Errors">US Pre-Cancel Errors</mat-option>
-                <mat-option value="Australia KGV Plate">Australia KGV Plate</mat-option>        
+                <mat-option value="Australia KGV Plate">Australia KGV Plate</mat-option>
             </mat-select>
         </mat-form-field>
         <mat-form-field class="example-full-width">
@@ -23,9 +23,9 @@
                 <span *ngIf="!blogGalleryForm.get('author').valid && blogGalleryForm.get('author').touched">
                     Please enter the author</span>
             </mat-error>
-        </mat-form-field>        
+        </mat-form-field>
         <div id="toolbar-container"></div>
-        <div style="height:250px;border: solid 1px gray;overflow: auto;" id="editor">        
+        <div style="height:250px;border: solid 1px gray;overflow: auto;" id="editor">
         </div>
         <mat-form-field class="example-full-width">
             <input matInput placeholder="Image" formControlName="image" [errorStateMatcher]="matcher">
@@ -38,12 +38,11 @@
         <div class="button-row">
             <button type="submit" [disabled]="!blogGalleryForm.valid" mat-raised-button color="primary">
                 <mat-icon>save</mat-icon>
-            </button>
-            &nbsp;&nbsp;<input type="file" name="photo" ng2FileSelect [uploader]="uploader" />
-            <button mat-raised-button [disabled]="!uploader.getNotUploadedItems().length"
-                (click)="$event.preventDefault(); uploader.uploadAll()">
-                Upload Image
-            </button>           
-        </div>
+            </button>   
+            <label class="btn btn-default">
+                <input type="file" (change)="selectFile($event)">
+            </label>              
+            <button class="btn btn-success" [disabled]="!selectedFiles" (click)="$event.preventDefault(); upload()">Upload</button>
+        </div> 
     </form>
 </div>

@@ -32,9 +32,11 @@
       <button type="submit" [disabled]="!blogContentForm.valid" mat-raised-button color="primary">
         <mat-icon>save</mat-icon>
       </button>
-      &nbsp;&nbsp;<input type="file" name="photo" ng2FileSelect [uploader]="uploader" />
-      <button mat-raised-button [disabled]="!uploader.getNotUploadedItems().length" (click)="setFlag(); uploader.uploadAll()">
-        Upload Image
+      <label class="btn btn-default">
+        <input type="file" (change)="selectFile($event)">
+      </label>              
+      <button class="btn btn-success" [disabled]="!selectedFiles" (click)="$event.preventDefault(); upload()">
+        Upload
       </button>
       &nbsp;<button mat-button (click)="returnHome()">
           RETURN

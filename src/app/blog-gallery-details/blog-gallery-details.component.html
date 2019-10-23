@@ -2,8 +2,8 @@
     <mat-card>
         <mat-card-title>{{title}}</mat-card-title>
         <mat-card-subtitle>{{category}}</mat-card-subtitle>
-        <div style="margin-bottom:40px;text-align: center;">
-            <img height="35%" width="35%" src="{{image}}" alt="photo"> 
+        <div style="margin-bottom:40px;text-align: center;">           
+            <img height="35%" width="35%" *ngFor="let image of imageList;" src="{{image}}" alt="photo"> 
         </div>
         <mat-card-content>
             <span [innerHtml]="value"></span>

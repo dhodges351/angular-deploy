@@ -1,9 +1,9 @@
-<div class="button-row">
-  <a mat-raised-button color="primary" (click)="addPost()">
+<div class="button-row" fxLayout fxShow="{{detailsEditOpen ?'false':'true'}}">
+  <a mat-raised-button color="primary" (click)="openDialog()">
     <mat-icon>add</mat-icon>
   </a>
 </div>
-<ul id="mainUL" fxLayout fxShow="{{listOpen ?'true':'false'}}" #sectionToScrollTo *ngFor="let blogPost of blogPosts">
+<ul fxLayout fxShow="{{listOpen ?'true':'false'}}" #sectionToScrollTo *ngFor="let blogPost of blogPosts">
   <mat-card>
     <table>
       <tr>
@@ -14,7 +14,7 @@
             <p>
               {{blogPost.author}} - {{blogPost.createdAt | date: 'MM/dd/yyyy HH:mm:ss'}}              
               <br />
-              {{blogPost.short_desc}}
+              <span [innerHtml]="blogPost.short_desc"></span>
             </p>
           </div>
         </td>
@@ -128,23 +128,20 @@
             Author</span>
         </mat-error>
       </mat-form-field>
-      <mat-form-field class="example-full-width">
-        <textarea matInput placeholder="Short Description" formControlName="short_desc"
-          [errorStateMatcher]="matcher"></textarea>
-        <mat-error>
-          <span *ngIf="!blogPostForm.get('short_desc').valid && blogPostForm.get('short_desc').touched">Please enter
-            Blog Post Short Description</span>
-        </mat-error>
-      </mat-form-field>
+      <div id="toolbar-container2"></div>
+      <div style="height:150px;border: solid 1px gray;overflow: auto;" id="editor2">
+      
+      </div>
       <div class="button-row">
         <button [disabled]="!blogPostForm.valid" mat-raised-button color="primary"
           (click)="saveForm(blogPostForm.value)">
           <mat-icon>save</mat-icon>
         </button>
-        &nbsp;&nbsp;<input type="file" name="photo" ng2FileSelect [uploader]="uploader" />
-        <button mat-raised-button [disabled]="!uploader.getNotUploadedItems().length"
-          (click)="$event.preventDefault(); this.uploader.uploadAll();">
-          Upload Image
+        <label class="btn btn-default">
+          <input type="file" (change)="selectFile($event)">
+        </label>              
+        <button class="btn btn-success" [disabled]="!selectedFiles" (click)="$event.preventDefault(); upload()">
+          Upload
         </button>
         <button mat-button (click)="swapWhatIsOpen('list')">
           RETURN

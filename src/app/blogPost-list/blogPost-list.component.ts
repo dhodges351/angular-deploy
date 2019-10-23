@@ -3,16 +3,16 @@ import { ApiService } from '../api.service';
 import { Blogpost } from "../models/blogpost";
 import { Comment } from '../models/comment';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
-import { FileUploader } from 'ng2-file-upload';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { ModalCommentComponent } from '../modal/modal-comment.component';
 import { ModalComponent } from '../modal/modal.component';
-import { DOCUMENT } from '@angular/common';
 import { AuthService } from 'src/app/auth/auth.service';
 import * as _ from 'lodash';
 import { environment } from '../../environments/environment';
+import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
+import { UploadFileService } from '../upload-file.service';
 
 const URL = environment.apiUrl + '/upload';
 
@@ -38,8 +38,7 @@ export class BlogPostListComponent implements OnInit {
   blogPost: Blogpost;
   loggedInUser: string = '';
   imagePathAndFilename: string = '';
-  uploadOnly: boolean = false;
-  public uploader: FileUploader = new FileUploader({ url: URL, itemAlias: 'photo' });
+  uploadOnly: boolean = false;  
   commentsOpen: boolean = false;
   detailsEditOpen: boolean = false;
   listOpen: boolean = true;
@@ -51,7 +50,9 @@ export class BlogPostListComponent implements OnInit {
   dataSource1: any;
   startSet:number = 0;
   endSet:number = 5; 
-  profileJson: string = '';  
+  profileJson: string = '';
+  editor: DecoupledEditor; 
+  selectedFiles: FileList;
 
   constructor(private api: ApiService,
     private route: ActivatedRoute,
@@ -59,13 +60,30 @@ export class BlogPostListComponent implements OnInit {
     public dialog: MatDialog,
     private formBuilder: FormBuilder,    
     public snackBar: MatSnackBar,
-    private auth: AuthService
+    private auth: AuthService,
+    private uploadService: UploadFileService, 
   ) 
   {
-    BlogPostListComponent.blogPostListApp = this;
+    BlogPostListComponent.blogPostListApp = this;    
   }
 
-  public ngOnInit() {
+  openDialog(): void {
+
+    const dialogRef = this.dialog.open(ModalComponent, {
+      width: '700px', data: { title: '' },
+    });
+    
+    const sub = dialogRef.componentInstance.onAdd.subscribe(() => {
+      BlogPostListComponent.blogPostListApp.ngOnInit(); 
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      const unsub = dialogRef.componentInstance.onAdd.unsubscribe();      
+    });
+  }
+
+  public ngOnInit() {  
+    
     this.loggedInUser = localStorage.getItem('Item 1');   
     if (this.loggedInUser == null || this.loggedInUser == '' || this.loggedInUser.indexOf('@') > 0)
     {
@@ -77,7 +95,7 @@ export class BlogPostListComponent implements OnInit {
       'image': ['', !Validators.required],
       'title': ['', Validators.required],
       'category': ['', Validators.required],
-      'short_desc': ['', Validators.required],
+      'short_desc': ['', !Validators.required],
       'author': ['', Validators.required],
     });
 
@@ -86,28 +104,16 @@ export class BlogPostListComponent implements OnInit {
         console.log(res);
         this.blogPosts = res;  
 
+        this.blogPosts.forEach(element => {          
+          var imageUrl = 'https://gourmet-philatelist-assets.s3.amazonaws.com/folder/' + element.image;
+          element.image = imageUrl;
+        });
+
         this.blogPosts = this.blogPosts.slice(this.startSet, this.endSet);     
         this.dataSource = this.blogPosts;     
       }, err => {
         console.log(err);
-      });
-
-    this.uploader.onAfterAddingFile = (file) => {
-      file.withCredentials = false;
-    };    
-
-    this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
-      console.log('ImageUpload:uploaded:', item, status, response);
-      this.imagePathAndFilename = 'assets/images/' + item._file.name;
-      this.blogPost = this.blogPostForm.getRawValue();
-      this.blogPostForm.setValue({
-        image: this.imagePathAndFilename,
-        title: this.blogPost.title,
-        category: this.blogPost.category,
-        author: this.blogPost.author,
-        short_desc: this.blogPost.short_desc,
-      });
-    };  
+      });     
   }
 
   scrollToTop() {    
@@ -135,9 +141,14 @@ export class BlogPostListComponent implements OnInit {
       );
   }
 
-  getBlogPost(id) {
+  getBlogPost(id) {    
     this.api.getBlogPost(id).subscribe(data => {
+      this.blogPost = data;
       this.id = data._id;
+      if (this.editor != null)
+      {
+        this.editor.setData(data.short_desc); 
+      }      
       this.blogPostForm.setValue({
         image: data.image,
         title: data.title,
@@ -148,7 +159,8 @@ export class BlogPostListComponent implements OnInit {
     });
   }
 
-  saveForm(form: NgForm) {
+  saveForm(form: any) {    
+    form.short_desc = this.editor.getData();
     this.api.updateBlogPost(this.id, form)
       .subscribe(res => {
         let id = res['_id'];
@@ -156,7 +168,11 @@ export class BlogPostListComponent implements OnInit {
         this.api.getBlogPosts()
           .subscribe(res => {
             console.log(res);
-            this.blogPosts = res;
+            this.blogPosts = res;            
+            this.blogPosts.forEach(element => {          
+              var imageUrl = 'https://gourmet-philatelist-assets.s3.amazonaws.com/folder/' + element.image;
+              element.image = imageUrl;
+            });
             if (this.blogPosts && this.blogPosts.length > 0) {              
               this.swapWhatIsOpen('list');
             }
@@ -166,11 +182,21 @@ export class BlogPostListComponent implements OnInit {
       }, (err) => {
         console.log(err);
       }
-      );
+    );
   }
 
-  editItem(id) {
-    this.getBlogPost(id);   
+  editItem(id) {      
+    DecoupledEditor
+    .create( document.querySelector( '#editor2' ) )
+    .then( editor => {
+        const toolbarContainer = document.querySelector( '#toolbar-container2' );
+        toolbarContainer.appendChild( editor.ui.view.toolbar.element );        
+        this.editor = editor;        
+    } )
+    .catch( error => {
+        console.error( error );
+    } );
+    this.getBlogPost(id);     
     this.swapWhatIsOpen('detailsEdit');  
   }
 
@@ -194,26 +220,12 @@ export class BlogPostListComponent implements OnInit {
       this.id = '';     
       this.detailsEditOpen = false;
       this.listOpen = true;
-    }    
-  }
-
-  addPost() {
-    const dialogRef = this.dialog.open(ModalComponent, {
-      width: '600px', data: { blogPostId: this.id },
-    });
-
-    const sub = dialogRef.componentInstance.onAdd.subscribe(() => {
-      this.ngOnInit();
-    });
-
-    dialogRef.afterClosed().subscribe(() => {
-      const unsub = dialogRef.componentInstance.onAdd.unsubscribe();
-    });
-  }
+    }
+  } 
 
   addComment(id) {
     const dialogRef = this.dialog.open(ModalCommentComponent, {
-      width: '550px', data: { blogPostId: id },
+      width: '650px', data: { blogPostId: id },
     });
 
     const sub = dialogRef.componentInstance.onAdd.subscribe(() => {
@@ -330,5 +342,38 @@ export class BlogPostListComponent implements OnInit {
 
       }
   }
+
+  upload() {
+    this.blogPost.image = '';
+    this.imagePathAndFilename = '';
+    const file = this.selectedFiles.item(0);
+    this.uploadService.uploadfile(file).subscribe(
+      data => {
+        if (data) {          
+          this.imagePathAndFilename = file.name;
+          this.uploadOnly = false;
+          this.blogPost.image = this.imagePathAndFilename;
+          this.blogPost.title = this.blogPostForm.get('title').value;
+          this.blogPost.author = this.blogPostForm.get('author').value;
+          this.blogPost.category = this.blogPostForm.get('category').value;
+          this.blogPost.short_desc = this.editor.getData();
+          this.blogPostForm.setValue({
+            image: this.imagePathAndFilename,          
+            title: this.blogPost.title,
+            category: this.blogPost.category,
+            author: this.blogPost.author,
+            short_desc: this.blogPost.short_desc
+          });
+          this.openSnackBar('Image uploaded!', '');
+        }
+      }, 
+      error => {
+        console.error( error );
+      });
+  }
+  
+  selectFile(event) {
+    this.selectedFiles = event.target.files;
+    }
   
 }

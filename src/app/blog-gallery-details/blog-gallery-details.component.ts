@@ -19,6 +19,7 @@ export class BlogGalleryDetailsComponent implements OnInit {
   title:string = '';  
   details:string = '';
   value:string = '';
+  imageList:Array<string> = new Array<string>();
 
   constructor(public stateSvc: StateService, private router: Router, private route: ActivatedRoute, private apiService: ApiService, private formBuilder: FormBuilder) 
   { }  
@@ -31,6 +32,23 @@ export class BlogGalleryDetailsComponent implements OnInit {
   getGalleryItemDetails(id) {
     this.apiService.getGalleryItem(id).subscribe(data => {      
       this.blogGalleryItem = data;
+      if (this.blogGalleryItem)
+      {
+          if (this.blogGalleryItem.image && this.blogGalleryItem.image.length > 0)
+          {
+            if (this.blogGalleryItem.image.toString().indexOf(',') > 0)
+            {
+                var fileNames = this.blogGalleryItem.image.toString().split(',');
+                fileNames.forEach(element => {
+                  var fileName = element.replace(' ', '');
+                  if (fileName.length > 0)
+                  {
+                    this.imageList.push('https://gourmet-philatelist-assets.s3.amazonaws.com/folder/' + fileName);
+                  }
+                 });
+             }      
+          }
+      }
       this.title = data.title;
       this.category = data.category;
       this.image = data.image;

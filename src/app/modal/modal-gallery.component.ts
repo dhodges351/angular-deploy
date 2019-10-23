@@ -7,6 +7,9 @@ import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Valida
 import { FileUploader,  FileUploaderOptions} from 'ng2-file-upload';
 import { environment } from '../../environments/environment';
 import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
+import { UploadFileService } from '../upload-file.service';
+import { StateService } from '../state.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 const URL = environment.apiUrl + '/upload';
 
@@ -27,20 +30,22 @@ export class ModalGalleryComponent implements OnInit {
   matcher: string = '';
   public selectedIndex = 0;
   public selected = "General";
-  imagePathAndFilename: string = '';
-  uploadOnly: boolean = false;
-  editor: DecoupledEditor = null;
-  public uploader: FileUploader = new FileUploader({url: URL, itemAlias: 'photo'});
+  imagePathAndFilename: string = '';  
+  editor: DecoupledEditor = null;  
+  selectedFiles: FileList;
 
   constructor(public dialogRef: MatDialogRef<ModalGalleryComponent>,     
     private router: Router, private route: ActivatedRoute, 
     private apiService: ApiService, 
     private formBuilder: FormBuilder,
+    private uploadService: UploadFileService,
+    public stateSvc: StateService,
+    public snackBar: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) 
   {
     this.galleryItemObject = new GalleryItem();
-  } 
+  }    
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -52,7 +57,7 @@ export class ModalGalleryComponent implements OnInit {
     this.dialogRef.close(); 
   }
 
-  ngOnInit() {
+  ngOnInit() {    
     DecoupledEditor
     .create( document.querySelector( '#editor' ) )
     .then( editor => {
@@ -77,28 +82,7 @@ export class ModalGalleryComponent implements OnInit {
     if (this.id != '' && this.id != null && this.id != undefined && this.id != 'id')
     {
       this.getGalleryItemDetails(this.id);      
-    }
-    
-    this.uploader.onAfterAddingFile = (file) => { 
-      file.withCredentials = false; 
-    };
-
-    this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
-        console.log('ImageUpload:uploaded:', item, status, response);
-        this.imagePathAndFilename = 'assets/images/' + item._file.name;
-        this.galleryItemObject.image = this.imagePathAndFilename;
-        this.galleryItemObject.title = this.blogGalleryForm.get('title').value;
-        this.galleryItemObject.author = this.blogGalleryForm.get('author').value;
-        this.galleryItemObject.category = this.selected;
-        this.galleryItemObject.details = this.editor.getData();
-        this.blogGalleryForm.setValue({
-        image: this.galleryItemObject.image,        
-        title: this.galleryItemObject.title,
-        category: this.galleryItemObject.category,
-        author: this.galleryItemObject.author,
-        details: this.galleryItemObject.details
-      });
-     };     
+    }    
   }  
 
   getGalleryItemDetails(id) {
@@ -118,14 +102,44 @@ export class ModalGalleryComponent implements OnInit {
         this.editor.setData(data.details);
       });
   }  
+
+  upload() {
+    const file = this.selectedFiles.item(0);
+    this.uploadService.uploadfile(file).subscribe(
+      data => {
+        if (data) {          
+          this.imagePathAndFilename += file.name + ', ';
+          this.galleryItemObject.image = this.imagePathAndFilename;
+          this.galleryItemObject.title = this.blogGalleryForm.get('title').value;
+          this.galleryItemObject.author = this.blogGalleryForm.get('author').value;
+          this.galleryItemObject.category = this.selected;
+          this.galleryItemObject.details = this.editor.getData();
+          this.blogGalleryForm.setValue({
+          image: this.galleryItemObject.image,        
+          title: this.galleryItemObject.title,
+          category: this.galleryItemObject.category,
+          author: this.galleryItemObject.author,
+          details: this.galleryItemObject.details
+        });
+          this.openSnackBar('Image uploaded!', '');
+        }
+      }, 
+      error => {
+        console.error( error );
+      });
+  }
+
+  selectFile(event) {
+    this.selectedFiles = event.target.files;
+  }
   
   onFormSubmit(form: any) {
     form.category = this.selected;
-    form.details = this.editor.getData();      
+    form.details = this.editor.getData(); 
+    form.image = this.imagePathAndFilename;     
     this.onAdd.emit();
     if (this.id != '' && this.id != null && this.id != undefined && this.id != 'id')
-    {
-      
+    {      
       this.apiService.updateGalleryItem(this.id, form)
       .subscribe(data => {        
         this.onClose(); 
@@ -146,5 +160,12 @@ export class ModalGalleryComponent implements OnInit {
   onChange() {
     console.log(this.selected);
     this.category = this.selected;    
+  }
+
+  openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+      duration: 2000,
+      verticalPosition: 'top'
+    });
   }
 }

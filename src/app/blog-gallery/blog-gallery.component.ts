@@ -10,6 +10,7 @@ import * as _ from 'underscore';
 import { StateService } from '../state.service';
 
 const URL = environment.apiUrl + '/upload';
+declare var TextDecoder;
 
 @Component({
   selector: 'app-blog-gallery',
@@ -66,8 +67,7 @@ export class BlogGalleryComponent implements OnInit {
     });
   }
 
-  ngOnInit() {         
-
+  ngOnInit() { 
     this.apiService.getGalleryItems()
       .subscribe(res => {
         console.log(res); 
@@ -77,8 +77,9 @@ export class BlogGalleryComponent implements OnInit {
         }       
       }, err => {
         console.log(err);
-    });    
+    });
   } 
+
 
   deleteItem(id)
   {
@@ -117,9 +118,23 @@ export class BlogGalleryComponent implements OnInit {
       this.selected = this.stateSvc.fromGalleryDetailsCategory;
     }          
     this.galleryItems = res.filter(o => o.category == this.selected); 
-    let sortedArray = _.sortBy(this.galleryItems, 'title'); 
-    this.galleryItems = sortedArray;  
+    if (this.galleryItems && this.galleryItems.length > 0)
+    {
+      let sortedArray = _.sortBy(this.galleryItems, 'title'); 
+      this.galleryItems = sortedArray;
+
+      this.galleryItems.forEach(element => {
+        if (element.image && element.image.length > 0)
+        {
+            if (element.image.toString().indexOf(',') > 0)
+            {
+                var fileNames = element.image.toString().split(',');
+                var fileName = fileNames[0].replace(' ','');
+                element.image = 'https://gourmet-philatelist-assets.s3.amazonaws.com/folder/' + fileName;
+            }
+          }
+      });      
+    }
     this.stateSvc.fromGalleryDetailsCategory = "";   
   }
-
 }

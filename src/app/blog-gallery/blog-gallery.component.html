@@ -19,9 +19,9 @@
 </div>
 <div class="container margin-top-20" fxLayout="row wrap" fxLayoutAlign="space-evenly stretch" fxLayoutGap="5px">   
     <mat-card fxFlex="0 1 calc(20% - 10px)" *ngFor="let galleryItem of galleryItems; let i = index" class="galleryItem" fxLayout="column">
-        <mat-card-title>{{galleryItem.title}}</mat-card-title>
-        <mat-card-subtitle style="text-align:center;">{{galleryItem.category}}</mat-card-subtitle>
-      <img class="image" mat-card-image src="{{galleryItem.image}}" alt="photo"> 
+      <mat-card-title>{{galleryItem.title}}</mat-card-title>
+      <mat-card-subtitle style="text-align:center;">{{galleryItem.category}}</mat-card-subtitle>
+      <img class="image" mat-card-image src="{{galleryItem.image}}" alt="photo">     
       <br />
       <a [routerLink]="['/galleryDetails/',galleryItem._id]">Details...</a>
       <mat-card-actions fxFlexAlign="end" align="end">

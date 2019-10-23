@@ -3,11 +3,10 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../api.service';
 import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
-import { FileUploader} from 'ng2-file-upload';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Blogpost } from "../models/blogpost";
-
-const URL = '/api/upload';
+import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
+import { UploadFileService } from '../upload-file.service';
 
 @Component({
   selector: 'app-modal',
@@ -27,15 +26,17 @@ export class ModalComponent implements OnInit {
   imagePathAndFilename: string = '';
   uploadOnly: boolean = false;
   matcher: string = '';
-  public uploader: FileUploader = new FileUploader({url: URL, itemAlias: 'photo'});
-
+  editor: DecoupledEditor = null;
+  selectedFiles: FileList;
+ 
   constructor(public dialogRef: MatDialogRef<ModalComponent>,     
     private router: Router, private route: ActivatedRoute, 
     private api: ApiService, 
     private formBuilder: FormBuilder,
-    public snackBar: MatSnackBar    
-  ) 
-  { }  
+    public snackBar: MatSnackBar,
+    private uploadService: UploadFileService,   
+  ) {}
+    
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -48,31 +49,26 @@ export class ModalComponent implements OnInit {
   }  
 
   ngOnInit() {
+
+    DecoupledEditor    
+    .create( document.querySelector( '#editor' ) )
+    .then( editor => {
+        const toolbarContainer = document.querySelector( '#toolbar-container' );
+        toolbarContainer.appendChild( editor.ui.view.toolbar.element );        
+        this.editor = editor;
+    } )
+    .catch( error => {
+        console.error( error );
+    } );
+
     this.blogPost = new Blogpost();
     this.blogPostForm = this.formBuilder.group({
-      'title' : [null, !Validators.required],
-      'category' : [null, !Validators.required],
-      'short_desc' : [null, Validators.required],
+      'title' : [null, Validators.required],
+      'category' : [null, Validators.required],
+      'short_desc' : [null, !Validators.required],
       'author' : [null, Validators.required],
       'image' : [null, !Validators.required],
-    });
-
-    this.uploader.onAfterAddingFile = (file) => {      
-      file.withCredentials = false; 
-    };
-
-    this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
-        console.log('ImageUpload:uploaded:', item, status, response);       
-        this.imagePathAndFilename = 'assets/images/' + item._file.name;
-        this.blogPost = this.blogPostForm.getRawValue();
-        this.blogPostForm.setValue({        
-          image: this.imagePathAndFilename,     
-          title: this.blogPost.title,
-          category: this.blogPost.category,
-          author: this.blogPost.author,
-          short_desc: this.blogPost.short_desc,
-        });
-     };     
+    });    
   }
 
   getBlogPost(id) {
@@ -89,19 +85,19 @@ export class ModalComponent implements OnInit {
   } 
   
   onFormSubmit(form: NgForm) {
-    if (this.blogPost.image == null)
-    {
-      this.blogPost.image = "";
-    }
-    this.onAdd.emit();
-    this.api.postBlogPost(form)
-      .subscribe(res => {
-        this.openSnackBar('Blog post submitted!', '');
-        }, (err) => {
-          console.log(err);
-        }
-      );
-      this.onClose();        
+    // if (this.blogPost.image == null)
+    // {
+    //   this.blogPost.image = "";
+    // }
+    // this.onAdd.emit();
+    // this.api.postBlogPost(form)
+    //   .subscribe(res => {
+    //     this.openSnackBar('Blog post submitted!', '');
+    //     }, (err) => {
+    //       console.log(err);
+    //     }
+    //   );
+    this.onClose();        
   }
 
   openSnackBar(message: string, action: string) {
@@ -110,4 +106,44 @@ export class ModalComponent implements OnInit {
       verticalPosition: 'top'
     });
  }
+
+ upload() {
+  if (this.blogPostForm.get('image').value != null && this.blogPostForm.get('image').value.length > 0)
+  {
+    alert('Only 1 image file (less than 200K) is allowed per Blog Post.');
+    return;
+  }
+  const file = this.selectedFiles.item(0);
+  this.uploadService.uploadfile(file).subscribe(
+    data => {
+      if (data) {          
+        this.imagePathAndFilename += file.name + ', ';
+        this.uploadOnly = false;
+        this.blogPost.image = this.imagePathAndFilename;
+        this.blogPost.title = this.blogPostForm.get('title').value;
+        this.blogPost.author = this.blogPostForm.get('author').value;
+        this.blogPost.category = this.blogPostForm.get('category').value;
+        this.blogPost.short_desc = this.editor.getData();
+        this.blogPostForm.setValue({
+          image: this.imagePathAndFilename,          
+          title: this.blogPost.title,
+          category: this.blogPost.category,
+          author: this.blogPost.author,
+          short_desc: this.blogPost.short_desc
+        });
+        this.openSnackBar('Image uploaded!', '');
+      }
+    }, 
+    error => {
+      console.error( error );
+    });
+}
+
+selectFile(event) {
+  this.selectedFiles = event.target.files;
+  }
+
+  returnHome() {
+    this.router.navigate(['/home']);
+  }
 }

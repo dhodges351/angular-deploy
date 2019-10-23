@@ -1,6 +1,8 @@
 require('dotenv');
 const cors = require('cors');
 const logger = require('morgan');
+const AWS = require('aws-sdk');
+const fs = require('fs');
 const path = require('path'); 
 const express = require('express');
 const multer = require('multer');
@@ -23,6 +25,7 @@ var BLOGPOSTS_COLLECTION = "blogposts";
 var CONTACTS_COLLECTION = "contacts";
 var GALLERY_COLLECTION = "gallery";
 var db;
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors());
@@ -37,14 +40,13 @@ mongodb.MongoClient.connect(process.env.MONGODB_URI || 'mongodb://localhost:2701
   }
   // Save database object from the callback for reuse.
   db = client.db();
-  console.log("Database connection ready");
+  console.log("Database connection ready");  
 
   // Initialize the app.
   var server = app.listen(process.env.PORT || 3000, function () {
     var port = server.address().port;
     console.log("App now running on port", port);
-  });
-  
+  });  
 });
 
 // Generic error handler used by all endpoints.
@@ -63,23 +65,22 @@ let storage = multer.diskStorage({
   }
 });
 let upload = multer({storage: storage});
-
 app.get('/api', function (req, res) {
   res.end('file catcher example');
 }); 
 app.post('/api/upload',upload.single('photo'), function (req, res) {
-    if (!req.file) {
-        console.log("No file received");
-        return res.send({
-          success: false
-        });
-    
-      } else {
-        console.log('file received');
-        return res.send({
-          success: true
-        })
-      }
+  if (!req.file) {
+      console.log("No file received");
+      return res.send({
+        success: false
+      });
+  
+    } else {
+      console.log('file received');
+      return res.send({
+        success: true
+      })
+    }
 });
 app.use('/api/upload', router);
 
@@ -429,3 +430,4 @@ app.get('*', (_req, res) => {
 });
 
 module.exports = app;
+

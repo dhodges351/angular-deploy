@@ -6,6 +6,7 @@ export class StateService {
 
   public fromGalleryDetails: boolean = false;
   public fromGalleryDetailsCategory: string = "";
+  public fromGalleryS3FileLocation: string = "";
 
   // BehaviorSubject to store UserName
   private currentUserNameStore = new Subject<any>();

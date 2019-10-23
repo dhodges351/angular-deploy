@@ -7,6 +7,7 @@ import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Valida
 import { FileUploader } from 'ng2-file-upload';
 import { environment } from '../../environments/environment';
 import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
+import { UploadFileService } from '../upload-file.service';
 
 const URL = environment.apiUrl + '/upload';
 
@@ -30,13 +31,11 @@ export class BlogContentComponent implements OnInit {
   matcher: string = '';  
   data:string = '';
   editor: DecoupledEditor = null;
+  selectedFiles: FileList;
 
-  constructor(private api: ApiService, private formBuilder: FormBuilder, private router: Router, public snackBar: MatSnackBar) {
+  constructor(private uploadService: UploadFileService, private api: ApiService, private formBuilder: FormBuilder, private router: Router, public snackBar: MatSnackBar) {
     this.blogContent = new BlogContent();
-  }
-
-  public uploader: FileUploader = new FileUploader({ url: URL, itemAlias: 'photo' });
-
+  }  
   ngOnInit() {
 
     DecoupledEditor
@@ -56,29 +55,7 @@ export class BlogContentComponent implements OnInit {
       'title': ['', Validators.required],
       'category': ['', Validators.required],
       'content': ['', Validators.required],
-    });
-
-    this.uploader.onAfterAddingFile = (file) => {
-      file.withCredentials = false;
-
-    };
-    this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
-      console.log('ImageUpload:uploaded:', item, status, response);
-      this.imagePathAndFilename = 'assets/images/' + item._file.name;
-      this.uploadOnly = false;
-      this.blogContent.image = this.imagePathAndFilename;
-      this.blogContent.title = this.blogContentForm.get('title').value;
-      this.blogContent.category = this.blogContentForm.get('category').value;
-      this.blogContent.content = this.editor.getData();
-      this.blogContent.currentBlog = this.blogContentForm.get('currentBlog').value
-      this.blogContentForm.setValue({
-        image: this.blogContent.image,
-        currentBlog: this.blogContent.currentBlog,
-        title: this.blogContent.title,
-        category: this.blogContent.category,
-        content: this.blogContent.content
-      });
-    };
+    });  
   }
 
   onFormSubmit(form: any) {
@@ -100,7 +77,7 @@ export class BlogContentComponent implements OnInit {
             .subscribe(res => { }, (err) => {
               console.log(err);
             }
-            );
+          );
         }
 
         this.api.saveBlogContent(form)
@@ -131,6 +108,37 @@ export class BlogContentComponent implements OnInit {
 
   returnHome() {
     this.router.navigate(['/home']);
+  }
+
+  upload() {
+    const file = this.selectedFiles.item(0);
+    this.uploadService.uploadfile(file).subscribe(
+      data => {
+        if (data) {          
+          this.imagePathAndFilename += file.name + ', ';
+          this.uploadOnly = false;
+          this.blogContent.image = this.imagePathAndFilename;
+          this.blogContent.title = this.blogContentForm.get('title').value;
+          this.blogContent.category = this.blogContentForm.get('category').value;
+          this.blogContent.content = this.editor.getData();
+          this.blogContent.currentBlog = this.blogContentForm.get('currentBlog').value
+          this.blogContentForm.setValue({
+            image: this.blogContent.image,
+            currentBlog: this.blogContent.currentBlog,
+            title: this.blogContent.title,
+            category: this.blogContent.category,
+            content: this.blogContent.content
+          });
+          this.openSnackBar('Image uploaded!', '');
+        }
+      }, 
+      error => {
+        console.error( error );
+      });
+  }
+  
+  selectFile(event) {
+    this.selectedFiles = event.target.files;
   }
 
 }
