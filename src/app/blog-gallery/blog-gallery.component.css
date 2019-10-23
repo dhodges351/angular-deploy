@@ -45,3 +45,7 @@ mat-card-content
 .margin-top-20{
   margin-top:20px;
 }
+
+.my-Item{
+  background-color: blue;
+}
