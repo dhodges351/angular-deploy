@@ -70,12 +70,15 @@ export class BlogPostMainComponent implements OnInit {
             if (this.image.toString().indexOf(',') > 0)
             {
                 var fileNames = this.image.toString().split(',');
-                fileNames.forEach(element => {
-                  var fileName = element.replace(' ', '');
-                  if (fileName.length > 0)
+                fileNames.forEach(element => {  
+                  if (element != ' ')
                   {
-                    this.imageList.push('https://gourmet-philatelist-assets.s3.amazonaws.com/folder/' + fileName);
-                  }
+                    if (element.startsWith(' '))
+                    {
+                      element = element.toString().substr(1, element.length);
+                    }
+                    this.imageList.push('https://gourmet-philatelist-assets.s3.amazonaws.com/folder/' + element);            
+                  }   
                 });
             }
             else
@@ -115,14 +118,17 @@ export class BlogPostMainComponent implements OnInit {
       {
         if (this.image.toString().indexOf(',') > 0)
         {
-            var fileNames = this.image.toString().split(',');
-            fileNames.forEach(element => {
-              var fileName = element.replace(' ', '');
-              if (fileName.length > 0)
+          var fileNames = this.image.toString().split(',');
+          fileNames.forEach(element => {  
+            if (element != ' ')
+            {
+              if (element.startsWith(' '))
               {
-                this.imageList.push('https://gourmet-philatelist-assets.s3.amazonaws.com/folder/' + fileName);
+                element = element.toString().substr(1, element.length);
               }
-            });
+              this.imageList.push('https://gourmet-philatelist-assets.s3.amazonaws.com/folder/' + element);            
+            }   
+          });
         }
         else
         {

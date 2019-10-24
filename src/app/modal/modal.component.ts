@@ -85,18 +85,18 @@ export class ModalComponent implements OnInit {
   } 
   
   onFormSubmit(form: NgForm) {
-    // if (this.blogPost.image == null)
-    // {
-    //   this.blogPost.image = "";
-    // }
-    // this.onAdd.emit();
-    // this.api.postBlogPost(form)
-    //   .subscribe(res => {
-    //     this.openSnackBar('Blog post submitted!', '');
-    //     }, (err) => {
-    //       console.log(err);
-    //     }
-    //   );
+    if (this.blogPost.image == null)
+    {
+      this.blogPost.image = "";
+    }
+    this.onAdd.emit();
+    this.api.postBlogPost(form)
+      .subscribe(res => {
+        this.openSnackBar('Blog post submitted!', '');
+        }, (err) => {
+          console.log(err);
+        }
+      );
     this.onClose();        
   }
 

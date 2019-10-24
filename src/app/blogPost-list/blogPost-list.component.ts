@@ -104,7 +104,15 @@ export class BlogPostListComponent implements OnInit {
         console.log(res);
         this.blogPosts = res;  
 
-        this.blogPosts.forEach(element => {          
+        this.blogPosts.forEach(element => {
+          if (element.image.endsWith(' '))
+          {
+            element.image = element.image.trimRight();
+            if (element.image.endsWith(','))
+            {
+              element.image = element.image.replace(',','');
+            }
+          }     
           var imageUrl = 'https://gourmet-philatelist-assets.s3.amazonaws.com/folder/' + element.image;
           element.image = imageUrl;
         });

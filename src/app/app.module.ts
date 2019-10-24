@@ -45,7 +45,6 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { ModalGalleryComponent } from './modal/modal-gallery.component';
 import { BlogGalleryDetailsComponent } from './blog-gallery-details/blog-gallery-details.component';
 import { UploadFileService } from './upload-file.service';
-import { ConfigService } from './config.service';
 
 library.add(fas, far, fab);
 
@@ -99,7 +98,7 @@ export function hljsLanguages() {
     }),
     CKEditorModule
   ],
-  providers: [DataService, StateService, UploadFileService, ConfigService],  
+  providers: [DataService, StateService, UploadFileService],  
   entryComponents: [ModalComponent, ModalCommentComponent, ModalGalleryComponent],
   bootstrap: [AppComponent],
 })

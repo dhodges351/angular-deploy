@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import * as AWS from 'aws-sdk/global';
 import * as S3 from 'aws-sdk/clients/s3';
-import { ConfigService } from './config.service';
 import { Observable } from 'rxjs';
+import { environment } from './../environments/environment';
 
 @Injectable()
 export class UploadFileService {
@@ -12,15 +12,11 @@ export class UploadFileService {
 
   FOLDER = 'folder/';
 
-  constructor(private configService: ConfigService) 
+  constructor() 
   { 
-    var config = configService.getConfig();
-    if (config)
-    {
-      this.s3AccessKey = config.AWS_ACCESS_KEY_ID;
-      this.s3Secret = config.AWS_SECRET_ACCESS_KEY;
-      this.s3BucketName = config.S3_BUCKET_NAME;
-    }
+    this.s3AccessKey = environment.accessKey;
+    this.s3Secret = environment.secretAccessKey;
+    this.s3BucketName = environment.bucketName;
   }
 
   uploadfile(file): Observable<any> {

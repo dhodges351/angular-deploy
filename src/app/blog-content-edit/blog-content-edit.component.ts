@@ -3,9 +3,10 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../api.service';
 import { BlogContent } from '../models/blogcontent';
 import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
-import { FileUploader} from 'ng2-file-upload';
 import { environment } from '../../environments/environment';
 import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
+import { UploadFileService } from '../upload-file.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 const URL = environment.apiUrl + '/upload';
 
@@ -29,12 +30,18 @@ export class BlogContentEditComponent implements OnInit {
   matcher: string = '';
   data:string = '';
   editor: DecoupledEditor = null;
+  selectedFiles: FileList;
 
-  constructor(private router: Router, private route: ActivatedRoute, private api: ApiService, private formBuilder: FormBuilder) 
+  constructor(
+    private router: Router, 
+    private route: ActivatedRoute, 
+    private api: ApiService, 
+    private formBuilder: FormBuilder, 
+    private uploadService: UploadFileService,
+    public snackBar: MatSnackBar
+  ) 
   { }  
-
-  public uploader: FileUploader = new FileUploader({url: URL, itemAlias: 'photo'});
-
+  
   ngOnInit() {
 
     DecoupledEditor
@@ -55,30 +62,8 @@ export class BlogContentEditComponent implements OnInit {
       'image': ['', !Validators.required],
       'title': ['', Validators.required],
       'category': ['', Validators.required],
-      'content': ['', Validators.required],
-    });
-
-    this.uploader.onAfterAddingFile = (file) => { 
-      file.withCredentials = false;
-    };
-
-    this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
-      console.log('ImageUpload:uploaded:', item, status, response);       
-      this.imagePathAndFilename = 'assets/images/' + item._file.name;
-      this.uploadOnly = false;
-      this.blogContent.image = this.imagePathAndFilename;
-      this.blogContent.title = this.blogContentForm.get('title').value;
-      this.blogContent.category = this.blogContentForm.get('category').value;
-      this.blogContent.content = this.editor.getData();
-      this.blogContent.currentBlog = this.blogContentForm.get('currentBlog').value
-      this.blogContentForm.setValue({          
-        image: this.blogContent.image,  
-        currentBlog: this.blogContent.currentBlog,   
-        title: this.blogContent.title,
-        category: this.blogContent.category,
-        content: this.blogContent.content
-      });
-   };     
+      'content': ['', !Validators.required],
+    });  
   }
   
   getBlogContentDetails(id) {
@@ -142,6 +127,44 @@ export class BlogContentEditComponent implements OnInit {
   returnToAllBlogContent()
   {
     this.router.navigate(['/allBlogContent']);
+  }
+
+  openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+      duration: 2000,
+      verticalPosition: 'top'
+    });
+  }
+
+  upload() {
+    const file = this.selectedFiles.item(0);
+    this.uploadService.uploadfile(file).subscribe(
+      data => {
+        if (data) {          
+          this.imagePathAndFilename += file.name + ', ';
+          this.uploadOnly = false;
+          this.blogContent.image = this.imagePathAndFilename;
+          this.blogContent.title = this.blogContentForm.get('title').value;
+          this.blogContent.category = this.blogContentForm.get('category').value;
+          this.blogContent.content = this.editor.getData();
+          this.blogContent.currentBlog = this.blogContentForm.get('currentBlog').value
+          this.blogContentForm.setValue({
+            image: this.blogContent.image,
+            currentBlog: this.blogContent.currentBlog,
+            title: this.blogContent.title,
+            category: this.blogContent.category,
+            content: this.blogContent.content
+          });
+          this.openSnackBar('Image uploaded!', '');
+        }
+      }, 
+      error => {
+        console.error( error );
+      });
+  }
+  
+  selectFile(event) {
+    this.selectedFiles = event.target.files;
   }
   
 }

@@ -4,7 +4,11 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000/api'
+  apiUrl: 'http://localhost:3000/api',
+  accessKey: 'AKIAR6PH5KWIJP6K2YWE',
+  secretAccessKey: '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',
+  bucketName: 'gourmet-philatelist-assets',
+  MONGODB_URI: 'mongodb://heroku_758nq1fn:h4ltb7f35r4934mo0l77lm3vkt@ds253857.mlab.com:53857/heroku_758nq1fn'
 };
 
 /*
