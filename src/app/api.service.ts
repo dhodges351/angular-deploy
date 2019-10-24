@@ -14,6 +14,7 @@ const blogPostUrl = apiUrl + '/blogposts';
 const blogContentUrl = apiUrl + '/blogcontents';
 const commentUrl = apiUrl + '/comments';
 const galleryUrl = apiUrl + '/gallery';
+const configUrl = apiUrl + '/config';
 
 @Injectable({
   providedIn: 'root'
@@ -200,4 +201,10 @@ export class ApiService {
       map(this.extractData),
       catchError(this.handleError));
   } 
+
+  getConfig(): Observable<any> {
+    return this.http.get(configUrl, httpOptions).pipe(
+      map(this.extractData),
+      catchError(this.handleError));
+  }
 }

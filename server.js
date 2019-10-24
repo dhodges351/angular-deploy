@@ -1,4 +1,5 @@
 require('dotenv');
+require('dotenv').config();
 const cors = require('cors');
 const logger = require('morgan');
 const AWS = require('aws-sdk');
@@ -45,7 +46,7 @@ mongodb.MongoClient.connect(process.env.MONGODB_URI || 'mongodb://localhost:2701
   // Initialize the app.
   var server = app.listen(process.env.PORT || 3000, function () {
     var port = server.address().port;
-    console.log("App now running on port", port);
+    console.log("App now running on port", port);    
   });  
 });
 
@@ -83,6 +84,19 @@ app.post('/api/upload',upload.single('photo'), function (req, res) {
     }
 });
 app.use('/api/upload', router);
+
+app.get("/api/config", function(req, res) {
+  try {
+    var doc = '';
+    doc += process.env.AWS_ACCESS_KEY_ID + ",";
+    doc += process.env.AWS_SECRET_ACCESS_KEY +",";
+    doc += process.env.S3_BUCKET_NAME;
+    res.status(200).json(doc);
+  } catch (err) {
+    handleError(res, err.message, "Failed to get response.");
+  }
+});
+
 
 /********************************************
   blogcontents collection

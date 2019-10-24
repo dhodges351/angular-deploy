@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import * as AWS from 'aws-sdk/global';
 import * as S3 from 'aws-sdk/clients/s3';
 import { Observable } from 'rxjs';
-import { environment } from './../environments/environment';
 
 @Injectable()
 export class UploadFileService {
@@ -10,16 +9,21 @@ export class UploadFileService {
   s3Secret: string = '';
   s3BucketName: string = '';
 
-  FOLDER = 'folder/';
+  FOLDER = 'folder/';  
 
   constructor() 
   { 
-    this.s3AccessKey = environment.accessKey;
-    this.s3Secret = environment.secretAccessKey;
-    this.s3BucketName = environment.bucketName;
   }
 
-  uploadfile(file): Observable<any> {
+  uploadfile(file, creds): Observable<any> {
+    if (creds == null || creds == '') {
+      console.log('There was an error uploading your file.');
+    }
+
+    var arrCred = creds.toString().split(',');
+    this.s3AccessKey = arrCred[0];
+    this.s3Secret = arrCred[1];
+    this.s3BucketName = arrCred[2];
 
     const bucket = new S3(
       {
