@@ -1,23 +1,13 @@
 require('dotenv');
 require('dotenv').config();
+const path = require('path');
 const cors = require('cors');
 const logger = require('morgan');
-const AWS = require('aws-sdk');
-const fs = require('fs');
-const path = require('path'); 
 const express = require('express');
-const multer = require('multer');
+const upload = require('./upload');
 const bodyParser = require("body-parser");
 const app = express();
 const router = express.Router();
-var DIR = '';
-if ( app.get('env') === 'development' ) {
-  DIR = './src/assets/images';
-}
-else
-{
-  DIR = './dist/assets/images';
-}
 const mongodb = require("mongodb");
 const ObjectID = mongodb.ObjectID;
 var BLOGCONTENTS_COLLECTION = "blogcontents";
@@ -27,9 +17,13 @@ var CONTACTS_COLLECTION = "contacts";
 var GALLERY_COLLECTION = "gallery";
 var db;
 
+var corsOptions = {
+  origin: '*',
+  optionsSuccessStatus: 200
+};
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(logger('dev')); 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false })); 
@@ -56,47 +50,8 @@ function handleError(res, reason, message, code) {
   res.status(code || 500).json({"error": message});
 }
 
-let storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, DIR);
-  },
-  filename: (req, file, cb) => {
-    //cb(null, file.fieldname + '-' + Date.now() + '.' + path.extname(file.originalname));
-    cb(null, file.originalname);
-  }
-});
-let upload = multer({storage: storage});
-app.get('/api', function (req, res) {
-  res.end('file catcher example');
-}); 
-app.post('/api/upload',upload.single('photo'), function (req, res) {
-  if (!req.file) {
-      console.log("No file received");
-      return res.send({
-        success: false
-      });
-  
-    } else {
-      console.log('file received');
-      return res.send({
-        success: true
-      })
-    }
-});
+app.post('/api/upload', upload);
 app.use('/api/upload', router);
-
-app.get("/api/config", function(req, res) {
-  try {
-    var doc = '';
-    doc += process.env.AWS_ACCESS_KEY_ID + ",";
-    doc += process.env.AWS_SECRET_ACCESS_KEY +",";
-    doc += process.env.S3_BUCKET_NAME;
-    res.status(200).json(doc);
-  } catch (err) {
-    handleError(res, err.message, "Failed to get response.");
-  }
-});
-
 
 /********************************************
   blogcontents collection

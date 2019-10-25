@@ -105,31 +105,31 @@ export class ModalGalleryComponent implements OnInit {
 
   upload() {
     const file = this.selectedFiles.item(0);    
-    this.apiService.getConfig().subscribe(
-      data => {
-        if (data) { 
-          this.uploadService.uploadfile(file, data).subscribe(res => 
-          {
-            this.imagePathAndFilename += file.name + ', ';
-            this.galleryItemObject.image = this.imagePathAndFilename;
-            this.galleryItemObject.title = this.blogGalleryForm.get('title').value;
-            this.galleryItemObject.author = this.blogGalleryForm.get('author').value;
-            this.galleryItemObject.category = this.selected;
-            this.galleryItemObject.details = this.editor.getData();
-            this.blogGalleryForm.setValue({
-            image: this.galleryItemObject.image,        
-            title: this.galleryItemObject.title,
-            category: this.galleryItemObject.category,
-            author: this.galleryItemObject.author,
-            details: this.galleryItemObject.details
-            });
-            this.openSnackBar('Image uploaded!', '');
-          });
-        }
-      }, 
-      error => {
-        console.error( error );
-      });
+    // this.apiService.getConfig().subscribe(
+    //   data => {
+    //     if (data) { 
+    //       this.uploadService.uploadfile(file, data).subscribe(res => 
+    //       {
+    //         this.imagePathAndFilename += file.name + ', ';
+    //         this.galleryItemObject.image = this.imagePathAndFilename;
+    //         this.galleryItemObject.title = this.blogGalleryForm.get('title').value;
+    //         this.galleryItemObject.author = this.blogGalleryForm.get('author').value;
+    //         this.galleryItemObject.category = this.selected;
+    //         this.galleryItemObject.details = this.editor.getData();
+    //         this.blogGalleryForm.setValue({
+    //         image: this.galleryItemObject.image,        
+    //         title: this.galleryItemObject.title,
+    //         category: this.galleryItemObject.category,
+    //         author: this.galleryItemObject.author,
+    //         details: this.galleryItemObject.details
+    //         });
+    //         this.openSnackBar('Image uploaded!', '');
+    //       });
+    //     }
+    //   }, 
+    //   error => {
+    //     console.error( error );
+    //   });
   }
 
   selectFile(event) {

@@ -114,32 +114,32 @@ export class ModalComponent implements OnInit {
     return;
   }
   const file = this.selectedFiles.item(0);  
-  this.api.getConfig().subscribe(
-    data => {
-      if (data) { 
-        this.uploadService.uploadfile(file, data).subscribe(res => 
-        {
-          this.imagePathAndFilename = file.name;
-          this.uploadOnly = false;
-          this.blogPost.image = this.imagePathAndFilename;
-          this.blogPost.title = this.blogPostForm.get('title').value;
-          this.blogPost.author = this.blogPostForm.get('author').value;
-          this.blogPost.category = this.blogPostForm.get('category').value;
-          this.blogPost.short_desc = this.editor.getData();
-          this.blogPostForm.setValue({
-            image: this.imagePathAndFilename,          
-            title: this.blogPost.title,
-            category: this.blogPost.category,
-            author: this.blogPost.author,
-            short_desc: this.blogPost.short_desc
-          });
-          this.openSnackBar('Image uploaded!', '');
-        });
-      }
-    }, 
-    error => {
-      console.error( error );
-    });
+  // this.api.getConfig().subscribe(
+  //   data => {
+  //     if (data) { 
+  //       this.uploadService.uploadfile(file, data).subscribe(res => 
+  //       {
+  //         this.imagePathAndFilename = file.name;
+  //         this.uploadOnly = false;
+  //         this.blogPost.image = this.imagePathAndFilename;
+  //         this.blogPost.title = this.blogPostForm.get('title').value;
+  //         this.blogPost.author = this.blogPostForm.get('author').value;
+  //         this.blogPost.category = this.blogPostForm.get('category').value;
+  //         this.blogPost.short_desc = this.editor.getData();
+  //         this.blogPostForm.setValue({
+  //           image: this.imagePathAndFilename,          
+  //           title: this.blogPost.title,
+  //           category: this.blogPost.category,
+  //           author: this.blogPost.author,
+  //           short_desc: this.blogPost.short_desc
+  //         });
+  //         this.openSnackBar('Image uploaded!', '');
+  //       });
+  //     }
+  //   }, 
+  //   error => {
+  //     console.error( error );
+  //   });
 }
 
 selectFile(event) {

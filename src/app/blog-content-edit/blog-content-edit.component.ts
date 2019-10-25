@@ -138,32 +138,32 @@ export class BlogContentEditComponent implements OnInit {
 
   upload() {
     const file = this.selectedFiles.item(0);   
-      this.api.getConfig().subscribe(
-      data => {
-        if (data) { 
-          this.uploadService.uploadfile(file, data).subscribe(res => 
-          {
-            this.imagePathAndFilename = file.name;
-            this.uploadOnly = false;
-            this.blogContent.image = this.imagePathAndFilename;
-            this.blogContent.title = this.blogContentForm.get('title').value;
-            this.blogContent.category = this.blogContentForm.get('category').value;
-            this.blogContent.content = this.editor.getData();
-            this.blogContent.currentBlog = this.blogContentForm.get('currentBlog').value
-            this.blogContentForm.setValue({
-            image: this.blogContent.image,
-            currentBlog: this.blogContent.currentBlog,
-            title: this.blogContent.title,
-            category: this.blogContent.category,
-            content: this.blogContent.content
-          });
-          this.openSnackBar('Image uploaded!', '');
-          });
-        }
-      }, 
-      error => {
-        console.error( error );
-      });
+    // this.api.getConfig().subscribe(
+    //   data => {
+    //     if (data) { 
+    //       this.uploadService.uploadfile(file, data).subscribe(res => 
+    //       {
+    //         this.imagePathAndFilename = file.name;
+    //         this.uploadOnly = false;
+    //         this.blogContent.image = this.imagePathAndFilename;
+    //         this.blogContent.title = this.blogContentForm.get('title').value;
+    //         this.blogContent.category = this.blogContentForm.get('category').value;
+    //         this.blogContent.content = this.editor.getData();
+    //         this.blogContent.currentBlog = this.blogContentForm.get('currentBlog').value
+    //         this.blogContentForm.setValue({
+    //         image: this.blogContent.image,
+    //         currentBlog: this.blogContent.currentBlog,
+    //         title: this.blogContent.title,
+    //         category: this.blogContent.category,
+    //         content: this.blogContent.content
+    //       });
+    //       this.openSnackBar('Image uploaded!', '');
+    //       });
+    //     }
+    //   }, 
+    //   error => {
+    //     console.error( error );
+    //   });
   }
   
   selectFile(event) {

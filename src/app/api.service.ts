@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Observable, of, throwError, Subject } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpErrorResponse, HttpRequest, HttpEventType, HttpResponse } from '@angular/common/http';
 import { catchError, tap, map, filter } from 'rxjs/operators';
 import { Contact } from './models/contact.model';
 import { environment } from './../environments/environment';
@@ -9,12 +9,16 @@ const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'})
 };
 
+const httpOptions1 = {
+  headers: new HttpHeaders({'enctype': 'multipart/form-data'})
+};
+
 const apiUrl = environment.apiUrl;
 const blogPostUrl = apiUrl + '/blogposts';
 const blogContentUrl = apiUrl + '/blogcontents';
 const commentUrl = apiUrl + '/comments';
 const galleryUrl = apiUrl + '/gallery';
-const configUrl = apiUrl + '/config';
+const url = 'http://localhost:3000/api/upload';
 
 @Injectable({
   providedIn: 'root'
@@ -200,11 +204,17 @@ export class ApiService {
     return this.http.get(galleryUrl, httpOptions).pipe(
       map(this.extractData),
       catchError(this.handleError));
-  } 
+  }  
 
-  getConfig(): Observable<any> {
-    return this.http.get(configUrl, httpOptions).pipe(
+  public upload(files): Observable<any> {  
+    const formData: FormData = new FormData(); 
+    var obs = null;
+    files.forEach(file => {
+      // create a new multipart-form for every file 
+      formData.append('file', file, file.name);           
+    });   
+    return this.http.post(url, formData).pipe(
       map(this.extractData),
-      catchError(this.handleError));
+      catchError(this.handleError)); 
   }
 }

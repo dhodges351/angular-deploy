@@ -51,8 +51,9 @@ export class BlogPostListComponent implements OnInit {
   startSet:number = 0;
   endSet:number = 5; 
   profileJson: string = '';
-  editor: DecoupledEditor; 
-  selectedFiles: FileList;
+  editor: DecoupledEditor;
+  public files: Set<File> = new Set();
+  @ViewChild('file', { static: false }) file;
 
   constructor(private api: ApiService,
     private route: ActivatedRoute,
@@ -354,37 +355,54 @@ export class BlogPostListComponent implements OnInit {
   upload() {
     this.blogPost.image = '';
     this.imagePathAndFilename = '';
-    const file = this.selectedFiles.item(0);    
-    this.api.getConfig().subscribe(
-      data => {
-        if (data) { 
-          this.uploadService.uploadfile(file, data).subscribe(res => 
-          {
-            this.imagePathAndFilename = file.name;
-            this.uploadOnly = false;
-            this.blogPost.image = this.imagePathAndFilename;
-            this.blogPost.title = this.blogPostForm.get('title').value;
-            this.blogPost.author = this.blogPostForm.get('author').value;
-            this.blogPost.category = this.blogPostForm.get('category').value;
-            this.blogPost.short_desc = this.editor.getData();
-            this.blogPostForm.setValue({
-              image: this.imagePathAndFilename,          
-              title: this.blogPost.title,
-              category: this.blogPost.category,
-              author: this.blogPost.author,
-              short_desc: this.blogPost.short_desc
-            });
-            this.openSnackBar('Image uploaded!', '');
-          });
-        }
-      }, 
-      error => {
-        console.error( error );
-      });
-  }
-  
-  selectFile(event) {
-    this.selectedFiles = event.target.files;
+
+    this.api.upload(this.files).subscribe(res => {
+      console.log(res);
+    }, err => {
+      console.log(err);
+    });
+
+    //const file = this.selectedFiles.item(0);    
+    // this.api.uploadToS3().subscribe(
+    //   data => {
+    //     if (data) { 
+    //       alert(data);
+    //       this.uploadService.uploadfile(file, data).subscribe(res => 
+    //       {
+    //         this.imagePathAndFilename = file.name;
+    //         this.uploadOnly = false;
+    //         this.blogPost.image = this.imagePathAndFilename;
+    //         this.blogPost.title = this.blogPostForm.get('title').value;
+    //         this.blogPost.author = this.blogPostForm.get('author').value;
+    //         this.blogPost.category = this.blogPostForm.get('category').value;
+    //         this.blogPost.short_desc = this.editor.getData();
+    //         this.blogPostForm.setValue({
+    //           image: this.imagePathAndFilename,          
+    //           title: this.blogPost.title,
+    //           category: this.blogPost.category,
+    //           author: this.blogPost.author,
+    //           short_desc: this.blogPost.short_desc
+    //         });
+    //         this.openSnackBar('Image uploaded!', '');
+    //       });
+    //     }
+    //   }, 
+    //   error => {
+    //     console.error( error );
+    //   });
+  } 
+
+  onFilesAdded() {
+    const files: { [key: string]: File } = this.file.nativeElement.files;
+    for (let key in files) {
+      if (!isNaN(parseInt(key))) {
+        this.files.add(files[key]);
+      }
     }
+  }
+
+  addFiles() {
+    this.file.nativeElement.click();
+  }
   
 }

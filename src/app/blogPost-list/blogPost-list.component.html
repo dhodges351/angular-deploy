@@ -129,20 +129,29 @@
         </mat-error>
       </mat-form-field>
       <div id="toolbar-container2"></div>
-      <div style="height:150px;border: solid 1px gray;overflow: auto;" id="editor2">
-      
+      <div style="height:150px;border: solid 1px gray;overflow: auto;" id="editor2">      
       </div>
       <div class="button-row">
         <button [disabled]="!blogPostForm.valid" mat-raised-button color="primary"
           (click)="saveForm(blogPostForm.value)">
           <mat-icon>save</mat-icon>
         </button>
-        <label class="btn btn-default">
+        <!-- <label class="btn btn-default">
           <input type="file" (change)="selectFile($event)">
-        </label>              
-        <button class="btn btn-success" [disabled]="!selectedFiles" (click)="$event.preventDefault(); upload()">
-          Upload
+          </label>  
+        -->
+        <input type="file" #file style="display: none" (change)="onFilesAdded()" multiple />
+        <button mat-raised-button color="primary" class="add-files-btn" (click)="addFiles()">
+          Add Files
         </button>
+        <mat-list>
+          <mat-list-item *ngFor="let file of files">    
+            <h4 mat-line>{{file.name}}</h4>     
+          </mat-list-item>
+        </mat-list>
+        <button class="btn btn-success" (click)="$event.preventDefault(); upload()">
+          Upload
+        </button>        
         <button mat-button (click)="swapWhatIsOpen('list')">
           RETURN
         </button>
