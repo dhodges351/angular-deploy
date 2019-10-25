@@ -18,7 +18,7 @@ const blogPostUrl = apiUrl + '/blogposts';
 const blogContentUrl = apiUrl + '/blogcontents';
 const commentUrl = apiUrl + '/comments';
 const galleryUrl = apiUrl + '/gallery';
-const url = 'http://localhost:3000/api/upload';
+const uploadUrl = apiUrl + '/upload';
 
 @Injectable({
   providedIn: 'root'
@@ -213,7 +213,7 @@ export class ApiService {
       // create a new multipart-form for every file 
       formData.append('file', file, file.name);           
     });   
-    return this.http.post(url, formData).pipe(
+    return this.http.post(uploadUrl, formData).pipe(
       map(this.extractData),
       catchError(this.handleError)); 
   }
