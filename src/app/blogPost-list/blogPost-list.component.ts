@@ -357,7 +357,8 @@ export class BlogPostListComponent implements OnInit {
     this.imagePathAndFilename = '';
 
     this.api.upload(this.files).subscribe(res => {
-      console.log(res);
+      console.log('files uploaded');
+      this.openSnackBar('Image uploaded!', '');
     }, err => {
       console.log(err);
     });

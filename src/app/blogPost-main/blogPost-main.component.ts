@@ -65,28 +65,28 @@ export class BlogPostMainComponent implements OnInit {
           this.value = this.content;
           this.createdAt = this.blogContent[0].createdAt;
 
-          if (this.image && this.image.length > 0)
-          {
-            if (this.image.toString().indexOf(',') > 0)
-            {
-                var fileNames = this.image.toString().split(',');
-                fileNames.forEach(element => {  
-                  if (element != ' ')
-                  {
-                    if (element.startsWith(' '))
-                    {
-                      element = element.toString().substr(1, element.length);
-                    }
-                    this.imageList.push('https://gourmet-philatelist-assets.s3.amazonaws.com/folder/' + element);            
-                  }   
-                });
-            }
-            else
-            {
-              this.imageList.push(this.image);
-            }
-            this.isShown = true;          
-          }
+          // if (this.image && this.image.length > 0)
+          // {
+          //   if (this.image.toString().indexOf(',') > 0)
+          //   {
+          //       var fileNames = this.image.toString().split(',');
+          //       fileNames.forEach(element => {  
+          //         if (element != ' ')
+          //         {
+          //           if (element.startsWith(' '))
+          //           {
+          //             element = element.toString().substr(1, element.length);
+          //           }
+          //           this.imageList.push('https://gourmet-philatelist-assets.s3.amazonaws.com/folder/' + element);            
+          //         }   
+          //       });
+          //   }
+          //   else
+          //   {
+          //     this.imageList.push(this.image);
+          //   }
+          //   this.isShown = true;          
+          // }
 
           if (this.image == null || this.image == '' || this.imageList.length == 0)
           {
@@ -114,28 +114,28 @@ export class BlogPostMainComponent implements OnInit {
       this.createdAt = data.createdAt;
 
       this.imageList = new Array<string>();
-      if (this.image && this.image.length > 0)
-      {
-        if (this.image.toString().indexOf(',') > 0)
-        {
-          var fileNames = this.image.toString().split(',');
-          fileNames.forEach(element => {  
-            if (element != ' ')
-            {
-              if (element.startsWith(' '))
-              {
-                element = element.toString().substr(1, element.length);
-              }
-              this.imageList.push('https://gourmet-philatelist-assets.s3.amazonaws.com/folder/' + element);            
-            }   
-          });
-        }
-        else
-        {
-          this.imageList.push(this.image);
-        }
-        this.isShown = true; 
-      }
+      // if (this.image && this.image.length > 0)
+      // {
+      //   if (this.image.toString().indexOf(',') > 0)
+      //   {
+      //     var fileNames = this.image.toString().split(',');
+      //     fileNames.forEach(element => {  
+      //       if (element != ' ')
+      //       {
+      //         if (element.startsWith(' '))
+      //         {
+      //           element = element.toString().substr(1, element.length);
+      //         }
+      //         this.imageList.push('https://gourmet-philatelist-assets.s3.amazonaws.com/folder/' + element);            
+      //       }   
+      //     });
+      //   }
+      //   else
+      //   {
+      //     this.imageList.push(this.image);
+      //   }
+      //   this.isShown = true; 
+      // }
 
       if (this.image == null || this.image == '')
       {

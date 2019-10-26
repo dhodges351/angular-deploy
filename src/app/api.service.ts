@@ -208,7 +208,6 @@ export class ApiService {
 
   public upload(files): Observable<any> {  
     const formData: FormData = new FormData(); 
-    var obs = null;
     files.forEach(file => {
       // create a new multipart-form for every file 
       formData.append('file', file, file.name);           
