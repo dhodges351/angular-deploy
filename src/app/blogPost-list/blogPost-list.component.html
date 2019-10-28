@@ -3,14 +3,14 @@
     <mat-icon>add</mat-icon>
   </a>
 </div>
-<ul fxLayout fxShow="{{listOpen ?'true':'false'}}" #sectionToScrollTo *ngFor="let blogPost of blogPosts">
+<ul id="mainUL" fxLayout fxShow="{{listOpen ?'true':'false'}}" #sectionToScrollTo *ngFor="let blogPost of blogPosts">
   <mat-card>
     <table>
       <tr>
         <td>
           <div>
-            <h2>{{blogPost.title}}</h2>
-            <h3>{{blogPost.category}}</h3>
+            <h3>{{blogPost.title}}</h3>
+            <h4>{{blogPost.category}}</h4>
             <p>
               {{blogPost.author}} - {{blogPost.createdAt | date: 'MM/dd/yyyy HH:mm:ss'}}              
               <br />
