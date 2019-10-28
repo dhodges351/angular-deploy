@@ -105,7 +105,7 @@
   <div fxFlex="100%">
     <form [formGroup]="blogPostForm">
       <mat-form-field class="example-full-width">
-        <input matInput placeholder="image" (imageOutput)="getImage($event)" formControlName="image">
+        <input matInput placeholder="image" formControlName="image">
       </mat-form-field>
       <mat-form-field class="example-full-width">
         <input matInput placeholder="Title" formControlName="title" [errorStateMatcher]="matcher">
