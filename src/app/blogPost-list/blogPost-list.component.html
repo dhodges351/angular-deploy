@@ -105,7 +105,7 @@
   <div fxFlex="100%">
     <form [formGroup]="blogPostForm">
       <mat-form-field class="example-full-width">
-        <input matInput placeholder="image" formControlName="image">
+        <input matInput placeholder="image" (imageOutput)="getImage($event)" formControlName="image">
       </mat-form-field>
       <mat-form-field class="example-full-width">
         <input matInput placeholder="Title" formControlName="title" [errorStateMatcher]="matcher">
@@ -136,23 +136,8 @@
           (click)="saveForm(blogPostForm.value)">
           <mat-icon>save</mat-icon>
         </button>
-        <!-- <label class="btn btn-default">
-          <input type="file" (change)="selectFile($event)">
-          </label>  
-        -->
-        <input type="file" #file style="display: none" (change)="onFilesAdded()" multiple />
-        <button mat-raised-button color="primary" class="add-files-btn" (click)="addFiles()">
-          Add Files
-        </button>
-        <mat-list>
-          <mat-list-item *ngFor="let file of files">    
-            <h4 mat-line>{{file.name}}</h4>     
-          </mat-list-item>
-        </mat-list>
-        <button class="btn btn-success" (click)="$event.preventDefault(); upload()">
-          Upload
-        </button>        
-        <button mat-button (click)="swapWhatIsOpen('list')">
+        <app-upload-image [IsPublic]="IsPublic" [CurrentImage]="CurrentImage" (filesOutput)="getUploadedFiles($event)" (valueUpdate)="getUpdatedValue($event)"></app-upload-image>
+        &nbsp;<button mat-raised-button color="primary" (click)="swapWhatIsOpen('list')">
           RETURN
         </button>
       </div>

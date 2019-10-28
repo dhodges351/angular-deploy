@@ -5,8 +5,6 @@ const AWS = require('aws-sdk');
 module.exports = function upload(req, res) {
     var form = new IncomingForm();
 
-    console.log('in upload.js');
-
     const bucket = new AWS.S3(
       {
         signatureVersion: 'v4',
@@ -17,12 +15,9 @@ module.exports = function upload(req, res) {
     ); 
 
     form.on('file', (field, file) => {
-       
-        console.log('file name', file.name);
-        console.log('file path', file.path);
 
         const fileContent = fs.readFileSync(file.path);
-
+       
         const s3Params = {
             Bucket: process.env.AWS_S3_BUCKET,
             Key: 'folder/' + file.name,
@@ -34,17 +29,22 @@ module.exports = function upload(req, res) {
         bucket.upload(s3Params, function(err, data) {
             if (err) {
                 throw err;
-            }
-            console.log(`File uploaded successfully. ${data.Location}`);
+            }            
+            console.log('File uploaded to: ' + data.Location);
+            fs.unlink(file.path, function (err) {
+              if (err) {
+                  console.error(err);
+              }
+              console.log('Temp File Delete');
+          });
         });
     });              
     
     // The second callback is called when the form is completely parsed. 
     // In this case, we want to send back a success status code.
-    form.on('end', () => {
-        console.log('in form end');
-        res.json();
-      });
+    form.on('end', () => {        
+      res.status(200).json('upload ok');
+    });
 
     form.parse(req);
 }

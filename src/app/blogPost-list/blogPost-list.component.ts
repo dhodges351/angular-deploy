@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, Input, } from '@angular/core';
 import { ApiService } from '../api.service';
 import { Blogpost } from "../models/blogpost";
 import { Comment } from '../models/comment';
@@ -12,7 +12,6 @@ import { AuthService } from 'src/app/auth/auth.service';
 import * as _ from 'lodash';
 import { environment } from '../../environments/environment';
 import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
-import { UploadFileService } from '../upload-file.service';
 
 const URL = environment.apiUrl + '/upload';
 
@@ -51,9 +50,11 @@ export class BlogPostListComponent implements OnInit {
   startSet:number = 0;
   endSet:number = 5; 
   profileJson: string = '';
-  editor: DecoupledEditor;
-  public files: Set<File> = new Set();
-  @ViewChild('file', { static: false }) file;
+  editor: DecoupledEditor;  
+  uploadedFiles: Array<string> = new Array<string>();  
+  CurrentImage: string;
+  IsPublic: boolean = true;
+  rawImageName: string = '';
 
   constructor(private api: ApiService,
     private route: ActivatedRoute,
@@ -61,8 +62,7 @@ export class BlogPostListComponent implements OnInit {
     public dialog: MatDialog,
     private formBuilder: FormBuilder,    
     public snackBar: MatSnackBar,
-    private auth: AuthService,
-    private uploadService: UploadFileService, 
+    private auth: AuthService    
   ) 
   {
     BlogPostListComponent.blogPostListApp = this;    
@@ -104,20 +104,6 @@ export class BlogPostListComponent implements OnInit {
       .subscribe(res => {
         console.log(res);
         this.blogPosts = res;  
-
-        this.blogPosts.forEach(element => {
-          if (element.image.endsWith(' '))
-          {
-            element.image = element.image.trimRight();
-            if (element.image.endsWith(','))
-            {
-              element.image = element.image.replace(',','');
-            }
-          }     
-          var imageUrl = 'https://gourmet-philatelist-assets.s3.amazonaws.com/folder/' + element.image;
-          element.image = imageUrl;
-        });
-
         this.blogPosts = this.blogPosts.slice(this.startSet, this.endSet);     
         this.dataSource = this.blogPosts;     
       }, err => {
@@ -153,13 +139,38 @@ export class BlogPostListComponent implements OnInit {
   getBlogPost(id) {    
     this.api.getBlogPost(id).subscribe(data => {
       this.blogPost = data;
+      this.rawImageName = this.blogPost.image.toString();
+      var arrImageName = new Array<string>();
+      var newImageName = '';
+      var index = 0;
+      if (this.rawImageName.indexOf(',') > 0)
+      {
+        arrImageName = this.rawImageName.split(',');
+      }
+      if (arrImageName.length > 0)
+      {
+        arrImageName.forEach(element => {
+          index = element.lastIndexOf('/'); 
+          newImageName += element.substring(index + 1, element.length) + ',';
+        });
+      }
+      else
+      {
+        index = this.rawImageName.lastIndexOf('/'); 
+        newImageName = this.rawImageName.substring(index + 1, this.rawImageName.length);
+      }
+      if (newImageName.endsWith(','))
+      {
+        newImageName = newImageName.slice(0,-1);
+      }      
+      this.CurrentImage = newImageName;
       this.id = data._id;
       if (this.editor != null)
       {
         this.editor.setData(data.short_desc); 
-      }      
+      }        
       this.blogPostForm.setValue({
-        image: data.image,
+        image: newImageName,
         title: data.title,
         category: data.category,
         short_desc: data.short_desc,
@@ -168,8 +179,39 @@ export class BlogPostListComponent implements OnInit {
     });
   }
 
+  getUploadedFiles($event)
+  {
+    this.uploadedFiles = $event;
+  }
+
+  getUpdatedValue($event) {  
+    this.blogPostForm.setValue({
+      image: $event,
+      title: this.blogPost.title,
+      category: this.blogPost.category,
+      short_desc: this.blogPost.short_desc,
+      author: this.blogPost.author,
+    });
+  }
+
   saveForm(form: any) {    
     form.short_desc = this.editor.getData();
+
+    this.CurrentImage = '';
+    this.blogPost.image = '';
+    form.image = '';
+
+    if (this.uploadedFiles.length > 0)
+    {
+      this.uploadedFiles.forEach(element => {
+        form.image += element + ',';
+      });
+      if (form.image.toString().endsWith(','))
+      {
+        form.image = form.image.toString().slice(0,-1);
+      }     
+    }
+
     this.api.updateBlogPost(this.id, form)
       .subscribe(res => {
         let id = res['_id'];
@@ -177,11 +219,8 @@ export class BlogPostListComponent implements OnInit {
         this.api.getBlogPosts()
           .subscribe(res => {
             console.log(res);
-            this.blogPosts = res;            
-            this.blogPosts.forEach(element => {          
-              var imageUrl = 'https://gourmet-philatelist-assets.s3.amazonaws.com/folder/' + element.image;
-              element.image = imageUrl;
-            });
+            this.uploadedFiles = new Array<string>();
+            this.blogPosts = res;
             if (this.blogPosts && this.blogPosts.length > 0) {              
               this.swapWhatIsOpen('list');
             }
@@ -350,60 +389,6 @@ export class BlogPostListComponent implements OnInit {
       {
 
       }
-  }
-
-  upload() {
-    this.blogPost.image = '';
-    this.imagePathAndFilename = '';
-
-    this.api.upload(this.files).subscribe(res => {
-      console.log('files uploaded');
-      this.openSnackBar('Image uploaded!', '');
-    }, err => {
-      console.log(err);
-    });
-
-    //const file = this.selectedFiles.item(0);    
-    // this.api.uploadToS3().subscribe(
-    //   data => {
-    //     if (data) { 
-    //       alert(data);
-    //       this.uploadService.uploadfile(file, data).subscribe(res => 
-    //       {
-    //         this.imagePathAndFilename = file.name;
-    //         this.uploadOnly = false;
-    //         this.blogPost.image = this.imagePathAndFilename;
-    //         this.blogPost.title = this.blogPostForm.get('title').value;
-    //         this.blogPost.author = this.blogPostForm.get('author').value;
-    //         this.blogPost.category = this.blogPostForm.get('category').value;
-    //         this.blogPost.short_desc = this.editor.getData();
-    //         this.blogPostForm.setValue({
-    //           image: this.imagePathAndFilename,          
-    //           title: this.blogPost.title,
-    //           category: this.blogPost.category,
-    //           author: this.blogPost.author,
-    //           short_desc: this.blogPost.short_desc
-    //         });
-    //         this.openSnackBar('Image uploaded!', '');
-    //       });
-    //     }
-    //   }, 
-    //   error => {
-    //     console.error( error );
-    //   });
-  } 
-
-  onFilesAdded() {
-    const files: { [key: string]: File } = this.file.nativeElement.files;
-    for (let key in files) {
-      if (!isNaN(parseInt(key))) {
-        this.files.add(files[key]);
-      }
-    }
-  }
-
-  addFiles() {
-    this.file.nativeElement.click();
   }
   
 }

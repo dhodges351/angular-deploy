@@ -1,0 +1,8 @@
+<input type="file" #file style="display: none" (change)="onFilesAdded()" multiple />
+&nbsp;<button mat-raised-button color="primary" 
+         [disabled]="filesUploaded" (click)="$event.preventDefault(); addFiles()">
+  Add Files
+</button>
+&nbsp;<button class="btn btn-success" [disabled]="uploadedFileNames.length == 0" (click)="$event.preventDefault(); upload()">
+  Upload
+</button>

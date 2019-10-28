@@ -30,7 +30,10 @@ export class BlogContentEditComponent implements OnInit {
   matcher: string = '';
   data:string = '';
   editor: DecoupledEditor = null;
-  selectedFiles: FileList;
+  uploadedFiles: Array<string> = new Array<string>();  
+  CurrentImage: string;
+  IsPublic: boolean = false;
+  rawImageName: string = '';
 
   constructor(
     private router: Router, 
@@ -65,12 +68,58 @@ export class BlogContentEditComponent implements OnInit {
       'content': ['', !Validators.required],
     });  
   }
+
+  getUploadedFiles($event)
+  {
+    this.uploadedFiles = $event;
+  }
+
+  getUpdatedValue($event) {
+    this.blogContent.image = $event;
+    this.blogContent.title = this.blogContentForm.get('title').value;
+    this.blogContent.category = this.blogContentForm.get('category').value;
+    this.blogContent.content = this.editor.getData();
+    this.blogContent.currentBlog = this.blogContentForm.get('currentBlog').value
+
+    this.blogContentForm.setValue({
+      image: $event,
+      title: this.blogContent.title,
+      category: this.blogContent.category,
+      content: this.blogContent.content,
+      currentBlog: this.blogContent.currentBlog
+    });
+  }
   
   getBlogContentDetails(id) {
-    this.api.getBlogContentDetails(id).subscribe(data => {      
+      this.api.getBlogContentDetails(id).subscribe(data => {      
       this.blogContent = data;
+      this.rawImageName = this.blogContent.image.toString();
+      var arrImageName = new Array<string>();
+      var newImageName = '';
+      var index = 0;
+      if (this.rawImageName.indexOf(',') > 0)
+      {
+        arrImageName = this.rawImageName.split(',');
+      }
+      if (arrImageName.length > 0)
+      {
+        arrImageName.forEach(element => {
+          index = element.lastIndexOf('/'); 
+          newImageName += element.substring(index + 1, element.length) + ',';
+        });
+      }
+      else
+      {
+        index = this.rawImageName.lastIndexOf('/'); 
+        newImageName = this.rawImageName.substring(index + 1, this.rawImageName.length);
+      }
+      if (newImageName.endsWith(','))
+      {
+        newImageName = newImageName.slice(0,-1);
+      }      
+      this.CurrentImage = newImageName;
       this.blogContentForm.setValue({          
-        image: data.image,  
+        image: newImageName,  
         currentBlog: data.currentBlog,   
         title: data.title,
         category: data.category,
@@ -87,37 +136,51 @@ export class BlogContentEditComponent implements OnInit {
 
   completeSubmit(form)
   {
-    if ((!this.uploadButtonClicked) || ((this.uploadButtonClicked) && (!this.uploadOnly))) 
+    form.image = '';
+    this.blogContent.image = '';
+    if (this.uploadedFiles.length > 0)
     {
-      var allBlogContent = []; 
-      this.api.getAllBlogContent().subscribe(res => 
-        {
-          allBlogContent = res;
-          for (var i = 0; i < allBlogContent.length; i++)
-          {
-            var data = allBlogContent[i];
-            data.currentBlog = false;          
-            var id = data._id;
-            this.api.updateBlogContent(id, data)
-              .subscribe(res => {}, (err) => {
-                console.log(err);
-              }
-            );
+      this.uploadedFiles.forEach(element => {
+        form.image += element + ',';
+      });
+      if (form.image.toString().endsWith(','))
+      {
+        form.image = form.image.toString().slice(0,-1);
+      }     
+    }
+    else
+    {
+      form.image = this.rawImageName;
+    }
+   
+    var allBlogContent = []; 
+    this.api.getAllBlogContent().subscribe(res => 
+    {
+      allBlogContent = res;
+      for (var i = 0; i < allBlogContent.length; i++)
+      {
+        var data = allBlogContent[i];
+        data.currentBlog = false;          
+        var id = data._id;
+        this.api.updateBlogContent(id, data)
+          .subscribe(res => {}, (err) => {
+            console.log(err);
           }
-  
-          this.api.updateBlogContent(this.id, form)
-            .subscribe(res => {
-              this.uploadOnly = true;
-              this.imagePathAndFilename = '';
-              this.router.navigate(['/allBlogContent']);               
-            }, (err) => {
-              console.log(err);       
-            }
-          );      
-        }, err => {
-          console.log(err);
-        });         
-    }    
+        );
+      }
+
+      this.api.updateBlogContent(this.id, form)
+        .subscribe(res => {
+          this.uploadOnly = true;
+          this.imagePathAndFilename = '';
+          this.router.navigate(['/allBlogContent']);               
+        }, (err) => {
+          console.log(err);       
+        }
+      );      
+    }, err => {
+      console.log(err);
+    });    
   }
 
   setFlag() {
@@ -134,40 +197,6 @@ export class BlogContentEditComponent implements OnInit {
       duration: 2000,
       verticalPosition: 'top'
     });
-  }
-
-  upload() {
-    const file = this.selectedFiles.item(0);   
-    // this.api.getConfig().subscribe(
-    //   data => {
-    //     if (data) { 
-    //       this.uploadService.uploadfile(file, data).subscribe(res => 
-    //       {
-    //         this.imagePathAndFilename = file.name;
-    //         this.uploadOnly = false;
-    //         this.blogContent.image = this.imagePathAndFilename;
-    //         this.blogContent.title = this.blogContentForm.get('title').value;
-    //         this.blogContent.category = this.blogContentForm.get('category').value;
-    //         this.blogContent.content = this.editor.getData();
-    //         this.blogContent.currentBlog = this.blogContentForm.get('currentBlog').value
-    //         this.blogContentForm.setValue({
-    //         image: this.blogContent.image,
-    //         currentBlog: this.blogContent.currentBlog,
-    //         title: this.blogContent.title,
-    //         category: this.blogContent.category,
-    //         content: this.blogContent.content
-    //       });
-    //       this.openSnackBar('Image uploaded!', '');
-    //       });
-    //     }
-    //   }, 
-    //   error => {
-    //     console.error( error );
-    //   });
-  }
-  
-  selectFile(event) {
-    this.selectedFiles = event.target.files;
   }
   
 }

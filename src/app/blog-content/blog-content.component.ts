@@ -32,6 +32,10 @@ export class BlogContentComponent implements OnInit {
   data:string = '';
   editor: DecoupledEditor = null;
   selectedFiles: FileList;
+  uploadedFiles: Array<string> = new Array<string>();  
+  CurrentImage: string;
+  IsPublic: boolean = false;
+  rawImageName: string = '';
 
   constructor(private uploadService: UploadFileService, private api: ApiService, private formBuilder: FormBuilder, private router: Router, public snackBar: MatSnackBar) {
     this.blogContent = new BlogContent();
@@ -58,6 +62,27 @@ export class BlogContentComponent implements OnInit {
     });  
   }
 
+  getUploadedFiles($event)
+  {
+    this.uploadedFiles = $event;
+  }
+
+  getUpdatedValue($event) {
+    this.blogContent.image = $event;
+    this.blogContent.title = this.blogContentForm.get('title').value;
+    this.blogContent.category = this.blogContentForm.get('category').value;
+    this.blogContent.content = this.editor.getData();
+    this.blogContent.currentBlog = this.blogContentForm.get('currentBlog').value
+
+    this.blogContentForm.setValue({
+      image: $event,
+      title: this.blogContent.title,
+      category: this.blogContent.category,
+      content: this.blogContent.content,
+      currentBlog: this.blogContent.currentBlog
+    });
+  }
+
   onFormSubmit(form: any) {
     form.content = this.editor.getData();
     form.image = this.imagePathAndFilename;
@@ -65,6 +90,18 @@ export class BlogContentComponent implements OnInit {
   }
 
   completeSubmit(form) {
+
+    if (this.uploadedFiles.length > 0)
+    {
+      this.uploadedFiles.forEach(element => {
+        form.image += element + ',';
+      });
+      if (form.image.toString().endsWith(','))
+      {
+        form.image = form.image.toString().slice(0,-1);
+      }     
+    }
+
     if ((!this.uploadButtonClicked) || ((this.uploadButtonClicked) && (!this.uploadOnly))) {
       var allBlogContent = [];
       this.api.getAllBlogContent().subscribe(res => {
@@ -108,40 +145,6 @@ export class BlogContentComponent implements OnInit {
 
   returnHome() {
     this.router.navigate(['/home']);
-  }
-
-  upload() {
-    const file = this.selectedFiles.item(0);       
-    // this.api.getConfig().subscribe(
-    //   data => {
-    //     if (data) { 
-    //       this.uploadService.uploadfile(file, data).subscribe(res => 
-    //       {
-    //         this.imagePathAndFilename = file.name;
-    //         this.uploadOnly = false;
-    //         this.blogContent.image = this.imagePathAndFilename;
-    //         this.blogContent.title = this.blogContentForm.get('title').value;
-    //         this.blogContent.category = this.blogContentForm.get('category').value;
-    //         this.blogContent.content = this.editor.getData();
-    //         this.blogContent.currentBlog = this.blogContentForm.get('currentBlog').value
-    //         this.blogContentForm.setValue({
-    //         image: this.blogContent.image,
-    //         currentBlog: this.blogContent.currentBlog,
-    //         title: this.blogContent.title,
-    //         category: this.blogContent.category,
-    //         content: this.blogContent.content
-    //       });
-    //         this.openSnackBar('Image uploaded!', '');
-    //       });
-    //     }
-    //   }, 
-    //   error => {
-    //     console.error( error );
-    //   });
-  }
-  
-  selectFile(event) {
-    this.selectedFiles = event.target.files;
-  }
+  }  
 
 }

@@ -23,8 +23,8 @@
 <div fxLayout="row">
     <div fxFlex="70%" style="margin:10px;">
         <span [innerHtml]="value"></span>
-        <div *ngIf="isShown" fxLayoutAlign="center">
-            <img height="35%" width="35%" *ngFor="let image of imageList;" src="{{image}}" alt="photo">
+        <div style="margin-left:10px;" *ngIf="isShown" fxLayoutAlign="center">
+            <img style="padding:5px;" height="35%" width="35%" *ngFor="let image of imageList;" src="{{image}}" alt="photo">
         </div>    
     </div>
     <div fxFlex="30%" style="text-align:left;margin-left:30px; margin-top:10px;">
