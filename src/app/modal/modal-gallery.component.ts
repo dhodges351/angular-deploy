@@ -56,7 +56,7 @@ export class ModalGalleryComponent implements OnInit {
 
   onClose(): void {     
     this.dialogRef.close(); 
-  }
+  }  
 
   ngOnInit() {    
     DecoupledEditor
@@ -146,6 +146,10 @@ export class ModalGalleryComponent implements OnInit {
       {
         form.image = form.image.toString().slice(0,-1);
       }     
+    }
+    else
+    {
+      form.image = this.rawImageName;
     }
 
     this.onAdd.emit();
