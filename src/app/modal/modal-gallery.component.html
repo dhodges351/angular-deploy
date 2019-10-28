@@ -39,10 +39,7 @@
             <button type="submit" [disabled]="!blogGalleryForm.valid" mat-raised-button color="primary">
                 <mat-icon>save</mat-icon>
             </button>   
-            <label class="btn btn-default">
-                <input type="file" (change)="selectFile($event)">
-            </label>              
-            <button class="btn btn-success" [disabled]="!selectedFiles" (click)="$event.preventDefault(); upload()">Upload</button>
+            <app-upload-image [IsPublic]="IsPublic" [CurrentImage]="CurrentImage" (filesOutput)="getUploadedFiles($event)" (valueUpdate)="getUpdatedValue($event)"></app-upload-image>    
         </div> 
     </form>
 </div>

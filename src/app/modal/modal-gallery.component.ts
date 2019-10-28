@@ -7,7 +7,6 @@ import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Valida
 import { FileUploader,  FileUploaderOptions} from 'ng2-file-upload';
 import { environment } from '../../environments/environment';
 import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
-import { UploadFileService } from '../upload-file.service';
 import { StateService } from '../state.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -32,13 +31,15 @@ export class ModalGalleryComponent implements OnInit {
   public selected = "General";
   imagePathAndFilename: string = '';  
   editor: DecoupledEditor = null;  
-  selectedFiles: FileList;
+  uploadedFiles: Array<string> = new Array<string>();  
+  CurrentImage: string;
+  IsPublic: boolean = false;
+  rawImageName: string = '';
 
   constructor(public dialogRef: MatDialogRef<ModalGalleryComponent>,     
     private router: Router, private route: ActivatedRoute, 
     private apiService: ApiService, 
     private formBuilder: FormBuilder,
-    private uploadService: UploadFileService,
     public stateSvc: StateService,
     public snackBar: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public data: any
@@ -87,64 +88,72 @@ export class ModalGalleryComponent implements OnInit {
 
   getGalleryItemDetails(id) {
     this.apiService.getGalleryItem(id)
-      .subscribe(data => {
-        console.log(data);
+      .subscribe(data => {        
         console.log(this.selected);
         this.galleryItemObject = data;
+
+        this.rawImageName = this.galleryItemObject.image.toString();
+        var arrImageName = new Array<string>();
+        var newImageName = '';
+        var index = 0;
+        if (this.rawImageName.indexOf(',') > 0)
+        {
+          arrImageName = this.rawImageName.split(',');
+        }
+        if (arrImageName.length > 0)
+        {
+          arrImageName.forEach(element => {
+            index = element.lastIndexOf('/'); 
+            newImageName += element.substring(index + 1, element.length) + ',';
+          });
+        }
+        else
+        {
+          index = this.rawImageName.lastIndexOf('/'); 
+          newImageName = this.rawImageName.substring(index + 1, this.rawImageName.length);
+        }
+        if (newImageName.endsWith(','))
+        {
+          newImageName = newImageName.slice(0,-1);
+        }      
+        this.CurrentImage = newImageName;
+
         this.blogGalleryForm.setValue({
           title: data.title,
           author: data.author,
           details: data.details,
           category: data.category,
-          image: data.image
+          image: newImageName
         });        
         this.selected = data.category;
         this.editor.setData(data.details);
       });
-  }  
-
-  upload() {
-    const file = this.selectedFiles.item(0);    
-    // this.apiService.getConfig().subscribe(
-    //   data => {
-    //     if (data) { 
-    //       this.uploadService.uploadfile(file, data).subscribe(res => 
-    //       {
-    //         this.imagePathAndFilename += file.name + ', ';
-    //         this.galleryItemObject.image = this.imagePathAndFilename;
-    //         this.galleryItemObject.title = this.blogGalleryForm.get('title').value;
-    //         this.galleryItemObject.author = this.blogGalleryForm.get('author').value;
-    //         this.galleryItemObject.category = this.selected;
-    //         this.galleryItemObject.details = this.editor.getData();
-    //         this.blogGalleryForm.setValue({
-    //         image: this.galleryItemObject.image,        
-    //         title: this.galleryItemObject.title,
-    //         category: this.galleryItemObject.category,
-    //         author: this.galleryItemObject.author,
-    //         details: this.galleryItemObject.details
-    //         });
-    //         this.openSnackBar('Image uploaded!', '');
-    //       });
-    //     }
-    //   }, 
-    //   error => {
-    //     console.error( error );
-    //   });
-  }
-
-  selectFile(event) {
-    this.selectedFiles = event.target.files;
-  }
+  }    
   
   onFormSubmit(form: any) {
     form.category = this.selected;
-    form.details = this.editor.getData(); 
-    form.image = this.imagePathAndFilename;     
+    form.details = this.editor.getData();      
+    this.CurrentImage = '';
+    this.galleryItemObject.image = '';
+    form.image = '';
+
+    if (this.uploadedFiles.length > 0)
+    {
+      this.uploadedFiles.forEach(element => {
+        form.image += element + ',';
+      });
+      if (form.image.toString().endsWith(','))
+      {
+        form.image = form.image.toString().slice(0,-1);
+      }     
+    }
+
     this.onAdd.emit();
     if (this.id != '' && this.id != null && this.id != undefined && this.id != 'id')
     {      
       this.apiService.updateGalleryItem(this.id, form)
-      .subscribe(data => {        
+      .subscribe(data => {  
+        this.uploadedFiles = new Array<string>();      
         this.onClose(); 
       });
     }
@@ -152,6 +161,7 @@ export class ModalGalleryComponent implements OnInit {
     {
       this.apiService.saveGalleryItem(form)
       .subscribe(res => { 
+        this.uploadedFiles = new Array<string>();
         this.onClose();       
       }, (err) => {
           console.log(err);
@@ -160,9 +170,24 @@ export class ModalGalleryComponent implements OnInit {
     }
   }
 
-  onChange() {
-    console.log(this.selected);
-    this.category = this.selected;    
+  getUploadedFiles($event)
+  {
+    this.uploadedFiles = $event;
+  }
+
+  getUpdatedValue($event) { 
+    var form = this.blogGalleryForm;   
+    this.title = this.blogGalleryForm.get('title').value;
+    this.category = this.blogGalleryForm.get('category').value;
+    this.author = this.blogGalleryForm.get('author').value;
+    this.details = this.blogGalleryForm.get('details').value;
+    this.blogGalleryForm.setValue({
+      image: $event,
+      title: this.title,
+      category: this.category,
+      details: this.details,
+      author: this.author,
+    });
   }
 
   openSnackBar(message: string, action: string) {

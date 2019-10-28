@@ -103,7 +103,7 @@ export class BlogPostListComponent implements OnInit {
     this.api.getBlogPosts()
       .subscribe(res => {
         console.log(res);
-        this.blogPosts = res;  
+        this.blogPosts = res;        
         this.blogPosts = this.blogPosts.slice(this.startSet, this.endSet);     
         this.dataSource = this.blogPosts;     
       }, err => {
@@ -118,7 +118,8 @@ export class BlogPostListComponent implements OnInit {
   }
 
   deleteItem(id) {
-    this.api.deleteBlogPost(id)
+    if(confirm("Are you sure you want to delete this item?")) {
+      this.api.deleteBlogPost(id)
       .subscribe(res => {
         this.openSnackBar('Blog post deleted!', '');
         this.api.getBlogPosts()
@@ -132,8 +133,8 @@ export class BlogPostListComponent implements OnInit {
         this.swapWhatIsOpen('list');
       }, (err) => {
         console.log(err);
-      }
-      );
+      });
+    }  
   }
 
   getBlogPost(id) {    

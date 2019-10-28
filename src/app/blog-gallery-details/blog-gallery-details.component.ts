@@ -40,10 +40,10 @@ export class BlogGalleryDetailsComponent implements OnInit {
             {
                 var fileNames = this.blogGalleryItem.image.toString().split(',');
                 fileNames.forEach(element => {
-                  var fileName = element.replace(' ', '');
+                  var fileName = element;
                   if (fileName.length > 0)
                   {
-                    this.imageList.push('https://gourmet-philatelist-assets.s3.amazonaws.com/folder/' + fileName);
+                    this.imageList.push(fileName);
                   }
                  });
              }      

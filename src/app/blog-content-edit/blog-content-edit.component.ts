@@ -5,7 +5,6 @@ import { BlogContent } from '../models/blogcontent';
 import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { environment } from '../../environments/environment';
 import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
-import { UploadFileService } from '../upload-file.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 const URL = environment.apiUrl + '/upload';
@@ -39,8 +38,7 @@ export class BlogContentEditComponent implements OnInit {
     private router: Router, 
     private route: ActivatedRoute, 
     private api: ApiService, 
-    private formBuilder: FormBuilder, 
-    private uploadService: UploadFileService,
+    private formBuilder: FormBuilder,
     public snackBar: MatSnackBar
   ) 
   { }  

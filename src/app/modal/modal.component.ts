@@ -6,7 +6,6 @@ import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Valida
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Blogpost } from "../models/blogpost";
 import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
-import { UploadFileService } from '../upload-file.service';
 
 @Component({
   selector: 'app-modal',
@@ -27,14 +26,16 @@ export class ModalComponent implements OnInit {
   uploadOnly: boolean = false;
   matcher: string = '';
   editor: DecoupledEditor = null;
-  selectedFiles: FileList;
+  uploadedFiles: Array<string> = new Array<string>();  
+  CurrentImage: string;
+  IsPublic: boolean = true;
+  rawImageName: string = '';  
  
   constructor(public dialogRef: MatDialogRef<ModalComponent>,     
     private router: Router, private route: ActivatedRoute, 
     private api: ApiService, 
     private formBuilder: FormBuilder,
-    public snackBar: MatSnackBar,
-    private uploadService: UploadFileService,   
+    public snackBar: MatSnackBar 
   ) {}
     
 
@@ -63,36 +64,80 @@ export class ModalComponent implements OnInit {
 
     this.blogPost = new Blogpost();
     this.blogPostForm = this.formBuilder.group({
-      'title' : [null, Validators.required],
-      'category' : [null, Validators.required],
-      'short_desc' : [null, !Validators.required],
-      'author' : [null, Validators.required],
-      'image' : [null, !Validators.required],
+      'title' : ['', Validators.required],
+      'category' : ['', Validators.required],
+      'short_desc' : ['', !Validators.required],
+      'author' : ['', Validators.required],
+      'image' : ['', !Validators.required],
     });    
   }
 
-  getBlogPost(id) {
+  getBlogPost(id) {    
     this.api.getBlogPost(id).subscribe(data => {
+      this.blogPost = data;
       this.id = data._id;
+      this.rawImageName = this.blogPost.image.toString();
+      var arrImageName = new Array<string>();
+      var newImageName = '';
+      var index = 0;
+      if (this.rawImageName.indexOf(',') > 0)
+      {
+        arrImageName = this.rawImageName.split(',');
+      }
+      if (arrImageName.length > 0)
+      {
+        arrImageName.forEach(element => {
+          index = element.lastIndexOf('/'); 
+          newImageName += element.substring(index + 1, element.length) + ',';
+        });
+      }
+      else
+      {
+        index = this.rawImageName.lastIndexOf('/'); 
+        newImageName = this.rawImageName.substring(index + 1, this.rawImageName.length);
+      }
+      if (newImageName.endsWith(','))
+      {
+        newImageName = newImageName.slice(0,-1);
+      }      
+      this.CurrentImage = newImageName;
+      this.id = data._id;
+      if (this.editor != null)
+      {
+        this.editor.setData(data.short_desc); 
+      }        
       this.blogPostForm.setValue({
-        title: data.title,
-        category: data.category,
-        short_desc: data.short_desc,
-        author: data.author,
-        image: data.image
+        image: newImageName,
+        title: this.blogPost.title,
+        category: this.blogPost.category,
+        short_desc: this.blogPost.short_desc,
+        author: this.blogPost.author,
       });
     });
-  } 
+  }
   
-  onFormSubmit(form: NgForm) {
-    if (this.blogPost.image == null)
-    {
-      this.blogPost.image = "";
-    }
+  onFormSubmit(form: any) {
+    
     this.onAdd.emit();
+    this.CurrentImage = '';
+    this.blogPost.image = '';
+    form.image = '';
+
+    if (this.uploadedFiles.length > 0)
+    {
+      this.uploadedFiles.forEach(element => {
+        form.image += element + ',';
+      });
+      if (form.image.toString().endsWith(','))
+      {
+        form.image = form.image.toString().slice(0,-1);
+      }     
+    }
+
     this.api.postBlogPost(form)
       .subscribe(res => {
         this.openSnackBar('Blog post submitted!', '');
+        this.uploadedFiles = new Array<string>();
         }, (err) => {
           console.log(err);
         }
@@ -105,45 +150,27 @@ export class ModalComponent implements OnInit {
       duration: 2000,
       verticalPosition: 'top'
     });
- }
-
- upload() {
-  if (this.blogPostForm.get('image').value != null && this.blogPostForm.get('image').value.length > 0)
-  {
-    alert('Only 1 image file (less than 200K) is allowed per Blog Post.');
-    return;
   }
-  const file = this.selectedFiles.item(0);  
-  // this.api.getConfig().subscribe(
-  //   data => {
-  //     if (data) { 
-  //       this.uploadService.uploadfile(file, data).subscribe(res => 
-  //       {
-  //         this.imagePathAndFilename = file.name;
-  //         this.uploadOnly = false;
-  //         this.blogPost.image = this.imagePathAndFilename;
-  //         this.blogPost.title = this.blogPostForm.get('title').value;
-  //         this.blogPost.author = this.blogPostForm.get('author').value;
-  //         this.blogPost.category = this.blogPostForm.get('category').value;
-  //         this.blogPost.short_desc = this.editor.getData();
-  //         this.blogPostForm.setValue({
-  //           image: this.imagePathAndFilename,          
-  //           title: this.blogPost.title,
-  //           category: this.blogPost.category,
-  //           author: this.blogPost.author,
-  //           short_desc: this.blogPost.short_desc
-  //         });
-  //         this.openSnackBar('Image uploaded!', '');
-  //       });
-  //     }
-  //   }, 
-  //   error => {
-  //     console.error( error );
-  //   });
-}
 
-selectFile(event) {
-  this.selectedFiles = event.target.files;
+  getUploadedFiles($event)
+  {
+    this.uploadedFiles = $event;
+  }
+
+  getUpdatedValue($event) { 
+    var form = this.blogPostForm;
+    this.image = this.blogPostForm.get('image').value;
+    this.title = this.blogPostForm.get('title').value;
+    this.category = this.blogPostForm.get('category').value;
+    this.author = this.blogPostForm.get('author').value;
+    this.short_desc = this.editor.getData(); 
+    this.blogPostForm.setValue({
+      image: $event,
+      title: this.title,
+      category: this.category,
+      short_desc: this.short_desc,
+      author: this.author,
+    });
   }
 
   returnHome() {

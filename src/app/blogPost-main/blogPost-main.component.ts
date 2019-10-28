@@ -119,7 +119,7 @@ export class BlogPostMainComponent implements OnInit {
           fileNames.forEach(element => {  
             if (element != ' ')
             {
-              this.imageList.push('https://gourmet-philatelist-assets.s3.amazonaws.com/folder/' + element);            
+              this.imageList.push(element);            
             }   
           });
         }

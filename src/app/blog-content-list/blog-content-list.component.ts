@@ -31,12 +31,13 @@ export class BlogContentListComponent implements OnInit {
   
   deleteItem(id)
   {
-    this.api.deleteBlogContent(id)
-    .subscribe(res => {
+    if(confirm("Are you sure you want to delete this item?")) {
+      this.api.deleteBlogContent(id)
+        .subscribe(res => {
         this.router.navigate(['/allBlogContent']);
       }, (err) => {
         console.log(err);
-      }
-    );
+      });
+    }  
   }
 }

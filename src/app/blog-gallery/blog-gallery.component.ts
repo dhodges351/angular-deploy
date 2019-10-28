@@ -83,13 +83,14 @@ export class BlogGalleryComponent implements OnInit {
 
   deleteItem(id)
   {
-    this.apiService.deleteGalleryItem(id)
-    .subscribe(res => {
-      this.ngOnInit();   
-      }, (err) => {
-        console.log(err);
-      }
-    );
+    if(confirm("Are you sure you want to delete this item?")) {
+      this.apiService.deleteGalleryItem(id)
+        .subscribe(res => {
+          this.ngOnInit();   
+          }, (err) => {
+            console.log(err);
+          }); 
+    }      
   }
 
   editItem(id)
@@ -129,9 +130,9 @@ export class BlogGalleryComponent implements OnInit {
             if (element.image.toString().indexOf(',') > 0)
             {
                 var fileNames = element.image.toString().split(',');
-                var fileName = fileNames[0].replace(' ','');
-                element.image = 'https://gourmet-philatelist-assets.s3.amazonaws.com/folder/' + fileName;
-            }
+                var fileName = fileNames[0];
+                element.image = fileName;
+            }            
           }
       });      
     }

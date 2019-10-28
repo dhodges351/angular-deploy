@@ -7,7 +7,6 @@ import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Valida
 import { FileUploader } from 'ng2-file-upload';
 import { environment } from '../../environments/environment';
 import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
-import { UploadFileService } from '../upload-file.service';
 
 const URL = environment.apiUrl + '/upload';
 
@@ -37,7 +36,7 @@ export class BlogContentComponent implements OnInit {
   IsPublic: boolean = false;
   rawImageName: string = '';
 
-  constructor(private uploadService: UploadFileService, private api: ApiService, private formBuilder: FormBuilder, private router: Router, public snackBar: MatSnackBar) {
+  constructor(private api: ApiService, private formBuilder: FormBuilder, private router: Router, public snackBar: MatSnackBar) {
     this.blogContent = new BlogContent();
   }  
   ngOnInit() {
