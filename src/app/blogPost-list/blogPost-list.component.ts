@@ -74,12 +74,20 @@ export class BlogPostListComponent implements OnInit {
       width: '700px', data: { title: '' },
     });
     
-    const sub = dialogRef.componentInstance.onAdd.subscribe(() => {
-      BlogPostListComponent.blogPostListApp.ngOnInit(); 
+    const sub = dialogRef.componentInstance.onAdd.subscribe(() => {      
     });
 
     dialogRef.afterClosed().subscribe(() => {
-      const unsub = dialogRef.componentInstance.onAdd.unsubscribe();      
+      const unsub = dialogRef.componentInstance.onAdd.unsubscribe();   
+      this.api.getBlogPosts()
+      .subscribe(res => {
+        console.log(res);
+        this.blogPosts = res;        
+        this.blogPosts = this.blogPosts.slice(this.startSet, this.endSet);     
+        this.dataSource = this.blogPosts;     
+      }, err => {
+        console.log(err);
+      });      
     });
   }
 
@@ -91,6 +99,7 @@ export class BlogPostListComponent implements OnInit {
       this.loggedInUser = localStorage.getItem('Item 2');
     }
     this.displayedPostColumns = ['image', 'title', 'category', 'author', 'createdAt', 'edit'];
+    this.displayedColumns = ['author', 'comment', 'createdAt', 'edit', 'delete', '_id'];
     
     this.blogPostForm = this.formBuilder.group({
       'image': ['', !Validators.required],
@@ -105,7 +114,7 @@ export class BlogPostListComponent implements OnInit {
         console.log(res);
         this.blogPosts = res;        
         this.blogPosts = this.blogPosts.slice(this.startSet, this.endSet);     
-        this.dataSource = this.blogPosts;     
+        this.dataSource = this.blogPosts;              
       }, err => {
         console.log(err);
       });     
@@ -113,7 +122,10 @@ export class BlogPostListComponent implements OnInit {
 
   scrollToTop() {    
     var element = document.getElementById("mainUL");
-    element.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    if (element)
+    {
+      element.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+    }    
     return false;
   }
 
@@ -139,7 +151,7 @@ export class BlogPostListComponent implements OnInit {
 
   getBlogPost(id) {    
     this.api.getBlogPost(id).subscribe(data => {
-      this.blogPost = data;
+      this.blogPost = data;     
       this.rawImageName = this.blogPost.image.toString();
       var arrImageName = new Array<string>();
       var newImageName = '';
@@ -278,31 +290,36 @@ export class BlogPostListComponent implements OnInit {
     });
 
     const sub = dialogRef.componentInstance.onAdd.subscribe(() => {
-      this.getFilteredComments(id);
+      
     });
 
     dialogRef.afterClosed().subscribe(() => {
       const unsub = dialogRef.componentInstance.onAdd.unsubscribe();
+      this.commentsOpen = true;
+      this.id = id;
+      this.getFilteredComments(this.id);
     });
   }
 
   getFilteredComments(id) { 
     this.api.getComments()
       .subscribe(res => {        
-        this.comments = res;        
-        if (this.comments.length > 0)
-        {         
+        this.comments = res; 
+        if (this.comments && this.comments.length > 0)
+        {
+          this.dataSource1 = this.comments.filter(item => item.blogPostId === id);
+            
           this.comments.forEach(element => {
-            if (element.blogPostId === id)
+            if (element.blogPostId == id && element.author == this.loggedInUser)
             {
-              this.comment = element;
-            }            
-          });  
+              this.comment = element;            
+            }
+          }); 
         }       
-          
-        this.dataSource1 = this.comments.filter(
-          item => item.blogPostId === id
-          && item.author === this.loggedInUser);
+        if (this.comment != null)
+        {
+  
+        }    
       }, (err) => {
        console.log(err);
       });      
@@ -314,13 +331,6 @@ export class BlogPostListComponent implements OnInit {
       this.id = blogPostId;
       this.commentsOpen = true;
       this.getFilteredComments(this.id);      
-              
-      if (this.comment.author != this.loggedInUser) {
-        this.displayedColumns = ['author', 'comment', 'createdAt', '_id'];
-      }
-      else if (this.comment.author == this.loggedInUser) {
-        this.displayedColumns = ['author', 'comment', 'createdAt', 'edit', 'delete', '_id'];      
-      }
     }
     else
     {
@@ -334,24 +344,25 @@ export class BlogPostListComponent implements OnInit {
       width: '550px', data: { blogPostId: this.id, commentId: commentId },
     });
 
-    const sub = dialogRef.componentInstance.onAdd.subscribe(() => {
-      this.getFilteredComments(this.id);
+    const sub = dialogRef.componentInstance.onAdd.subscribe(() => {      
     });
 
     dialogRef.afterClosed().subscribe(() => {
       const unsub = dialogRef.componentInstance.onAdd.unsubscribe();
+      this.getFilteredComments(this.id);
     });
   }
 
-  deleteComment(commentId) {
-    this.api.deleteComment(commentId)
-      .subscribe(res => {
-        this.openSnackBar('Comment deleted!', '');
-        this.getFilteredComments(this.id);
+  deleteComment(commentId) {    
+    if(confirm("Are you sure you want to delete this comment?")) {
+      this.api.deleteComment(commentId)
+        .subscribe(res => {
+          this.openSnackBar('Comment deleted!', '');
+          this.getFilteredComments(this.id);
       }, (err) => {
         console.log(err);
-      }
-    );
+      });
+    }  
   }
 
   loadPreviousBlogPosts()

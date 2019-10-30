@@ -39,13 +39,13 @@ export class BlogPostMainComponent implements OnInit {
       width: '650px', data: { title: '' },
     });
     
-    const sub = dialogRef.componentInstance.onAdd.subscribe(() => {
-      BlogPostListComponent.blogPostListApp.ngOnInit(); 
-      HomeComponent.homeApp.selectedIndex = 1; 
+    const sub = dialogRef.componentInstance.onAdd.subscribe(() => {      
     });
 
     dialogRef.afterClosed().subscribe(() => {
-      const unsub = dialogRef.componentInstance.onAdd.unsubscribe();      
+      const unsub = dialogRef.componentInstance.onAdd.unsubscribe(); 
+      HomeComponent.homeApp.selectedIndex = 1;    
+      BlogPostListComponent.blogPostListApp.ngOnInit();         
     });
   }
 

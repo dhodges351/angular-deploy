@@ -51,10 +51,26 @@ export class UploadImageComponent implements OnInit {
   }
 
   onFilesAdded() {
+    var txt = '';
     const files: { [key: string]: File } = this.file.nativeElement.files;
 
     for (let key in files) {
       if (!isNaN(parseInt(key))) {
+
+        var currentFile = files[key];
+        var sFileExtension = currentFile.name.split('.')[currentFile.name.split('.').length - 1].toLowerCase();
+        var iFileSize = currentFile.size;
+
+        if (!(sFileExtension === "jpg" 
+              || sFileExtension === "png") 
+              || iFileSize > 671329) {
+            txt = "File type : " + sFileExtension + "\n\n";
+            txt += "Size: " + iFileSize + "\n\n";
+            txt += "Please make sure your file is in jpg or png format and less than 655 KB.\n\n";
+            alert(txt);
+            return false;
+        }
+
         this.files.add(files[key]);
         this.uploadedFiles.push('https://gourmet-philatelist-assets.s3.amazonaws.com/folder/' + files[key].name);
         this.uploadedFileNames.push(files[key].name);

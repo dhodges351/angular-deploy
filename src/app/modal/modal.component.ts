@@ -119,9 +119,14 @@ export class ModalComponent implements OnInit {
   onFormSubmit(form: any) {
     
     this.onAdd.emit();
+    
     this.CurrentImage = '';
     this.blogPost.image = '';
     form.image = '';
+    if (this.editor != null)
+      {
+        form.short_desc = this.editor.getData();
+      }    
 
     if (this.uploadedFiles.length > 0)
     {

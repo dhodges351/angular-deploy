@@ -59,7 +59,8 @@
               <th mat-header-cell *matHeaderCellDef> </th>
               <td mat-cell *matCellDef="let element">
                 <br />
-                <a class="iconLink1" id="btnEdit" (click)="editComment(element._id)">
+                <a class="iconLink1" id="btnEdit" fxShow="{{element.author == this.loggedInUser ?'true':'false'}}" 
+                   (click)="editComment(element._id)">
                   <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                 </a>
               </td>
@@ -68,7 +69,8 @@
               <th mat-header-cell *matHeaderCellDef></th>
               <td mat-cell *matCellDef="let element">
                 <br />
-                <a class="iconLink1" id="btnDelete" (click)="deleteComment(element._id)">
+                <a class="iconLink1" id="btnDelete" fxShow="{{element.author == this.loggedInUser ?'true':'false'}}" 
+                   (click)="deleteComment(element._id)">
                   <i class="fa fa-trash"></i>
                 </a>
               </td>

@@ -46,14 +46,17 @@ export class BlogGalleryDetailsComponent implements OnInit {
                     this.imageList.push(fileName);
                   }
                  });
-             }      
-          }
+             }
+             else
+             {
+               this.imageList.push(this.blogGalleryItem.image);
+             }    
+          }         
       }
       this.title = data.title;
-      this.category = data.category;
-      this.image = data.image;
+      this.category = data.category;     
       this.details = data.details;
-      this.value = this.details;
+      this.value = this.details;      
     });
   }
 
