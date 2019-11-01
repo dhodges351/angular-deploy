@@ -106,6 +106,8 @@ app.put("/api/blogcontents/:id", function(req, res) {
       "title":updateDoc.title, 
       "category":updateDoc.category, 
       "content":updateDoc.content,
+      "likes": updateDoc.likes,
+      "dislikes": updateDoc.dislikes,
       "updatedAt": new Date()
     } },    
     function(err, doc) {

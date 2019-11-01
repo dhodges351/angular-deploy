@@ -21,11 +21,12 @@
 </div>
 
 <div fxLayout="row">
-    <div fxFlex="70%" style="margin:10px;">
+    <div fxFlex="70%" style="margin:10px 10px 5px 10px;">
         <span [innerHtml]="value"></span>
         <div style="margin-left:10px;" *ngIf="isShown" fxLayoutAlign="center">
-            <img style="padding:5px;" height="35%" width="35%" *ngFor="let image of imageList;" src="{{image}}" alt="photo">
-        </div>    
+            <img style="padding:5px;" height="35%" width="35%" *ngFor="let image of imageList;" src="{{image}}"
+                alt="photo">
+        </div>
     </div>
     <div fxFlex="30%" style="text-align:left;margin-left:30px; margin-top:10px;">
         <b>Previous Blogs</b>
@@ -34,6 +35,29 @@
                 <button (click)="setCurrentBlog(blog._id)">
                     {{blog.category}} - {{blog.createdAt | date: 'MM/dd/yyyy'}}
                 </button>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div fxLayout="row">
+    <div  fxFlex="70%" style="margin-left:10px;">
+        <ul class="list-inline text-left">
+            <li class="list-inline-item">
+                <a href="#" (click)="$event.preventDefault(); toggleLikes()">
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                        <span style="font-size:14px; font-weight:normal; color:black;">&nbsp;{{likes}}</span>
+                    </span>
+                </a>
+            </li>
+            <li class="list-inline-item">
+                <a href="#" (click)="$event.preventDefault(); toggleDislikes()">
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                        <span style="font-size:14px; font-weight:normal; color:black;">&nbsp;{{dislikes}}</span>
+                   </span>
+                </a>
             </li>
         </ul>
     </div>

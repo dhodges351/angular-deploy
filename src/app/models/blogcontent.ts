@@ -1,6 +1,6 @@
 export class BlogContent {   
     constructor(){
-      this.id = '';
+      this._id = '';
       this.title = '';
       this.image = '';
       this.content = '';
@@ -8,8 +8,10 @@ export class BlogContent {
       this.currentBlog = false;
       this.createdAt = '';
       this.imageList = new Array<string>();
+      this.likes = 0;
+      this.dislikes = 0;
     }
-    public id;
+    public _id;
     public title;
     public image;
     public content;
@@ -17,4 +19,6 @@ export class BlogContent {
     public currentBlog;
     public createdAt;
     public imageList;
+    public likes;
+    public dislikes;
   }

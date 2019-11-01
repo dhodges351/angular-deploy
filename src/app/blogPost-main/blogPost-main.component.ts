@@ -18,6 +18,7 @@ import { StateService } from '../state.service';
 
 export class BlogPostMainComponent implements OnInit {
   blogContent: BlogContent;
+  id: string = '';
   title: string = '';
   image: string = '';
   category: string = '';
@@ -29,6 +30,8 @@ export class BlogPostMainComponent implements OnInit {
   value:string = '';
   isShown: boolean = true;
   imageList:Array<string> = new Array<string>();
+  likes: number = 0;
+  dislikes: number = 0;  
 
   constructor(public stateSvc: StateService, router: Router, private route: ActivatedRoute, private apiService: ApiService, public dialog: MatDialog) 
   {
@@ -57,13 +60,17 @@ export class BlogPostMainComponent implements OnInit {
         {
           let sortedArray = _.sortBy(res, 'createdAt').reverse(); 
           this.blogs = sortedArray;          
-          this.blogContent = res.filter(o => o.currentBlog == true);         
-          this.title = this.blogContent[0].title;
-          this.image = this.blogContent[0].image;
-          this.category = this.blogContent[0].category;
-          this.content = this.blogContent[0].content;
+          this.blogContent = res.filter(o => o.currentBlog == true);
+          this.blogContent = this.blogContent[0];
+          this.title = this.blogContent.title;
+          this.image = this.blogContent.image;
+          this.category = this.blogContent.category;
+          this.content = this.blogContent.content;
           this.value = this.content;
-          this.createdAt = this.blogContent[0].createdAt;
+          this.createdAt = this.blogContent.createdAt;
+          this.likes = this.blogContent.likes;
+          this.dislikes = this.blogContent.dislikes;
+          this.id = this.blogContent._id;
           
           this.imageList = new Array<string>();
           if (this.image && this.image.length > 0)
@@ -109,6 +116,9 @@ export class BlogPostMainComponent implements OnInit {
       this.content = data.content;
       this.value = this.content;
       this.createdAt = data.createdAt;
+      this.likes = data.likes;
+      this.dislikes = data.dislikes;
+      this.id = data._id;
 
       this.imageList = new Array<string>();
       if (this.image && this.image.length > 0)
@@ -135,5 +145,31 @@ export class BlogPostMainComponent implements OnInit {
         this.isShown = false;
       }          
     });
+  }
+
+  toggleLikes()
+  {
+    this.likes += 1;
+    this.blogContent.likes = this.likes;
+    this.apiService.updateBlogContent(this.blogContent._id, this.blogContent)
+        .subscribe(res => {
+          console.log('liked');
+        }, (err) => {
+          console.log(err);       
+      }
+    );       
+  }
+
+  toggleDislikes()
+  {    
+    this.dislikes += 1;
+    this.blogContent.dislikes = this.dislikes;
+    this.apiService.updateBlogContent(this.blogContent._id, this.blogContent)
+        .subscribe(res => {
+          console.log('disliked');
+        }, (err) => {
+          console.log(err);       
+      }
+    );      
   }
 }
