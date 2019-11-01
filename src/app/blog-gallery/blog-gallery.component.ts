@@ -3,11 +3,11 @@ import { ApiService } from '../api.service';
 import { GalleryItem } from "../models/galleryitem";
 import { MatDialog } from '@angular/material';
 import { ModalGalleryComponent } from '../modal/modal-gallery.component';
-import { FileUploader } from 'ng2-file-upload';
 import { environment } from '../../environments/environment';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as _ from 'underscore';
 import { StateService } from '../state.service';
+import { fileHelper } from '../models/fileHelper';
 
 const URL = environment.apiUrl + '/upload';
 declare var TextDecoder;
@@ -40,9 +40,7 @@ export class BlogGalleryComponent implements OnInit {
     {
       this.loggedInUser = localStorage.getItem('Item 2');
     }     
-  }
-
-  public uploader: FileUploader = new FileUploader({ url: URL, itemAlias: 'photo' });
+  }  
 
   openDialog(_id): void {
     const dialogRef = this.dialog.open(ModalGalleryComponent, {     
@@ -80,16 +78,42 @@ export class BlogGalleryComponent implements OnInit {
     });
   } 
 
-
   deleteItem(id)
   {
-    if(confirm("Are you sure you want to delete this item?")) {
-      this.apiService.deleteGalleryItem(id)
-        .subscribe(res => {
-          this.ngOnInit();   
-          }, (err) => {
-            console.log(err);
-          }); 
+    if(confirm("Are you sure you want to delete this gallery item?")) {
+      this.apiService.getGalleryItem(id).subscribe(data => {
+        this.galleryItem = data; 
+        if (this.galleryItem && this.galleryItem.image && this.galleryItem.image.length > 0)
+        {
+          var files = fileHelper.getFilesFromImageName(this.galleryItem.image);
+          if (files.length > 0)
+          {
+            this.apiService.deleteS3Images(files)
+              .subscribe(res => {
+                console.log(res);
+                this.apiService.deleteGalleryItem(id)
+                  .subscribe(res1 => {
+                    console.log(res1);
+                    this.ngOnInit();   
+                  }, err => {
+                    console.log(err);
+                });                  
+              }, err => {
+                console.log(err);
+            });
+          }          
+        }
+        else
+        {          
+          this.apiService.deleteGalleryItem(id)
+            .subscribe(res1 => {
+              console.log(res1);
+              this.ngOnInit();               
+            }, err => {
+              console.log(err);
+          });   
+        }
+      }); 
     }      
   }
 

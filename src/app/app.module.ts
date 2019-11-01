@@ -19,7 +19,6 @@ import { AuthRoutingModule } from './auth/auth-routing.module';
 import { ContactUsComponent } from './contact-us/contact-us.component';
 import { AboutComponent } from './about/about.component';
 import { BlogContentComponent } from './blog-content/blog-content.component';
-import { FileUploadModule } from 'ng2-file-upload';
 import { BlogContentListComponent } from './blog-content-list/blog-content-list.component';
 import { BlogContentEditComponent } from './blog-content-edit/blog-content-edit.component';
 import { ModalCommentComponent } from './modal/modal-comment.component';
@@ -86,7 +85,6 @@ export function hljsLanguages() {
     RoutingModule,
     HttpClientModule,
     AuthRoutingModule,  
-    FileUploadModule,
     NoopAnimationsModule,
     AngularFontAwesomeModule,
     FontAwesomeModule,

@@ -23,7 +23,7 @@
       </mat-error>
     </mat-form-field>
     <div id="toolbar-container"></div>
-    <div style="height:150px;border: solid 1px gray;overflow: auto;" id="editor">     
+    <div style="height:180px;border: solid 1px gray;overflow: auto;" id="editor">     
     </div>
     <div class="button-row">
       <button type="submit" [disabled]="!blogContentForm.valid" mat-raised-button color="primary">
@@ -31,7 +31,7 @@
       </button>
       <app-upload-image [IsPublic]="IsPublic" [CurrentImage]="CurrentImage" (filesOutput)="getUploadedFiles($event)" (valueUpdate)="getUpdatedValue($event)"></app-upload-image>      
       &nbsp;
-      <button mat-button (click)="returnToAllBlogContent()">
+      <button mat-raised-button color="primary" (click)="returnToAllBlogContent()">
           RETURN
       </button>
     </div>

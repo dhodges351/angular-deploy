@@ -15,7 +15,7 @@
     <mat-icon>account_box</mat-icon><span class="nav-caption">Log Out</span>
   </a> 
   <a mat-list-item routerLink="/content" (click)="onSidenavClose()" *ngIf="auth.loggedIn === true && this.isAdmin === true">
-    <mat-icon>add_comment</mat-icon><span class="nav-caption">Content</span>
+    <mat-icon>add_comment</mat-icon><span class="nav-caption">Add Content</span>
   </a>
   <a mat-list-item routerLink="/allBlogContent" (click)="onSidenavClose()" *ngIf="auth.loggedIn === true && this.isAdmin === true">
     <mat-icon>menu</mat-icon><span class="nav-caption">All Blog Content</span>

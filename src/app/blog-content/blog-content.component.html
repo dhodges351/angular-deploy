@@ -1,6 +1,3 @@
-<mat-toolbar>
-  <span>Add Blog Content</span>
-</mat-toolbar>
 <div style="margin:20px;">
   <form [formGroup]="blogContentForm" (ngSubmit)="onFormSubmit(blogContentForm.value)">   
     <mat-form-field class="example-full-width">
@@ -33,7 +30,7 @@
         <mat-icon>save</mat-icon>
       </button>
       <app-upload-image [IsPublic]="IsPublic" [CurrentImage]="CurrentImage" (filesOutput)="getUploadedFiles($event)" (valueUpdate)="getUpdatedValue($event)"></app-upload-image>      
-      &nbsp;<button mat-button (click)="returnHome()">
+      &nbsp;<button mat-raised-button color="primary" (click)="returnHome()">
           RETURN
       </button>
     </div>   

@@ -179,11 +179,7 @@ export class BlogContentEditComponent implements OnInit {
     }, err => {
       console.log(err);
     });    
-  }
-
-  setFlag() {
-    this.uploadButtonClicked = true;
-  }  
+  }   
 
   returnToAllBlogContent()
   {
