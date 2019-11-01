@@ -32,7 +32,7 @@ mat-card-content
 }
 
 .galleryItem{
-  min-width: 200px;
+  min-width: 300px;
   text-align: center;
   margin-bottom: 10px; /* same as fxLayoutGap for even distribution */
 }

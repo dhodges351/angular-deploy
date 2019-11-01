@@ -5,6 +5,7 @@ const cors = require('cors');
 const logger = require('morgan');
 const express = require('express');
 const upload = require('./upload');
+const deleteS3Images = require('./deleteS3Images');
 const bodyParser = require("body-parser");
 const app = express();
 const router = express.Router();
@@ -52,6 +53,9 @@ function handleError(res, reason, message, code) {
 
 app.post('/api/upload', upload);
 app.use('/api/upload', router);
+
+app.post('/api/deleteS3Images', deleteS3Images);
+app.use('/api/deleteS3Images', router);
 
 /********************************************
   blogcontents collection

@@ -19,6 +19,7 @@ const blogContentUrl = apiUrl + '/blogcontents';
 const commentUrl = apiUrl + '/comments';
 const galleryUrl = apiUrl + '/gallery';
 const uploadUrl = apiUrl + '/upload';
+const deleteS3ImagesUrl = apiUrl + '/deleteS3Images';
 
 @Injectable({
   providedIn: 'root'
@@ -213,6 +214,18 @@ export class ApiService {
       formData.append('file', file, file.name);           
     });   
     return this.http.post(uploadUrl, formData).pipe(
+      map(this.extractData),
+      catchError(this.handleError)); 
+  }
+
+  public deleteS3Images(files): Observable<any> {
+    const formData: FormData = new FormData(); 
+    files.forEach(file => {
+      // create a new multipart-form for every file 
+      var blob = new Blob(['Lorem ipsum'], { type: 'plain/text' });
+      formData.append('file', blob, file);           
+    });      
+    return this.http.post(deleteS3ImagesUrl, formData).pipe(
       map(this.extractData),
       catchError(this.handleError)); 
   }

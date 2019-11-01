@@ -6,7 +6,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from './material/material.module';
 import { FlexLayoutModule} from '@angular/flex-layout';
 import { AppComponent } from './app.component';
-import { LayoutComponent } from './layout/layout.component';
 import { HomeComponent } from './home/home.component';
 import { RoutingModule } from './routing/routing.module';
 import { HeaderComponent } from './navigation/header/header.component';
@@ -55,7 +54,6 @@ export function hljsLanguages() {
 @NgModule({ 
   declarations: [
     AppComponent,
-    LayoutComponent,
     HomeComponent,
     HeaderComponent,
     FooterComponent,

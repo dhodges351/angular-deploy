@@ -12,6 +12,7 @@ import { AuthService } from 'src/app/auth/auth.service';
 import * as _ from 'lodash';
 import { environment } from '../../environments/environment';
 import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
+import { fileHelper } from '../models/fileHelper';
 
 const URL = environment.apiUrl + '/upload';
 
@@ -69,25 +70,22 @@ export class BlogPostListComponent implements OnInit {
   }
 
   openDialog(): void {
-
     const dialogRef = this.dialog.open(ModalComponent, {
       width: '700px', data: { title: '' },
-    });
-    
+    });    
     const sub = dialogRef.componentInstance.onAdd.subscribe(() => {      
     });
-
     dialogRef.afterClosed().subscribe(() => {
       const unsub = dialogRef.componentInstance.onAdd.unsubscribe();   
       this.api.getBlogPosts()
-      .subscribe(res => {
-        console.log(res);
-        this.blogPosts = res;        
-        this.blogPosts = this.blogPosts.slice(this.startSet, this.endSet);     
-        this.dataSource = this.blogPosts;     
-      }, err => {
-        console.log(err);
-      });      
+        .subscribe(res => {
+          console.log(res);
+          this.blogPosts = res;        
+          this.blogPosts = this.blogPosts.slice(this.startSet, this.endSet);     
+          this.dataSource = this.blogPosts;     
+        }, err => {
+          console.log(err);
+        });      
     });
   }
 
@@ -117,7 +115,7 @@ export class BlogPostListComponent implements OnInit {
         this.dataSource = this.blogPosts;              
       }, err => {
         console.log(err);
-      });     
+    });    
   }
 
   scrollToTop() {    
@@ -130,22 +128,73 @@ export class BlogPostListComponent implements OnInit {
   }
 
   deleteItem(id) {
-    if(confirm("Are you sure you want to delete this item?")) {
-      this.api.deleteBlogPost(id)
-      .subscribe(res => {
-        this.openSnackBar('Blog post deleted!', '');
-        this.api.getBlogPosts()
-          .subscribe(res => {
-            console.log(res);
-            this.blogPosts = res;
-            this.dataSource = this.blogPosts;           
-          }, err => {
-            console.log(err);
-          });
-        this.swapWhatIsOpen('list');
-      }, (err) => {
+    if(confirm("Are you sure you want to delete this post?")) 
+    {
+      this.api.getComments()
+        .subscribe(res => {        
+          this.comments = res; 
+          if (this.comments && this.comments.length > 0)
+          { 
+            this.comments.forEach(element => {
+              if (element.blogPostId == id)
+              {
+                this.api.deleteComment(element._id)
+                  .subscribe(res => {                
+                }, (err) => {
+                  console.log(err);
+                });
+              }
+            }); 
+          }
+        }, (err) => {
         console.log(err);
-      });
+      });  
+
+      this.api.getBlogPost(id).subscribe(data => {
+        this.blogPost = data; 
+        if (this.blogPost && this.blogPost.image && this.blogPost.image.length > 0)
+        {
+          var files = fileHelper.getFilesFromImageName(this.blogPost.image);
+          if (files.length > 0)
+          {
+            this.api.deleteS3Images(files)
+              .subscribe(res => {
+                console.log(res);
+                this.api.deleteBlogPost(id)
+                  .subscribe(res1 => {
+                    console.log(res1);
+                    this.openSnackBar('Blog post deleted!', '');
+                    this.api.getBlogPosts().subscribe(res2 =>{
+                      console.log(res2);
+                      this.blogPosts = res2;
+                      this.dataSource = this.blogPosts;    
+                    })
+                    this.swapWhatIsOpen('list');
+                  }, err => {
+                    console.log(err);
+                });                  
+              }, err => {
+                console.log(err);
+            });
+          }          
+        }
+        else
+        {          
+          this.api.deleteBlogPost(id)
+            .subscribe(res1 => {
+              console.log(res1);
+              this.openSnackBar('Blog post deleted!', '');
+              this.api.getBlogPosts().subscribe(res2 =>{
+                console.log(res2);
+                this.blogPosts = res2;
+                this.dataSource = this.blogPosts;    
+              })
+              this.swapWhatIsOpen('list');
+            }, err => {
+              console.log(err);
+          });   
+        }
+      });      
     }  
   }
 
@@ -246,7 +295,7 @@ export class BlogPostListComponent implements OnInit {
     );
   }
 
-  editItem(id) {      
+  editItem(id) {
     DecoupledEditor
     .create( document.querySelector( '#editor2' ) )
     .then( editor => {
@@ -256,9 +305,9 @@ export class BlogPostListComponent implements OnInit {
     } )
     .catch( error => {
         console.error( error );
-    } );
+    }); 
     this.getBlogPost(id);     
-    this.swapWhatIsOpen('detailsEdit');  
+    this.swapWhatIsOpen('detailsEdit');    
   }
 
   openSnackBar(message: string, action: string) {
@@ -322,7 +371,7 @@ export class BlogPostListComponent implements OnInit {
         }    
       }, (err) => {
        console.log(err);
-      });      
+    });      
   }
 
   showHideComments(blogPostId) {
