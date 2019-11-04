@@ -200,7 +200,7 @@ export class BlogPostListComponent implements OnInit {
 
   getBlogPost(id) {    
     this.api.getBlogPost(id).subscribe(data => {
-      this.blogPost = data;     
+      this.blogPost = data; 
       this.rawImageName = this.blogPost.image.toString();
       var arrImageName = new Array<string>();
       var newImageName = '';
@@ -261,6 +261,7 @@ export class BlogPostListComponent implements OnInit {
    
     if (this.uploadedFiles.length > 0)
     {
+      form.image = '';
       this.uploadedFiles.forEach(element => {
         form.image += element + ',';
       });
@@ -273,6 +274,9 @@ export class BlogPostListComponent implements OnInit {
     {
       form.image = this.blogPost.image;
     }
+
+    form.likes = this.blogPost.likes;
+    form.dislikes = this.blogPost.dislikes;
 
     this.api.updateBlogPost(this.id, form)
       .subscribe(res => {
@@ -450,6 +454,62 @@ export class BlogPostListComponent implements OnInit {
       {
 
       }
+  }
+
+  toggleLikes(id)
+  {    
+    this.api.getBlogPost(id).subscribe(data => {
+      this.blogPost = data;
+      this.id = data._id;
+      this.blogPost.likes = this.blogPost.likes + 1;
+      this.api.updateBlogPost(id, this.blogPost)
+          .subscribe(res => {
+            console.log('liked');
+            this.api.getBlogPosts()
+            .subscribe(res => {
+              console.log(res);
+              this.blogPosts = res;        
+              this.blogPosts = this.blogPosts.slice(this.startSet, this.endSet);     
+              this.dataSource = this.blogPosts;
+              if (this.blogPosts && this.blogPosts.length > 0) {              
+                this.swapWhatIsOpen('list');
+              }        
+            }, err => {
+              console.log(err);
+          });    
+          }, (err) => {
+            console.log(err);       
+        }
+      );        
+    }); 
+  }
+
+  toggleDislikes(id)
+  {   
+    this.api.getBlogPost(id).subscribe(data => {
+      this.blogPost = data; 
+      this.id = data._id;
+      this.blogPost.dislikes = this.blogPost.dislikes + 1;
+      this.api.updateBlogPost(id, this.blogPost)
+          .subscribe(res => {
+            console.log('disliked');
+            this.api.getBlogPosts()
+            .subscribe(res => {
+              console.log(res);
+              this.blogPosts = res;        
+              this.blogPosts = this.blogPosts.slice(this.startSet, this.endSet);     
+              this.dataSource = this.blogPosts;
+              if (this.blogPosts && this.blogPosts.length > 0) {              
+                this.swapWhatIsOpen('list');
+              }            
+            }, err => {
+              console.log(err);
+          });    
+          }, (err) => {
+            console.log(err);       
+        }
+      );        
+    }); 
   }
   
 }

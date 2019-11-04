@@ -254,11 +254,11 @@ app.post("/api/blogposts", function(req, res) {
 });
 app.put("/api/blogposts/:id", function(req, res) {
   var updateDoc = req.body;
-  updateDoc.image = sanitizeHtml(updateDoc.image); 
+  //updateDoc.image = sanitizeHtml(updateDoc.image); 
   updateDoc.title = sanitizeHtml(updateDoc.title);
   updateDoc.category = sanitizeHtml(updateDoc.category);
   updateDoc.author = sanitizeHtml(updateDoc.author);
-  updateDoc.short_desc = sanitizeHtml(updateDoc.short_desc);  
+  updateDoc.short_desc = sanitizeHtml(updateDoc.short_desc); 
   db.collection(BLOGPOSTS_COLLECTION).updateOne(
     {"_id": new ObjectID(req.params.id)}, 
     { $set: {
@@ -267,6 +267,8 @@ app.put("/api/blogposts/:id", function(req, res) {
       "short_desc":updateDoc.short_desc,
       "author":updateDoc.author,
       "image":updateDoc.image,
+      "likes": updateDoc.likes,
+      "dislikes": updateDoc.dislikes,
       "updatedAt": new Date()
     } },  
     function(err, doc) {

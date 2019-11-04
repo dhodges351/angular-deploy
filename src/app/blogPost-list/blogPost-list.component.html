@@ -35,7 +35,20 @@
               (click)="editItem(this.blogPost._id)">EDIT</button>
             <button mat-button style="display:inline-block;"
               fxShow="{{this.blogPost.author == this.loggedInUser ?'true':'false'}}"
-              (click)="deleteItem(this.blogPost._id)">DELETE</button>
+              (click)="deleteItem(this.blogPost._id)">DELETE
+            </button>
+            <a href="#" (click)="$event.preventDefault(); toggleLikes(blogPost._id)">
+              <span class="fa-stack fa-lg">
+                  <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                  <span style="font-size:14px; font-weight:normal; color:black;">&nbsp;{{this.blogPost.likes}}</span>
+              </span>
+            </a>
+            <a href="#" (click)="$event.preventDefault(); toggleDislikes(blogPost._id)">
+              <span class="fa-stack fa-lg">
+                  <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                  <span style="font-size:14px; font-weight:normal; color:black;">&nbsp;{{this.blogPost.dislikes}}</span>
+             </span>
+          </a>
           </div>
         </td>
       </tr>
