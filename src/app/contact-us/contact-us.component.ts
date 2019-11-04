@@ -38,7 +38,7 @@ export class ContactUsComponent implements OnInit {
           var template_params = {
             "reply_to": this.contact.email,
             "from_name": this.contact.firstname + " " + this.contact.lastname,
-            "to_name": "dhodges351@gmail.com, hodges193@comcast.net",
+            "to_name": "hodges193@comcast.net",
             "subject": this.contact.subject,
             "message_html": this.contact.message
           }

@@ -22,10 +22,7 @@ export class BlogContentEditComponent implements OnInit {
   image: string = '';
   title:string = '';
   category:string = '';
-  content:string = '';
-  imagePathAndFilename: string = '';
-  uploadOnly: boolean = true;
-  uploadButtonClicked: boolean = false;
+  content:string = '';  
   matcher: string = '';
   data:string = '';
   editor: DecoupledEditor = null;
@@ -33,6 +30,8 @@ export class BlogContentEditComponent implements OnInit {
   CurrentImage: string;
   IsPublic: boolean = false;
   rawImageName: string = '';
+  likes: number = 0;
+  dislikes: number = 0;
 
   constructor(
     private router: Router, 
@@ -91,6 +90,8 @@ export class BlogContentEditComponent implements OnInit {
   getBlogContentDetails(id) {
       this.api.getBlogContentDetails(id).subscribe(data => {      
       this.blogContent = data;
+      this.likes = data.likes;
+      this.dislikes = data.dislikes;
       this.rawImageName = this.blogContent.image.toString();
       var arrImageName = new Array<string>();
       var newImageName = '';
@@ -136,6 +137,8 @@ export class BlogContentEditComponent implements OnInit {
   {
     form.image = '';
     this.blogContent.image = '';
+    form.likes = this.likes;
+    form.dislikes = this.dislikes;
     if (this.uploadedFiles.length > 0)
     {
       this.uploadedFiles.forEach(element => {
@@ -168,9 +171,7 @@ export class BlogContentEditComponent implements OnInit {
       }
 
       this.api.updateBlogContent(this.id, form)
-        .subscribe(res => {
-          this.uploadOnly = true;
-          this.imagePathAndFilename = '';
+        .subscribe(res => {         
           this.router.navigate(['/allBlogContent']);               
         }, (err) => {
           console.log(err);       

@@ -6,6 +6,7 @@ const logger = require('morgan');
 const express = require('express');
 const upload = require('./upload');
 const deleteS3Images = require('./deleteS3Images');
+const sanitizeHtml = require('sanitize-html');
 const bodyParser = require("body-parser");
 const app = express();
 const router = express.Router();
@@ -80,6 +81,11 @@ app.get("/api/blogcontents/:id", function(req, res) {
 });
 app.post("/api/blogcontents", function(req, res) {
   var newBlogcontent= req.body;
+  newBlogcontent.image = sanitizeHtml(newBlogcontent.image); 
+  newBlogcontent.title = sanitizeHtml(newBlogcontent.title);
+  newBlogcontent.category = sanitizeHtml(newBlogcontent.category);
+  newBlogcontent.author = sanitizeHtml(newBlogcontent.author);
+  newBlogcontent.content = sanitizeHtml(newBlogcontent.content);
   newBlogcontent.createdAt = new Date();
   newBlogcontent.updatedAt = new Date();  
   if (!req.body.title) {
@@ -98,6 +104,11 @@ app.post("/api/blogcontents", function(req, res) {
 });
 app.put("/api/blogcontents/:id", function(req, res) {
   var updateDoc = req.body;  
+  updateDoc.image = sanitizeHtml(updateDoc.image); 
+  updateDoc.title = sanitizeHtml(updateDoc.title);
+  updateDoc.category = sanitizeHtml(updateDoc.category);
+  updateDoc.author = sanitizeHtml(updateDoc.author);
+  updateDoc.content = sanitizeHtml(updateDoc.content);
   db.collection(BLOGCONTENTS_COLLECTION).updateOne(
     {"_id": new ObjectID(req.params.id)}, 
     { $set: {
@@ -151,7 +162,9 @@ app.get("/api/comments/:id", function(req, res) {
   });
 });
 app.post("/api/comments", function(req, res) {
-  var newComment= req.body;  
+  var newComment= req.body;
+  newComment.author = sanitizeHtml(newComment.author); 
+  newComment.comment = sanitizeHtml(newComment.comment);  
   newComment.createdAt = new Date();
   newComment.updatedAt = new Date();
   if (!req.body.author) {
@@ -168,6 +181,8 @@ app.post("/api/comments", function(req, res) {
 });
 app.put("/api/comments/:id", function(req, res) {
   var updateDoc = req.body;
+  updateDoc.author = sanitizeHtml(updateDoc.author); 
+  updateDoc.comment = sanitizeHtml(updateDoc.comment);  
   db.collection(COMMENTS_COLLECTION).updateOne(
     {"_id": new ObjectID(req.params.id)}, 
     { $set: {
@@ -218,6 +233,11 @@ app.get("/api/blogposts/:id", function(req, res) {
 });
 app.post("/api/blogposts", function(req, res) {
   var newBlogpost= req.body;
+  newBlogpost.image = sanitizeHtml(newBlogpost.image); 
+  newBlogpost.title = sanitizeHtml(newBlogpost.title);
+  newBlogpost.category = sanitizeHtml(newBlogpost.category);
+  newBlogpost.author = sanitizeHtml(newBlogpost.author);
+  newBlogpost.short_desc = sanitizeHtml(newBlogpost.short_desc);  
   newBlogpost.createdAt = new Date();
   newBlogpost.updatedAt = new Date();
   if (!req.body.author) {
@@ -234,6 +254,11 @@ app.post("/api/blogposts", function(req, res) {
 });
 app.put("/api/blogposts/:id", function(req, res) {
   var updateDoc = req.body;
+  updateDoc.image = sanitizeHtml(updateDoc.image); 
+  updateDoc.title = sanitizeHtml(updateDoc.title);
+  updateDoc.category = sanitizeHtml(updateDoc.category);
+  updateDoc.author = sanitizeHtml(updateDoc.author);
+  updateDoc.short_desc = sanitizeHtml(updateDoc.short_desc);  
   db.collection(BLOGPOSTS_COLLECTION).updateOne(
     {"_id": new ObjectID(req.params.id)}, 
     { $set: {
@@ -286,6 +311,11 @@ app.get("/api/contacts/:id", function(req, res) {
 });
 app.post("/api/contacts", function(req, res) {
   var newContact = req.body;
+  newContact.firstname = sanitizeHtml(newContact.firstname);
+  newContact.lastname = sanitizeHtml(newContact.lastname);
+  newContact.email = sanitizeHtml(newContact.email);
+  newContact.subject = sanitizeHtml(newContact.subject);
+  newContact.message = sanitizeHtml(newContact.message);
   newContact.createdAt = new Date();
   newContact.updatedAt = new Date();
   if (!req.body.firstname) {
@@ -302,6 +332,11 @@ app.post("/api/contacts", function(req, res) {
 });
 app.put("/api/contacts/:id", function(req, res) {
   var updateDoc = req.body;
+  updateDoc.firstname = sanitizeHtml(updateDoc.firstname);
+  updateDoc.lastname = sanitizeHtml(updateDoc.lastname);
+  updateDoc.email = sanitizeHtml(updateDoc.email);
+  updateDoc.subject = sanitizeHtml(updateDoc.subject);
+  updateDoc.message = sanitizeHtml(updateDoc.message);
   db.collection(BLOGPOSTS_COLLECTION).updateOne(
     {"_id": new ObjectID(req.params.id)}, 
     { $set: {
@@ -353,7 +388,12 @@ app.get("/api/gallery/:id", function(req, res) {
   });
 });
 app.post("/api/gallery", function(req, res) {
-  var newGalleryItem= req.body;  
+  var newGalleryItem= req.body; 
+  newGalleryItem.title = sanitizeHtml(newGalleryItem.title);
+  newGalleryItem.title = sanitizeHtml(newGalleryItem.title);
+  newGalleryItem.details = sanitizeHtml(newGalleryItem.details);
+  newGalleryItem.author = sanitizeHtml(newGalleryItem.author);
+  newGalleryItem.image = sanitizeHtml(newGalleryItem.image);
   newGalleryItem.createdAt = new Date();
   newGalleryItem.updatedAt = new Date();
   if (!req.body.author) {
@@ -370,6 +410,11 @@ app.post("/api/gallery", function(req, res) {
 });
 app.put("/api/gallery/:id", function(req, res) {
   var updateDoc = req.body;
+  updateDoc.title = sanitizeHtml(updateDoc.title);
+  updateDoc.title = sanitizeHtml(updateDoc.title);
+  updateDoc.details = sanitizeHtml(updateDoc.details);
+  updateDoc.author = sanitizeHtml(updateDoc.author);
+  updateDoc.image = sanitizeHtml(updateDoc.image);
   db.collection(GALLERY_COLLECTION).updateOne(
     {"_id": new ObjectID(req.params.id)}, 
     { $set: {      

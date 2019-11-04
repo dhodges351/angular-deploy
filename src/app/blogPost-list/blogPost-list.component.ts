@@ -258,11 +258,7 @@ export class BlogPostListComponent implements OnInit {
 
   saveForm(form: any) {    
     form.short_desc = this.editor.getData();
-
-    this.CurrentImage = '';
-    this.blogPost.image = '';
-    form.image = '';
-
+   
     if (this.uploadedFiles.length > 0)
     {
       this.uploadedFiles.forEach(element => {
@@ -272,6 +268,10 @@ export class BlogPostListComponent implements OnInit {
       {
         form.image = form.image.toString().slice(0,-1);
       }     
+    }
+    else
+    {
+      form.image = this.blogPost.image;
     }
 
     this.api.updateBlogPost(this.id, form)
