@@ -254,7 +254,7 @@ app.post("/api/blogposts", function(req, res) {
 });
 app.put("/api/blogposts/:id", function(req, res) {
   var updateDoc = req.body;
-  //updateDoc.image = sanitizeHtml(updateDoc.image); 
+  updateDoc.image = sanitizeHtml(updateDoc.image); 
   updateDoc.title = sanitizeHtml(updateDoc.title);
   updateDoc.category = sanitizeHtml(updateDoc.category);
   updateDoc.author = sanitizeHtml(updateDoc.author);
