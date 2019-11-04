@@ -33,19 +33,18 @@ export class ContactUsComponent implements OnInit {
 
           emailjs.init("user_NVqyc8NO6ozXZIUD43yMd");
 
-          var service_id = "gmail";
+          var service_id = "comcast";
           var template_id = "template_92biXOC3";
           var template_params = {
             "reply_to": this.contact.email,
             "from_name": this.contact.firstname + " " + this.contact.lastname,
-            "to_name": "hodges193@comcast.net",
+            "to_name": "Bob Hodges",
             "subject": this.contact.subject,
             "message_html": this.contact.message
           }
         
           emailjs.send(service_id,template_id,template_params)
-            .then(function(){ 
-              alert("Sent!");            
+            .then(function(){         
             }, function(err) {
               alert("Send email failed!\r\n Response:\n " + JSON.stringify(err));            
           });
