@@ -5,17 +5,18 @@
     </a>
   </div>  
   <br />  
-  <div id="container">
-    <mat-form-field style="width: 100%;">
-      <mat-label>Select an option</mat-label>
-      <mat-select [(ngModel)]="selected" (selectionChange)="onChange()">
-        <mat-option value="General">General</mat-option>
-        <mat-option value="Great Britain Postmarks">Great Britain Postmarks</mat-option>
-        <mat-option value="US Perfin Covers">US Perfin Covers</mat-option>
-        <mat-option value="US Pre-Cancel Errors">US Pre-Cancel Errors</mat-option>
-        <mat-option value="Australia KGV Plate">Australia KGV Plate</mat-option>        
-      </mat-select>      
-    </mat-form-field>
+  <div id="container">   
+    <mat-radio-group style="font-weight:bold;"
+      layout="row"      
+      fxLayoutAlign="center"
+      [(ngModel)]="selected"
+      (change)="onChange($event)">
+      <mat-radio-button value="General" labelPosition="after">General</mat-radio-button>
+      &nbsp;<mat-radio-button value="Great Britain Postmarks" labelPosition="after">Great Britain Postmarks</mat-radio-button>
+      &nbsp;<mat-radio-button value="US Perfin Covers" labelPosition="after">US Perfin Covers</mat-radio-button>
+      &nbsp;<mat-radio-button value="US Pre-Cancel Errors" labelPosition="after">US Pre-Cancel Errors</mat-radio-button>
+      &nbsp;<mat-radio-button value="Australia KGV Plate" labelPosition="after">Australia KGV Plate</mat-radio-button>
+    </mat-radio-group>
 </div>
 <div class="container margin-top-20" fxLayout="row wrap" fxLayoutAlign="space-evenly stretch" fxLayoutGap="5px">   
     <mat-card fxFlex="0 1 calc(20% - 10px)" *ngFor="let galleryItem of galleryItems; let i = index" class="galleryItem" fxLayout="column">
