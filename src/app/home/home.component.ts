@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit {
 
   public onChange = (event) => {
     console.log(event);   
-    if (event.index == 1)
+    if (event.value != '')
     {
       BlogPostListComponent.blogPostListApp.swapWhatIsOpen('list');
     }       
