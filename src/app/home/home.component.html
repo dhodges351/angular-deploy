@@ -12,24 +12,20 @@
         <app-blog-gallery></app-blog-gallery>
     </mat-tab>
     <mat-tab label="Exhibits/Studies">
-      <div id="container">
-        <mat-form-field style="width: 100%;">
-          <mat-label>Select an option</mat-label>
-          <mat-select [(value)]="selected">
-            <mat-option value="../assets/exhibits/Exhibit FRENCH D-DAY COVERS.pdf">Exhibit FRENCH D-DAY COVERS
-            </mat-option>
-            <mat-option value="../assets/exhibits/US Private Die Proprietary.pdf">US Private Die Proprietary
-            </mat-option>
-            <mat-option value="../assets/exhibits/US Perfins - Their First Year.pdf">US Perfins - Their First Year
-            </mat-option>
-            <mat-option value="../assets/exhibits/US Perfins - The Classics and Rarities.pdf">US Perfins - The Classics
-              and Rarities</mat-option>
-            <mat-option value="../assets/exhibits/A Journey Through History with a Single Postal Cover.pdf">A Journey
-              Through History with a Single Postal Cover</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <pdf-viewer src="{{selected}}"></pdf-viewer>
-      </div>
+      <div id="container">   
+        <mat-radio-group style="font-weight:bold;"
+          layout="row"      
+          fxLayoutAlign="center"
+          [(ngModel)]="selected"
+          (change)="onChange()">
+          <mat-radio-button value="../assets/exhibits/Exhibit FRENCH D-DAY COVERS.pdf" labelPosition="after">French D-Day Covers</mat-radio-button>
+          &nbsp;<mat-radio-button value="../assets/exhibits/US Private Die Proprietary.pdf" labelPosition="after">US Private Die Proprietary</mat-radio-button>
+          &nbsp;<mat-radio-button value="../assets/exhibits/US Perfins - Their First Year.pdf" labelPosition="after">US Perfins-Their First Year</mat-radio-button>
+          &nbsp;<mat-radio-button value="../assets/exhibits/US Perfins - The Classics and Rarities.pdf" labelPosition="after">US Perfins-The Classics and Rarities</mat-radio-button>
+          &nbsp;<mat-radio-button value="../assets/exhibits/A Journey Through History with a Single Postal Cover.pdf" labelPosition="after">Single Postal Covers</mat-radio-button>
+        </mat-radio-group>
+        <pdf-viewer src="{{selected}}" fxLayoutAlign="left"></pdf-viewer>
+    </div>
     </mat-tab>
     <mat-tab label="Profile">
       <app-profile></app-profile>

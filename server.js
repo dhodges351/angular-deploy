@@ -393,7 +393,13 @@ app.post("/api/gallery", function(req, res) {
   var newGalleryItem= req.body; 
   newGalleryItem.title = sanitizeHtml(newGalleryItem.title);
   newGalleryItem.title = sanitizeHtml(newGalleryItem.title);
-  newGalleryItem.details = sanitizeHtml(newGalleryItem.details);
+  newGalleryItem.details = sanitizeHtml(newGalleryItem.details, 
+  { 
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'span' ]),
+    allowedAttributes: {
+    'span': [ 'class' ]
+    },
+  });
   newGalleryItem.author = sanitizeHtml(newGalleryItem.author);
   newGalleryItem.image = sanitizeHtml(newGalleryItem.image);
   newGalleryItem.createdAt = new Date();
@@ -414,7 +420,13 @@ app.put("/api/gallery/:id", function(req, res) {
   var updateDoc = req.body;
   updateDoc.title = sanitizeHtml(updateDoc.title);
   updateDoc.title = sanitizeHtml(updateDoc.title);
-  updateDoc.details = sanitizeHtml(updateDoc.details);
+  updateDoc.details = sanitizeHtml(updateDoc.details, 
+  { 
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'span' ]),
+    allowedAttributes: {
+    'span': [ 'class' ]
+    },
+  });
   updateDoc.author = sanitizeHtml(updateDoc.author);
   updateDoc.image = sanitizeHtml(updateDoc.image);
   db.collection(GALLERY_COLLECTION).updateOne(

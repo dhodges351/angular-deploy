@@ -59,7 +59,16 @@ export class ModalGalleryComponent implements OnInit {
 
   ngOnInit() {    
     DecoupledEditor
-    .create( document.querySelector( '#editor' ) )
+    .create( document.querySelector( '#editor' ),{
+      fontSize: {
+        options: [
+          'tiny',
+          'small',   
+          'default',
+          'big',
+          'huge', 
+      ]}
+    } )
     .then( editor => {
         const toolbarContainer = document.querySelector( '#toolbar-container' );
         toolbarContainer.appendChild( editor.ui.view.toolbar.element );        

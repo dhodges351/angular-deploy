@@ -11,7 +11,7 @@ import { BlogGalleryComponent } from '../blog-gallery/blog-gallery.component';
 export class HomeComponent implements OnInit {
   static homeApp;
   public selectedIndex = 0;
-  public selected = "../assets/exhibits/Exhibit FRENCH D-DAY COVERS.pdf";
+  public selected = "../assets/exhibits/A Journey Through History with a Single Postal Cover.pdf";
   
   constructor(private data: DataService) 
   {
@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit {
     HomeComponent.homeApp = this;
   }
 
-  public executeSelectedChange = (event) => {
+  public onChange = (event) => {
     console.log(event);   
     if (event.index == 1)
     {

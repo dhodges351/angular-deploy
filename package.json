@@ -27,6 +27,7 @@
     "@ckeditor/ckeditor5-angular": "^1.1.0",
     "@ckeditor/ckeditor5-build-classic": "^12.4.0",
     "@ckeditor/ckeditor5-build-decoupled-document": "^12.4.0",
+    "@ckeditor/ckeditor5-font": "^15.0.0",
     "@fortawesome/angular-fontawesome": "^0.5.0",
     "@fortawesome/fontawesome-free": "^5.11.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.24",
