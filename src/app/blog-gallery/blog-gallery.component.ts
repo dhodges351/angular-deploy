@@ -31,7 +31,7 @@ export class BlogGalleryComponent implements OnInit {
   data:any
   loggedInUser: string = '';
   public selectedIndex = 0;
-  public selected = "General";
+  public selected = "Great Britain Postmarks";
 
   constructor(public stateSvc: StateService, private router: Router, private route: ActivatedRoute, private apiService: ApiService, public dialog: MatDialog) 
   {     
