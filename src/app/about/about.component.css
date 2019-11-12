@@ -1,0 +1,22 @@
+p {
+    font-size: 2vmin;
+}
+
+.myTitle {
+  margin: 10px;
+  font-size: large;
+  font-weight: bold;
+}
+
+.myMargin {
+  margin-left: 10px;
+}
+
+.myMargin1 {
+  margin-left: 10px;
+  text-align: center;
+}
+
+.mat-toolbar mat-toolbar-single-row {
+  margin:0px;
+}
