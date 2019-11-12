@@ -85,7 +85,12 @@ app.post("/api/blogcontents", function(req, res) {
   newBlogcontent.title = sanitizeHtml(newBlogcontent.title);
   newBlogcontent.category = sanitizeHtml(newBlogcontent.category);
   newBlogcontent.author = sanitizeHtml(newBlogcontent.author);
-  newBlogcontent.content = sanitizeHtml(newBlogcontent.content);
+  newBlogcontent.content = sanitizeHtml(newBlogcontent.content, { 
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'span' ]),
+    allowedAttributes: {
+    'span': [ 'class' ]
+    },
+  });;
   newBlogcontent.createdAt = new Date();
   newBlogcontent.updatedAt = new Date();  
   if (!req.body.title) {
@@ -108,7 +113,12 @@ app.put("/api/blogcontents/:id", function(req, res) {
   updateDoc.title = sanitizeHtml(updateDoc.title);
   updateDoc.category = sanitizeHtml(updateDoc.category);
   updateDoc.author = sanitizeHtml(updateDoc.author);
-  updateDoc.content = sanitizeHtml(updateDoc.content);
+  updateDoc.content = sanitizeHtml(updateDoc.content, { 
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'span' ]),
+    allowedAttributes: {
+    'span': [ 'class' ]
+    },
+  });
   db.collection(BLOGCONTENTS_COLLECTION).updateOne(
     {"_id": new ObjectID(req.params.id)}, 
     { $set: {
@@ -237,7 +247,12 @@ app.post("/api/blogposts", function(req, res) {
   newBlogpost.title = sanitizeHtml(newBlogpost.title);
   newBlogpost.category = sanitizeHtml(newBlogpost.category);
   newBlogpost.author = sanitizeHtml(newBlogpost.author);
-  newBlogpost.short_desc = sanitizeHtml(newBlogpost.short_desc);  
+  newBlogpost.short_desc = sanitizeHtml(newBlogpost.short_desc, { 
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'span' ]),
+    allowedAttributes: {
+    'span': [ 'class' ]
+    },
+  });  
   newBlogpost.createdAt = new Date();
   newBlogpost.updatedAt = new Date();
   if (!req.body.author) {
@@ -258,7 +273,12 @@ app.put("/api/blogposts/:id", function(req, res) {
   updateDoc.title = sanitizeHtml(updateDoc.title);
   updateDoc.category = sanitizeHtml(updateDoc.category);
   updateDoc.author = sanitizeHtml(updateDoc.author);
-  updateDoc.short_desc = sanitizeHtml(updateDoc.short_desc); 
+  updateDoc.short_desc = sanitizeHtml(updateDoc.short_desc, { 
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'span' ]),
+    allowedAttributes: {
+    'span': [ 'class' ]
+    },
+  }); 
   db.collection(BLOGPOSTS_COLLECTION).updateOne(
     {"_id": new ObjectID(req.params.id)}, 
     { $set: {

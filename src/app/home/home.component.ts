@@ -22,11 +22,11 @@ export class HomeComponent implements OnInit {
     HomeComponent.homeApp = this;
   }
 
-  public onChange = (event) => {
+  public executeSelectedChange = (event) => {
     console.log(event);   
-    if (event.value != '')
+    if (event.index == 1)
     {
       BlogPostListComponent.blogPostListApp.swapWhatIsOpen('list');
-    }       
+    }    
   }
 }
