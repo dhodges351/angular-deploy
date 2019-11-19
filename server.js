@@ -17,6 +17,7 @@ var COMMENTS_COLLECTION = "comments";
 var BLOGPOSTS_COLLECTION = "blogposts";
 var CONTACTS_COLLECTION = "contacts";
 var GALLERY_COLLECTION = "gallery";
+var GALLERY_COMMENTS_COLLECTION = "gallerycomments";
 var db;
 
 var corsOptions = {
@@ -412,7 +413,6 @@ app.get("/api/gallery/:id", function(req, res) {
 app.post("/api/gallery", function(req, res) {
   var newGalleryItem= req.body; 
   newGalleryItem.title = sanitizeHtml(newGalleryItem.title);
-  newGalleryItem.title = sanitizeHtml(newGalleryItem.title);
   newGalleryItem.details = sanitizeHtml(newGalleryItem.details, 
   { 
     allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'span' ]),
@@ -439,7 +439,6 @@ app.post("/api/gallery", function(req, res) {
 app.put("/api/gallery/:id", function(req, res) {
   var updateDoc = req.body;
   updateDoc.title = sanitizeHtml(updateDoc.title);
-  updateDoc.title = sanitizeHtml(updateDoc.title);
   updateDoc.details = sanitizeHtml(updateDoc.details, 
   { 
     allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'span' ]),
@@ -457,6 +456,8 @@ app.put("/api/gallery/:id", function(req, res) {
       "author":updateDoc.author, 
       "image":updateDoc.image,
       "details":updateDoc.details,
+      "likes": updateDoc.likes,
+      "dislikes": updateDoc.dislikes,
       "updatedAt": new Date()
     } },
     function(err, doc) {
@@ -472,6 +473,91 @@ app.delete("/api/gallery/:id", function(req, res) {
   db.collection(GALLERY_COLLECTION).deleteOne({_id: new ObjectID(req.params.id)}, function(err, result) {
     if (err) {
       handleError(res, err.message, "Failed to delete gallery item");
+    } else {
+      res.status(200).json(req.params.id);
+    }
+  });
+});
+
+/********************************************
+  gallery comments collection
+*********************************************/
+app.get("/api/gallerycomments", function(req, res) {
+  db.collection(GALLERY_COMMENTS_COLLECTION).find({}).toArray(function(err, docs) {
+    if (err) {
+      handleError(res, err.message, "Failed to get gallery comments");
+    } else {
+      res.status(200).json(docs);
+    }
+  });
+});
+app.get("/api/gallerycomments/:id", function(req, res) {
+  db.collection(GALLERY_COMMENTS_COLLECTION).findOne({ _id: new ObjectID(req.params.id) }, function(err, doc) {
+    if (err) {
+      handleError(res, err.message, "Failed to get comments for gallery item");
+    } else {
+      res.status(200).json(doc);
+    }
+  });
+});
+app.post("/api/gallerycomments", function(req, res) {
+  var newGalleryComment = req.body;
+  newGalleryComment.title = sanitizeHtml(newGalleryComment.title);
+  newGalleryComment.comment = sanitizeHtml(newGalleryComment.comment, 
+  { 
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'span' ]),
+    allowedAttributes: {
+    'span': [ 'class' ]
+    },
+  });
+  newGalleryComment.author = sanitizeHtml(newGalleryComment.author);
+  newGalleryComment.createdAt = new Date();
+  newGalleryComment.updatedAt = new Date();
+  if (!req.body.author) {
+    handleError(res, "Invalid user input", "Must provide an author.", 400);
+  } else {
+    db.collection(GALLERY_COMMENTS_COLLECTION).insertOne(newGalleryComment, function(err, doc) {
+      if (err) {
+        handleError(res, err.message, "Failed to create new comment for gallery item.");
+      } else {
+        res.status(201).json(doc.ops[0]);
+      }
+    });
+  }
+});
+app.put("/api/gallerycomments/:id", function(req, res) {
+  var updateDoc = req.body;
+  updateDoc.title = sanitizeHtml(updateDoc.title);
+  updateDoc.comment = sanitizeHtml(updateDoc.comment, 
+  { 
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'span' ]),
+    allowedAttributes: {
+    'span': [ 'class' ]
+    },
+  });
+  updateDoc.author = sanitizeHtml(updateDoc.author);
+  db.collection(GALLERY_COMMENTS_COLLECTION).updateOne(
+    {"_id": new ObjectID(req.params.id)}, 
+    { $set: { 
+      "galleryItemId":updateDoc.galleryItemId,     
+      "title":updateDoc.title,
+      "author":updateDoc.author, 
+      "comment":updateDoc.comment,     
+      "updatedAt": new Date()
+    } },
+    function(err, doc) {
+    if (err) {
+      handleError(res, err.message, "Failed to update comment for gallery item");
+    } else {
+      updateDoc._id = req.params.id;
+      res.status(200).json(updateDoc);
+    }
+  });
+});
+app.delete("/api/gallerycomments/:id", function(req, res) {
+  db.collection(GALLERY_COMMENTS_COLLECTION).deleteOne({_id: new ObjectID(req.params.id)}, function(err, result) {
+    if (err) {
+      handleError(res, err.message, "Failed to delete comment for gallery item");
     } else {
       res.status(200).json(req.params.id);
     }

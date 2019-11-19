@@ -18,6 +18,7 @@ const blogPostUrl = apiUrl + '/blogposts';
 const blogContentUrl = apiUrl + '/blogcontents';
 const commentUrl = apiUrl + '/comments';
 const galleryUrl = apiUrl + '/gallery';
+const galleryCommentUrl = apiUrl + '/gallerycomments';
 const uploadUrl = apiUrl + '/upload';
 const deleteS3ImagesUrl = apiUrl + '/deleteS3Images';
 
@@ -205,7 +206,45 @@ export class ApiService {
     return this.http.get(galleryUrl, httpOptions).pipe(
       map(this.extractData),
       catchError(this.handleError));
-  }  
+  }
+
+  
+
+  saveGalleryComment(data): Observable<any>{
+    return this.http.post(galleryCommentUrl, data, 
+    httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  getGalleryCommentDetails(id: string): Observable<any> {   
+    const url = `${galleryCommentUrl}/${id}`;
+    return this.http.get(url, httpOptions).pipe(
+      map(this.extractData),
+      catchError(this.handleError));
+  }
+
+  updateGalleryComment(id: string, data): Observable<any> {
+    return this.http.put(galleryCommentUrl + '/' + id, data, httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+  
+  deleteGalleryComment(id: string): Observable<{}> {   
+    const url = `${galleryCommentUrl}/${id}`;
+    return this.http.delete(url, httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  getGalleryComments(): Observable<any> {
+    return this.http.get(galleryCommentUrl, httpOptions).pipe(
+      map(this.extractData),
+      catchError(this.handleError));
+  }
 
   public upload(files): Observable<any> {  
     const formData: FormData = new FormData(); 

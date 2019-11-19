@@ -15,3 +15,43 @@
 .mat-card-subtitle {  
   text-align: center;
 }
+
+.orangeButton
+{
+  background-color: orangered;
+}
+
+table {
+  width: 100%;
+}
+
+  td.mat-cell {
+    font-size: small;   
+    padding:5px;
+  }
+
+  th.mat-header-cell {
+    text-align: left;
+  }
+  
+  th.mat-header-cell.cdk-column-author {    
+    width: 20%;
+  }
+
+  th.mat-header-cell.cdk-column-comment {    
+    width: 25%;
+    white-space: pre-wrap;
+  }
+
+  th.mat-header-cell.cdk-column-createdAt {    
+    width: 25%;    
+  }
+
+  th.mat-header-cell.cdk-column-edit {    
+    width: 5%;
+  }
+
+  th.mat-header-cell.cdk-column-delete {    
+    width: 5%;
+  }
+ 

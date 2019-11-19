@@ -43,6 +43,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { ModalGalleryComponent } from './modal/modal-gallery.component';
 import { BlogGalleryDetailsComponent } from './blog-gallery-details/blog-gallery-details.component';
 import { UploadImageComponent } from './upload-image/upload-image.component';
+import { ModalGalleryCommentComponent } from './modal/modal-gallerycomment.component';
 
 library.add(fas, far, fab);
 
@@ -73,7 +74,8 @@ export function hljsLanguages() {
     ProfileComponent,
     ModalGalleryComponent,
     BlogGalleryDetailsComponent,
-    UploadImageComponent
+    UploadImageComponent,
+    ModalGalleryCommentComponent
   ],
   imports: [
     BrowserModule,
@@ -96,7 +98,7 @@ export function hljsLanguages() {
     CKEditorModule
   ],
   providers: [DataService, StateService],  
-  entryComponents: [ModalComponent, ModalCommentComponent, ModalGalleryComponent],
+  entryComponents: [ModalComponent, ModalCommentComponent, ModalGalleryComponent, ModalGalleryCommentComponent],
   bootstrap: [AppComponent],
 })
 export class AppModule { }
