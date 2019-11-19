@@ -9,13 +9,13 @@
             <span [innerHtml]="value"></span>
         </mat-card-content>
         <mat-card-actions fxFlexAlign="end" align="end">
-            <a href="#" (click)="$event.preventDefault(); toggleLikes(blogGalleryItem._id)">
+            <a href="#" (click)="$event.preventDefault(); toggleLikes()">
                 <span class="fa-stack fa-lg">
                     <i class="fa fa-thumbs-up" aria-hidden="true"></i>
                     <span style="font-size:14px; font-weight:normal; color:black;">&nbsp;{{likes}}</span>
                 </span>
             </a>
-            <a href="#" (click)="$event.preventDefault(); toggleDislikes(blogGalleryItem._id)">
+            <a href="#" (click)="$event.preventDefault(); toggleDislikes()">
                 <span class="fa-stack fa-lg">
                     <i class="fa fa-thumbs-down" aria-hidden="true"></i>
                     <span
